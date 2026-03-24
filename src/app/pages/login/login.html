@@ -1,0 +1,30 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card p-4">
+        <h4 class="text-center mb-4">تسجيل الدخول</h4>
+
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+        <div class="mb-3">
+          <label>الإيميل</label>
+          <input type="email" class="form-control" [(ngModel)]="email">
+        </div>
+
+        <div class="mb-3">
+          <label>كلمة المرور</label>
+          <input type="password" class="form-control" [(ngModel)]="password">
+        </div>
+
+        <button class="btn btn-primary w-100" (click)="login()">
+          دخول
+        </button>
+
+        <p class="text-center mt-3">
+          ما عندك حساب؟
+          <a routerLink="/register">سجّل هون</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
