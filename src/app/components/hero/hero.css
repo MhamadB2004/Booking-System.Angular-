@@ -1,0 +1,351 @@
+
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color), transparent 95%) 0%, color-mix(in srgb, var(--background-color), transparent 5%) 100%);
+  padding: 140px 0 60px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+  .hero {
+    padding: 100px 0 60px;
+  }
+}
+
+.hero .hero-content {
+  width: 100%;
+}
+
+.hero .hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.hero .hero-badge i {
+  font-size: 12px;
+}
+
+.hero .hero-text h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .hero .hero-text h1 {
+    font-size: 2.5rem;
+  }
+}
+
+.hero .hero-text p {
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+  line-height: 1.7;
+}
+
+.hero .search-form {
+  background: var(--surface-color);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--default-color), transparent 90%);
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.hero .search-form .form-floating .form-control,
+.hero .search-form .form-floating .form-select {
+  color: var(--default-color);
+  background-color: transparent;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 85%);
+  border-radius: 8px;
+  font-size: 14px;
+  height: 56px;
+}
+
+.hero .search-form .form-floating .form-control:focus,
+.hero .search-form .form-floating .form-select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--accent-color), transparent 75%);
+}
+
+.hero .search-form .form-floating .form-control::placeholder,
+.hero .search-form .form-floating .form-select::placeholder {
+  color: color-mix(in srgb, var(--default-color), transparent 70%);
+}
+
+.hero .search-form .form-floating label {
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  font-size: 14px;
+}
+
+.hero .search-form .btn-search {
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  border: none;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hero .search-form .btn-search:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 10%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--accent-color), transparent 70%);
+}
+
+.hero .search-form .btn-search i {
+  font-size: 16px;
+}
+
+.hero .hero-stats .stat-item {
+  text-align: center;
+  padding: 16px;
+}
+
+.hero .hero-stats .stat-item h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--accent-color);
+}
+
+.hero .hero-stats .stat-item p {
+  font-size: 14px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  margin: 0;
+  font-weight: 500;
+}
+
+.hero .hero-images {
+  position: relative;
+}
+
+.hero .hero-images .image-stack {
+  position: relative;
+  height: 600px;
+}
+
+.hero .hero-images .image-stack .main-image {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px color-mix(in srgb, var(--default-color), transparent 80%);
+}
+
+.hero .hero-images .image-stack .main-image img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+.hero .hero-images .image-stack .main-image .property-tag {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--surface-color);
+  padding: 12px 16px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.hero .hero-images .image-stack .main-image .property-tag .price {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: 4px;
+}
+
+.hero .hero-images .image-stack .main-image .property-tag .type {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.hero .hero-images .image-stack .secondary-image {
+  position: absolute;
+  top: -40px;
+  left: 40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 30px color-mix(in srgb, var(--default-color), transparent 85%);
+  border: 4px solid var(--surface-color);
+}
+
+.hero .hero-images .image-stack .secondary-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero .hero-images .image-stack .floating-card {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  background: var(--surface-color);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px color-mix(in srgb, var(--default-color), transparent 85%);
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  width: 280px;
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-color);
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-details {
+  flex: 1;
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-details h5 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-details p {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-details .rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-details .rating i {
+  color: #ffc107;
+  font-size: 10px;
+}
+
+.hero .hero-images .image-stack .floating-card .agent-info .agent-details .rating span {
+  margin-left: 6px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+@media (max-width: 992px) {
+  .hero .hero-images {
+    margin-top: 60px;
+  }
+
+  .hero .hero-images .image-stack {
+    height: 400px;
+  }
+
+  .hero .hero-images .image-stack .main-image img {
+    height: 350px;
+  }
+
+  .hero .hero-images .image-stack .secondary-image {
+    top: -20px;
+    left: -40px;
+    width: 150px;
+    height: 150px;
+  }
+
+  .hero .hero-images .image-stack .floating-card {
+    bottom: 20px;
+    left: -20px;
+    width: 250px;
+    padding: 16px;
+  }
+
+  .hero .search-form {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero .search-form {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  .hero .hero-stats .stat-item {
+    padding: 12px 8px;
+  }
+
+  .hero .hero-stats .stat-item h3 {
+    font-size: 1.5rem;
+  }
+
+  .hero .hero-stats .stat-item p {
+    font-size: 13px;
+  }
+
+  .hero .hero-images .image-stack {
+    height: 300px;
+  }
+
+  .hero .hero-images .image-stack .main-image img {
+    height: 250px;
+  }
+
+  .hero .hero-images .image-stack .main-image .property-tag {
+    top: 12px;
+    right: 12px;
+    padding: 8px 12px;
+  }
+
+  .hero .hero-images .image-stack .main-image .property-tag .price {
+    font-size: 16px;
+  }
+
+  .hero .hero-images .image-stack .secondary-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .hero .hero-images .image-stack .floating-card {
+    bottom: 10px;
+    left: 10px;
+    width: 220px;
+    padding: 12px;
+  }
+
+  .hero .hero-images .image-stack .floating-card .agent-details h5 {
+    font-size: 14px;
+  }
+
+  .hero .hero-images .image-stack .floating-card .agent-details p {
+    font-size: 11px;
+  }
+}

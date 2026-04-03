@@ -4,11 +4,15 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PropertyService } from '../../services/property';
 import { AuthService } from '../../services/auth';
+import { HeroComponent } from '../../components/hero/hero';
+import { HeaderComponent } from '../../components/header/header';
+
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,HeroComponent,HeaderComponent],
   templateUrl: './home.html'
 })
 export class HomeComponent implements OnInit {

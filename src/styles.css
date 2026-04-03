@@ -1,1 +1,44 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --default-font: "Roboto", system-ui, sans-serif;
+  --heading-font: "Raleway", sans-serif;
+  --nav-font: "Montserrat", sans-serif;
+  --background-color: #ffffff;
+  --default-color: #323b3b;
+  --heading-color: #163535;
+  --accent-color: #2c7a7b;
+  --surface-color: #ffffff;
+  --contrast-color: #ffffff;
+  --nav-color: #323b3b;
+  --nav-hover-color: #2c7a7b;
+  --nav-mobile-background-color: #ffffff;
+  --nav-dropdown-background-color: #ffffff;
+  --nav-dropdown-color: #323b3b;
+  --nav-dropdown-hover-color: #2c7a7b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--default-font);
+  color: var(--default-color);
+  background-color: var(--background-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font);
+  color: var(--heading-color);
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--nav-hover-color);
+}

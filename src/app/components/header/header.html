@@ -1,0 +1,34 @@
+<header id="header" class="header d-flex align-items-center fixed-top">
+  <div class="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+    <a routerLink="/home" class="logo d-flex align-items-center me-auto me-xl-0">
+      <h1 class="sitename">TheProperty</h1>
+    </a>
+
+    <nav id="navmenu" class="navmenu">
+      <ul>
+        <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
+        <li><a routerLink="/properties" routerLinkActive="active">Properties</a></li>
+
+        <ng-container *ngIf="isLoggedIn">
+          <li *ngIf="role === 'Customer'">
+            <a routerLink="/my-bookings" routerLinkActive="active">حجوزاتي</a>
+          </li>
+          <li *ngIf="role === 'Owner'">
+            <a routerLink="/owner" routerLinkActive="active">لوحتي</a>
+          </li>
+          <li *ngIf="role === 'Admin'">
+            <a routerLink="/admin" routerLinkActive="active">الأدمن</a>
+          </li>
+          <li><a href="#" (click)="logout()">خروج</a></li>
+        </ng-container>
+
+      </ul>
+    </nav>
+
+    <a *ngIf="!isLoggedIn" class="btn-getstarted" routerLink="/login">
+      Get Started
+    </a>
+
+  </div>
+</header>

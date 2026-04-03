@@ -1,0 +1,111 @@
+<app-header></app-header>
+
+<div class="properties-page">
+  <div class="container">
+
+    <!-- فلترة -->
+    <div class="filter-bar">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label>النوع</label>
+          <select class="form-select" [(ngModel)]="filters.type">
+            <option value="">الكل</option>
+            <option value="Farm">مزرعة</option>
+            <option value="Apartment">شقة</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label>الموقع</label>
+          <input type="text" class="form-control"
+            placeholder="الموقع..." [(ngModel)]="filters.location">
+        </div>
+        <div class="col-md-2">
+          <label>أقل سعر</label>
+          <input type="number" class="form-control"
+            placeholder="0" [(ngModel)]="filters.minPrice">
+        </div>
+        <div class="col-md-2">
+          <label>أعلى سعر</label>
+          <input type="number" class="form-control"
+            placeholder="0" [(ngModel)]="filters.maxPrice">
+        </div>
+        <div class="col-md-2">
+          <button class="btn-search w-100" (click)="search()">
+            <i class="bi bi-search"></i> بحث
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- تحميل -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-accent" role="status"></div>
+    </div>
+
+    <!-- خطأ -->
+    <div *ngIf="!loading && properties.length === 0" class="no-results">
+      <i class="bi bi-house-x"></i>
+      <h4>{{ error }}</h4>
+      <p>Try adjusting your search filters</p>
+    </div>
+
+    <!-- العقارات -->
+        <div class="row g-4" *ngIf="!loading && properties.length > 0">
+          <div class="col-lg-4 col-md-6" *ngFor="let p of properties">
+        <div class="property-card">
+          <div class="property-img">
+            <img [src]="p.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400'"
+              [alt]="p.title">
+            <div class="property-type">
+              {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
+            </div>
+          </div>
+          <div class="property-body">
+            <h5>{{ p.title }}</h5>
+            <p class="location">
+              <i class="bi bi-geo-alt"></i> {{ p.location }}
+            </p>
+            <div class="property-meta">
+              <span><i class="bi bi-people"></i> {{ p.maxGuests }} ضيوف</span>
+              <span class="rating">
+                <i class="bi bi-star-fill"></i>
+                {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
+              </span>
+            </div>
+            <div class="property-footer">
+              <div class="price">
+                <span class="amount">{{ p.pricePerNight }}</span>
+                <span class="period"> ريال / ليلة</span>
+              </div>
+              <button class="btn-details" (click)="goToDetails(p.id)">
+                التفاصيل
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pagination -->
+    <div class="pagination-wrap" *ngIf="totalPages > 1">
+    <button class="page-btn"
+        [disabled]="currentPage === 1"
+        (click)="goToPage(currentPage - 1)">
+        <i class="bi bi-chevron-right"></i>
+    </button>
+
+    <button class="page-btn"
+        *ngFor="let p of [].constructor(totalPages); let i = index"
+        [class.active]="currentPage === i + 1"
+        (click)="goToPage(i + 1)">
+        {{ i + 1 }}
+    </button>
+
+    <button class="page-btn"
+        [disabled]="currentPage === totalPages"
+        (click)="goToPage(currentPage + 1)">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+    </div>
+
+  </div>
+</div>

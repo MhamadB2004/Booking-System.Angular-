@@ -6,15 +6,17 @@ export class PropertyService {
 private url = 'https://localhost:7167/api';
   constructor(private http: HttpClient) {}
 
-  getAll(filters?: any) {
-    let params = new HttpParams();
-    if (filters?.type) params = params.set('type', filters.type);
-    if (filters?.minPrice) params = params.set('minPrice', filters.minPrice);
-    if (filters?.maxPrice) params = params.set('maxPrice', filters.maxPrice);
-    if (filters?.location) params = params.set('location', filters.location);
-    if (filters?.guests) params = params.set('guests', filters.guests);
-    return this.http.get<any[]>(`${this.url}/properties`, { params });
-  }
+getAll(filters?: any, page: number = 1, pageSize: number = 9) {
+  let params = new HttpParams();
+  if (filters?.type) params = params.set('type', filters.type);
+  if (filters?.minPrice) params = params.set('minPrice', filters.minPrice);
+  if (filters?.maxPrice) params = params.set('maxPrice', filters.maxPrice);
+  if (filters?.location) params = params.set('location', filters.location);
+  if (filters?.guests) params = params.set('guests', filters.guests);
+  params = params.set('page', page.toString());
+  params = params.set('pageSize', pageSize.toString());
+  return this.http.get<any>(`${this.url}/properties`, { params });
+}
 
   getById(id: number) {
     return this.http.get<any>(`${this.url}/properties/${id}`);

@@ -1,0 +1,123 @@
+<section id="hero" class="hero section">
+  <div class="container">
+    <div class="hero-content">
+      <div class="row align-items-center">
+
+        <div class="col-lg-6 hero-text">
+          <div class="hero-badge">
+            <i class="bi bi-star-fill"></i>
+            <span>Premium Properties</span>
+          </div>
+          <h1>Discover Your Perfect Home in the Heart of the City</h1>
+          <p>Browse thousands of verified listings from trusted agents. Find your dream property today.</p>
+
+          <div class="search-form">
+            <div class="row g-3">
+              <div class="col-12">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="location"
+                    [(ngModel)]="filters.location" placeholder="Location">
+                  <label for="location">Location</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-floating">
+                  <select class="form-select" id="property-type"
+                    [(ngModel)]="filters.type">
+                    <option value="">Select Type</option>
+                    <option value="Farm">مزرعة</option>
+                    <option value="Apartment">شقة</option>
+                  </select>
+                  <label for="property-type">Property Type</label>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-floating">
+                  <input type="number" class="form-control" id="minPrice"
+                    [(ngModel)]="filters.minPrice" placeholder="0">
+                  <label for="minPrice">Min Price</label>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-floating">
+                  <input type="number" class="form-control" id="maxPrice"
+                    [(ngModel)]="filters.maxPrice" placeholder="0">
+                  <label for="maxPrice">Max Price</label>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <button class="btn btn-search w-100" (click)="search()">
+                  <i class="bi bi-search"></i>
+                  Search Properties
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="row">
+              <div class="col-4">
+                <div class="stat-item">
+                  <h3>500+</h3>
+                  <p>Properties Listed</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-item">
+                  <h3>50+</h3>
+                  <p>Verified Owners</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="stat-item">
+                  <h3>98%</h3>
+                  <p>Client Satisfaction</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 hero-images">
+          <div class="image-stack">
+            <div class="main-image">
+              <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800" 
+                alt="Luxury Property" class="img-fluid">
+              <div class="property-tag">
+                <span class="price">450 ريال</span>
+                <span class="type">Featured</span>
+              </div>
+            </div>
+            <div class="secondary-image">
+              <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400" 
+                alt="Property Interior" class="img-fluid">
+            </div>
+            <div class="floating-card">
+              <div class="agent-info">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100" 
+                  alt="Agent" class="agent-avatar">
+                <div class="agent-details">
+                  <h5>TheProperty</h5>
+                  <p>Top Real Estate Platform</p>
+                  <div class="rating">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <span>4.9 (127 reviews)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
