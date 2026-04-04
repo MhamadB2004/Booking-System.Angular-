@@ -40,6 +40,9 @@ getAll(filters?: any, page: number = 1, pageSize: number = 9) {
     });
   }
 
+  getPublicStats() {
+  return this.http.get<any>(`${this.url}/admin/public-stats`);
+}
   private getHeaders() {
     const token = localStorage.getItem('token');
     return new HttpHeaders({ Authorization: `Bearer ${token}` });

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { PropertyService } from '../../services/property';
 
 @Component({
   selector: 'app-hero',
@@ -10,7 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './hero.html',
   styleUrl: './hero.css'
 })
-export class HeroComponent {
+export class HeroComponent implements OnInit {
   filters = {
     location: '',
     type: '',
@@ -18,16 +19,31 @@ export class HeroComponent {
     maxPrice: ''
   };
 
-  constructor(private router: Router) {}
+  stats = {
+    totalProperties: 0,
+    totalOwners: 0,
+    satisfaction: 0
+  };
 
-search() {
-  this.router.navigate(['/properties'], {
-    queryParams: {
-      type: this.filters.type,
-      location: this.filters.location,
-      minPrice: this.filters.minPrice,
-      maxPrice: this.filters.maxPrice
-    }
-  });
-}
+  constructor(
+    private router: Router,
+    private propertyService: PropertyService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.propertyService.getPublicStats().subscribe({
+      next: (res) => {
+        this.stats = res;
+        this.cdr.detectChanges();
+      },
+      error: () => {}
+    });
+  }
+
+  search() {
+    this.router.navigate(['/properties'], {
+      queryParams: this.filters
+    });
+  }
 }
