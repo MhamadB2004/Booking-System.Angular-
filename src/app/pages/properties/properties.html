@@ -50,41 +50,49 @@
     </div>
 
     <!-- العقارات -->
-        <div class="row g-4" *ngIf="!loading && properties.length > 0">
-          <div class="col-lg-4 col-md-6" *ngFor="let p of properties">
-        <div class="property-card">
-          <div class="property-img">
-            <img [src]="p.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400'"
-              [alt]="p.title">
-            <div class="property-type">
+        <!-- العقارات -->
+<div class="featured-properties">
+  <div class="row gy-4 mt-4" *ngIf="!loading && properties.length > 0">
+    <div class="col-lg-4" *ngFor="let p of properties">
+      <article class="stack-card">
+        <figure class="stack-media">
+          <img [src]="p.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400'"
+            [alt]="p.title" class="img-fluid" loading="lazy">
+          <figcaption>
+            <span class="chip" [ngClass]="p.type === 'Farm' ? 'exclusive' : 'new'">
               {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
-            </div>
+            </span>
+          </figcaption>
+        </figure>
+        <div class="stack-body">
+          <h5>
+            <a (click)="goToDetails(p.id)" style="cursor:pointer">
+              {{ p.title }}
+            </a>
+          </h5>
+          <div class="stack-loc">
+            <i class="bi bi-geo-alt"></i> {{ p.location }}
           </div>
-          <div class="property-body">
-            <h5>{{ p.title }}</h5>
-            <p class="location">
-              <i class="bi bi-geo-alt"></i> {{ p.location }}
-            </p>
-            <div class="property-meta">
-              <span><i class="bi bi-people"></i> {{ p.maxGuests }} ضيوف</span>
-              <span class="rating">
-                <i class="bi bi-star-fill"></i>
-                {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
-              </span>
-            </div>
-            <div class="property-footer">
-              <div class="price">
-                <span class="amount">{{ p.pricePerNight }}</span>
-                <span class="period"> ريال / ليلة</span>
-              </div>
-              <button class="btn-details" (click)="goToDetails(p.id)">
-                التفاصيل
-              </button>
-            </div>
+          <ul class="stack-specs">
+            <li>
+              <i class="bi bi-people"></i> {{ p.maxGuests }} ضيوف
+            </li>
+            <li>
+              <i class="bi bi-star-fill"></i>
+              {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
+            </li>
+          </ul>
+          <div class="stack-foot">
+            <span class="stack-price">{{ p.pricePerNight }} ريال</span>
+            <a (click)="goToDetails(p.id)" class="stack-link" style="cursor:pointer">
+              التفاصيل
+            </a>
           </div>
         </div>
-      </div>
+      </article>
     </div>
+  </div>
+</div>
     <!-- Pagination -->
     <div class="pagination-wrap" *ngIf="totalPages > 1">
     <button class="page-btn"
