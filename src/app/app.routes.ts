@@ -5,16 +5,20 @@ import { authGuard } from './guards/auth-guard';
 import { RegisterComponent } from './pages/register/register';
 import { PropertiesComponent } from './pages/properties/properties';
 import { PropertyDetailsComponent } from './pages/property-details/property-details';
+import { MyBookingsComponent } from './pages/my-bookings/my-bookings';
+import { AdminComponent } from './pages/admin/admin';
 
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
-  { path: 'admin', component: LoginComponent, canActivate: [authGuard] },
+  // { path: 'admin', component: LoginComponent, canActivate: [authGuard] },
   { path: 'owner', component: LoginComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'properties', component: PropertiesComponent, canActivate: [authGuard] },
   { path: 'property/:id', component: PropertyDetailsComponent, canActivate: [authGuard] },
+  { path: 'my-bookings', component: MyBookingsComponent, canActivate: [authGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
 
 ];

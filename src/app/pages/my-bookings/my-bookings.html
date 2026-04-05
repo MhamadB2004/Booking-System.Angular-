@@ -1,0 +1,103 @@
+<app-header></app-header>
+
+<div class="bookings-page">
+  <div class="container">
+
+    <div class="page-header">
+      <h2>حجوزاتي</h2>
+      <p>تابع حجوزاتك وادفع بسهولة</p>
+    </div>
+
+    <!-- تحميل -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+
+    <!-- لا توجد حجوزات -->
+    <div *ngIf="!loading && bookings.length === 0" class="empty-state">
+      <i class="bi bi-calendar-x"></i>
+      <h4>لا توجد حجوزات بعد</h4>
+      <p>ابدأ بالبحث عن عقار يناسبك</p>
+      <a routerLink="/properties" class="btn-browse">تصفح العقارات</a>
+    </div>
+
+    <!-- قائمة الحجوزات -->
+    <div class="bookings-list" *ngIf="!loading && bookings.length > 0">
+      <div class="booking-card" *ngFor="let b of bookings">
+
+        <div class="booking-header">
+          <div class="property-info">
+            <h5>{{ b.propertyTitle }}</h5>
+            <p>
+              <i class="bi bi-geo-alt"></i>
+              {{ b.propertyLocation }}
+            </p>
+          </div>
+          <span class="status-badge" [ngClass]="getStatusClass(b.status)">
+            {{ getStatusLabel(b.status) }}
+          </span>
+        </div>
+
+        <div class="booking-details">
+          <div class="detail-item">
+            <i class="bi bi-calendar-check"></i>
+            <div>
+              <small>تاريخ الوصول</small>
+              <span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="bi bi-calendar-x"></i>
+            <div>
+              <small>تاريخ المغادرة</small>
+              <span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="bi bi-moon"></i>
+            <div>
+              <small>عدد الليالي</small>
+              <span>{{ b.nights }} ليالي</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="bi bi-people"></i>
+            <div>
+              <small>عدد الضيوف</small>
+              <span>{{ b.guestsCount }} ضيوف</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="booking-footer">
+          <div class="total-price">
+            <small>الإجمالي</small>
+            <strong>{{ b.totalPrice }} ريال</strong>
+          </div>
+
+          <div class="booking-actions">
+            <!-- زر الدفع — بس لما الحجز مؤكد -->
+            <button class="btn-pay"
+              *ngIf="b.status === 'Confirmed'"
+              (click)="pay(b.id)"
+              [disabled]="payingId === b.id">
+              <i class="bi bi-credit-card"></i>
+              {{ payingId === b.id ? 'جاري الدفع...' : 'ادفع الآن' }}
+            </button>
+
+            <!-- زر الإلغاء — بس لما الحجز معلق أو مؤكد -->
+            <button class="btn-cancel"
+              *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
+              (click)="cancel(b.id)"
+              [disabled]="cancellingId === b.id">
+              <i class="bi bi-x-circle"></i>
+              {{ cancellingId === b.id ? 'جاري الإلغاء...' : 'إلغاء' }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

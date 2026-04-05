@@ -1,0 +1,243 @@
+<app-header></app-header>
+
+<div class="admin-page">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <div class="col-md-2 admin-sidebar">
+        <div class="sidebar-logo">
+          <i class="bi bi-shield-check"></i>
+          <span>لوحة الأدمن</span>
+        </div>
+        <nav class="sidebar-nav">
+          <button [class.active]="activeTab === 'stats'" (click)="setTab('stats')">
+            <i class="bi bi-bar-chart"></i> الإحصائيات
+          </button>
+          <button [class.active]="activeTab === 'users'" (click)="setTab('users')">
+            <i class="bi bi-people"></i> المستخدمون
+          </button>
+          <button [class.active]="activeTab === 'properties'" (click)="setTab('properties')">
+            <i class="bi bi-house"></i> العقارات
+          </button>
+          <button [class.active]="activeTab === 'pending'" (click)="setTab('pending')">
+            <i class="bi bi-clock"></i> تنتظر موافقة
+          </button>
+          <button [class.active]="activeTab === 'bookings'" (click)="setTab('bookings')">
+            <i class="bi bi-calendar"></i> الحجوزات
+          </button>
+        </nav>
+      </div>
+
+      <!-- المحتوى -->
+      <div class="col-md-10 admin-content">
+
+        <!-- تحميل -->
+        <div *ngIf="loading" class="text-center py-5">
+          <div class="spinner-border" role="status"></div>
+        </div>
+
+        <!-- الإحصائيات -->
+        <div *ngIf="activeTab === 'stats' && !loading && stats">
+          <h4 class="section-title">الإحصائيات العامة</h4>
+          <div class="stats-grid">
+            <div class="stat-card blue">
+              <i class="bi bi-people"></i>
+              <div>
+                <h3>{{ stats.users.totalCustomers }}</h3>
+                <p>زبائن</p>
+              </div>
+            </div>
+            <div class="stat-card green">
+              <i class="bi bi-person-badge"></i>
+              <div>
+                <h3>{{ stats.users.totalOwners }}</h3>
+                <p>ملاك</p>
+              </div>
+            </div>
+            <div class="stat-card amber">
+              <i class="bi bi-house"></i>
+              <div>
+                <h3>{{ stats.properties.approved }}</h3>
+                <p>عقارات معتمدة</p>
+              </div>
+            </div>
+            <div class="stat-card red">
+              <i class="bi bi-clock"></i>
+              <div>
+                <h3>{{ stats.properties.pendingApproval }}</h3>
+                <p>تنتظر موافقة</p>
+              </div>
+            </div>
+            <div class="stat-card teal">
+              <i class="bi bi-calendar-check"></i>
+              <div>
+                <h3>{{ stats.bookings.total }}</h3>
+                <p>إجمالي الحجوزات</p>
+              </div>
+            </div>
+            <div class="stat-card purple">
+              <i class="bi bi-cash-stack"></i>
+              <div>
+                <h3>{{ stats.revenue.total }}</h3>
+                <p>إجمالي الإيرادات</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- المستخدمون -->
+        <div *ngIf="activeTab === 'users' && !loading">
+          <h4 class="section-title">إدارة المستخدمين</h4>
+          <div class="admin-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>الاسم</th>
+                  <th>الإيميل</th>
+                  <th>الهاتف</th>
+                  <th>الدور</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let u of users">
+                  <td>{{ u.id }}</td>
+                  <td>{{ u.fullName }}</td>
+                  <td>{{ u.email }}</td>
+                  <td>{{ u.phone }}</td>
+                  <td>
+                    <span class="role-badge" [ngClass]="'role-' + u.role.toLowerCase()">
+                      {{ getRoleLabel(u.role) }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="approved-badge" [ngClass]="u.isApproved ? 'approved' : 'pending'">
+                      {{ u.isApproved ? 'مفعّل' : 'معلق' }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-btns">
+                      <button class="btn-approve"
+                        *ngIf="u.role === 'Owner' && !u.isApproved"
+                        (click)="approveOwner(u.id)">
+                        <i class="bi bi-check"></i> موافقة
+                      </button>
+                      <button class="btn-delete"
+                        *ngIf="u.role !== 'Admin'"
+                        (click)="deleteUser(u.id)">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- العقارات -->
+        <div *ngIf="activeTab === 'properties' && !loading">
+          <h4 class="section-title">إدارة العقارات</h4>
+          <div class="admin-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>العنوان</th>
+                  <th>النوع</th>
+                  <th>السعر/ليلة</th>
+                  <th>الموقع</th>
+                  <th>المالك</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of properties">
+                  <td>{{ p.id }}</td>
+                  <td>{{ p.title }}</td>
+                  <td>{{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}</td>
+                  <td>{{ p.pricePerNight }} ريال</td>
+                  <td>{{ p.location }}</td>
+                  <td>{{ p.ownerName }}</td>
+                  <td>
+                    <button class="btn-delete" (click)="deleteProperty(p.id)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- تنتظر موافقة -->
+        <div *ngIf="activeTab === 'pending' && !loading">
+          <h4 class="section-title">عقارات تنتظر الموافقة</h4>
+
+          <div *ngIf="pendingProperties.length === 0" class="empty-state">
+            <i class="bi bi-check-circle"></i>
+            <p>لا توجد عقارات تنتظر الموافقة</p>
+          </div>
+
+          <div class="pending-grid" *ngIf="pendingProperties.length > 0">
+            <div class="pending-card" *ngFor="let p of pendingProperties">
+              <div class="pending-icon">
+                <i class="bi" [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
+              </div>
+              <div class="pending-info">
+                <h5>{{ p.title }}</h5>
+                <p><i class="bi bi-geo-alt"></i> {{ p.location }}</p>
+                <p><i class="bi bi-person"></i> {{ p.ownerName }}</p>
+                <p><i class="bi bi-cash"></i> {{ p.pricePerNight }} ريال / ليلة</p>
+              </div>
+              <button class="btn-approve-lg" (click)="approveProperty(p.id)">
+                <i class="bi bi-check-circle"></i> موافقة
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- الحجوزات -->
+        <div *ngIf="activeTab === 'bookings' && !loading">
+          <h4 class="section-title">إدارة الحجوزات</h4>
+          <div class="admin-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>الزبون</th>
+                  <th>العقار</th>
+                  <th>الوصول</th>
+                  <th>المغادرة</th>
+                  <th>الليالي</th>
+                  <th>الإجمالي</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let b of bookings">
+                  <td>{{ b.id }}</td>
+                  <td>{{ b.customerName }}</td>
+                  <td>{{ b.propertyTitle }}</td>
+                  <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
+                  <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
+                  <td>{{ b.nights }}</td>
+                  <td>{{ b.totalPrice }} ريال</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="getStatusClass(b.status)">
+                      {{ getStatusLabel(b.status) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
