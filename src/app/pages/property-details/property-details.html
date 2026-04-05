@@ -1,0 +1,156 @@
+<app-header></app-header>
+
+<div class="details-page">
+  <div class="container">
+
+    <!-- تحميل -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+
+    <!-- خطأ -->
+    <div *ngIf="error" class="alert alert-danger mt-5">{{ error }}</div>
+
+    <!-- المحتوى -->
+    <div *ngIf="!loading && property">
+
+      <!-- صورة رئيسية -->
+      <div class="property-hero">
+        <img [src]="property.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200'"
+          [alt]="property.title" class="hero-img">
+        <div class="hero-overlay">
+          <div class="hero-info">
+            <span class="type-badge">
+              {{ property.type === 'Farm' ? 'مزرعة' : 'شقة' }}
+            </span>
+            <h1>{{ property.title }}</h1>
+            <p><i class="bi bi-geo-alt"></i> {{ property.location }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mt-2">
+
+        <!-- تفاصيل العقار -->
+        <div class="col-lg-8">
+
+          <!-- معلومات سريعة -->
+          <div class="info-cards">
+            <div class="info-card">
+              <i class="bi bi-people"></i>
+              <span>{{ property.maxGuests }} ضيوف</span>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-star-fill"></i>
+              <span>{{ property.averageRating > 0 ? property.averageRating : 'جديد' }}</span>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-person"></i>
+              <span>{{ property.ownerName }}</span>
+            </div>
+            <div class="info-card">
+              <i class="bi bi-cash"></i>
+              <span>{{ property.pricePerNight }} ريال / ليلة</span>
+            </div>
+          </div>
+
+          <!-- الوصف -->
+          <div class="section-card">
+            <h4>عن العقار</h4>
+            <p>{{ property.description }}</p>
+          </div>
+
+          <!-- التقييمات -->
+          <div class="section-card" *ngIf="property.reviews?.length > 0">
+            <h4>التقييمات</h4>
+            <div class="review-item" *ngFor="let r of property.reviews">
+              <div class="review-header">
+                <div class="reviewer">
+                  <div class="avatar">{{ r.userName?.charAt(0) }}</div>
+                  <div>
+                    <strong>{{ r.userName }}</strong>
+                    <div class="stars">
+                      <i class="bi bi-star-fill" *ngFor="let s of [].constructor(r.rating)"></i>
+                    </div>
+                  </div>
+                </div>
+                <span class="review-date">
+                  {{ r.createdAt | date:'yyyy/MM/dd' }}
+                </span>
+              </div>
+              <p class="review-comment">{{ r.comment }}</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- نموذج الحجز -->
+        <div class="col-lg-4">
+          <div class="booking-card">
+            <div class="booking-price">
+              <span class="amount">{{ property.pricePerNight }}</span>
+              <span class="period"> ريال / ليلة</span>
+            </div>
+
+            <div *ngIf="bookingSuccess" class="alert-success">
+              <i class="bi bi-check-circle"></i> {{ bookingSuccess }}
+            </div>
+
+            <div *ngIf="bookingError" class="alert-error">
+              <i class="bi bi-exclamation-circle"></i> {{ bookingError }}
+            </div>
+
+            <div class="booking-form">
+              <div class="date-group">
+                <div class="date-field">
+                  <label>تاريخ الوصول</label>
+                  <input type="date" class="form-control"
+                    [(ngModel)]="booking.checkIn"
+                    [min]="today">
+                </div>
+                <div class="date-field">
+                  <label>تاريخ المغادرة</label>
+                  <input type="date" class="form-control"
+                    [(ngModel)]="booking.checkOut"
+                    [min]="booking.checkIn || today">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label>عدد الضيوف</label>
+                <input type="number" class="form-control"
+                  [(ngModel)]="booking.guestsCount"
+                  [min]="1" [max]="property.maxGuests">
+              </div>
+
+              <div class="mb-3">
+                <label>ملاحظات</label>
+                <textarea class="form-control" rows="2"
+                  [(ngModel)]="booking.notes"
+                  placeholder="أي طلبات خاصة..."></textarea>
+              </div>
+
+              <!-- ملخص السعر -->
+              <div class="price-summary" *ngIf="nights > 0">
+                <div class="summary-row">
+                  <span>{{ property.pricePerNight }} × {{ nights }} ليالي</span>
+                  <span>{{ totalPrice }} ريال</span>
+                </div>
+                <div class="summary-total">
+                  <span>الإجمالي</span>
+                  <span>{{ totalPrice }} ريال</span>
+                </div>
+              </div>
+
+              <button class="btn-book w-100" (click)="book()">
+                <i class="bi bi-calendar-check"></i>
+                {{ isLoggedIn ? 'احجز الآن' : 'سجل دخول للحجز' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
