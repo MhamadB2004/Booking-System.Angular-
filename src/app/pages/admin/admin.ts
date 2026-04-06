@@ -25,6 +25,20 @@ export class AdminComponent implements OnInit {
 
   loading = false;
 
+
+  owners: any[] = [];
+  selectedUser: any = null;
+  selectedProperty: any = null;
+  showUserModal = false;
+  showPropertyModal = false;
+
+  // فلاتر
+  userFilter = '';
+  ownerFilter = '';
+  propertyFilter = '';
+  propertyTypeFilter = '';
+
+
   constructor(
     private auth: AuthService,
     private router: Router,
@@ -45,15 +59,16 @@ export class AdminComponent implements OnInit {
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
-  setTab(tab: string) {
-    this.activeTab = tab;
-    if (tab === 'stats') this.loadStats();
-    else if (tab === 'users') this.loadUsers();
-    else if (tab === 'properties') this.loadProperties();
-    else if (tab === 'pending') this.loadPending();
-    else if (tab === 'bookings') this.loadBookings();
-  }
-
+setTab(tab: string) {
+  this.activeTab = tab;
+  this.closeModals();
+  if (tab === 'stats') this.loadStats();
+  else if (tab === 'users') this.loadUsers();
+  else if (tab === 'owners') this.loadOwners();
+  else if (tab === 'properties') this.loadProperties();
+  else if (tab === 'pending') this.loadPending();
+  else if (tab === 'bookings') this.loadBookings();
+}
   loadStats() {
     this.loading = true;
     this.http.get<any>(`${this.url}/admin/stats`, {
@@ -82,19 +97,19 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  loadProperties() {
-    this.loading = true;
-    this.http.get<any>(`${this.url}/properties`, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: (res) => {
-        this.properties = res.data || [];
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: () => { this.loading = false; }
-    });
-  }
+loadProperties() {
+  this.loading = true;
+  this.http.get<any>(`${this.url}/properties?pageSize=100`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.properties = res.data || [];
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => { this.loading = false; }
+  });
+}
 
   loadPending() {
     this.loading = true;
@@ -128,29 +143,36 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  approveOwner(userId: number) {
-    this.http.patch(`${this.url}/auth/approve-owner/${userId}`, {}, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: () => {
-        const user = this.users.find(u => u.id === userId);
-        if (user) user.isApproved = true;
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  approveProperty(propertyId: number) {
-    this.http.patch(`${this.url}/properties/${propertyId}/approve`, {}, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: () => {
-        this.pendingProperties = this.pendingProperties
-          .filter(p => p.id !== propertyId);
-        this.cdr.detectChanges();
-      }
-    });
-  }
+approveOwner(userId: number) {
+  this.http.patch(`${this.url}/auth/approve-owner/${userId}`, {}, {
+    headers: this.getHeaders(),
+    responseType: 'text' as 'json'
+  }).subscribe({
+    next: () => {
+      const user = this.users.find(u => u.id === userId);
+      if (user) user.isApproved = true;
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      alert('حدث خطأ أثناء الموافقة');
+    }
+  });
+}
+approveProperty(propertyId: number) {
+  this.http.patch(`${this.url}/properties/${propertyId}/approve`, {}, {
+    headers: this.getHeaders(),
+    responseType: 'text' as 'json'
+  }).subscribe({
+    next: () => {
+      this.pendingProperties = this.pendingProperties
+        .filter(p => p.id !== propertyId);
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      alert('حدث خطأ أثناء الموافقة');
+    }
+  });
+}
 
   deleteUser(userId: number) {
     if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) return;
@@ -201,4 +223,61 @@ export class AdminComponent implements OnInit {
       default: return '';
     }
   }
+
+  loadOwners() {
+  this.loading = true;
+  this.http.get<any[]>(`${this.url}/admin/users?role=Owner`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.owners = res;
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => { this.loading = false; }
+  });
+}
+
+showUserDetails(user: any) {
+  this.selectedUser = user;
+  this.showUserModal = true;
+  this.cdr.detectChanges();
+}
+
+showPropertyDetails(property: any) {
+  this.selectedProperty = property;
+  this.showPropertyModal = true;
+  this.cdr.detectChanges();
+}
+
+closeModals() {
+  this.showUserModal = false;
+  this.showPropertyModal = false;
+  this.selectedUser = null;
+  this.selectedProperty = null;
+  this.cdr.detectChanges();
+}
+
+get filteredUsers() {
+  return this.users.filter(u =>
+    u.fullName?.toLowerCase().includes(this.userFilter.toLowerCase()) ||
+    u.email?.toLowerCase().includes(this.userFilter.toLowerCase())
+  );
+}
+
+get filteredOwners() {
+  return this.owners.filter(o =>
+    o.fullName?.toLowerCase().includes(this.ownerFilter.toLowerCase()) ||
+    o.email?.toLowerCase().includes(this.ownerFilter.toLowerCase())
+  );
+}
+
+get filteredProperties() {
+  return this.properties.filter(p => {
+    const matchText = p.title?.toLowerCase().includes(this.propertyFilter.toLowerCase()) ||
+      p.location?.toLowerCase().includes(this.propertyFilter.toLowerCase());
+    const matchType = !this.propertyTypeFilter || p.type === this.propertyTypeFilter;
+    return matchText && matchType;
+  });
+}
 }
