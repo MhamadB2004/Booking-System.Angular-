@@ -1,1 +1,501 @@
-<p>owner works!</p>
+<app-header></app-header>
+
+<div class="owner-page">
+  <div class="owner-layout">
+
+    <!-- Sidebar -->
+    <div class="owner-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-icon">
+          <i class="bi bi-house-heart"></i>
+        </div>
+        <div>
+          <h6>لوحة المالك</h6>
+          <small>Owner Panel</small>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button [class.active]="activeTab === 'properties'"
+          (click)="setTab('properties')">
+          <i class="bi bi-house"></i>
+          <span>عقاراتي</span>
+        </button>
+        <button [class.active]="activeTab === 'add-property'"
+          (click)="setTab('add-property')">
+          <i class="bi bi-plus-circle"></i>
+          <span>إضافة عقار</span>
+        </button>
+        <button [class.active]="activeTab === 'edit-property'"
+          (click)="setTab('edit-property')"
+          *ngIf="editProperty">
+          <i class="bi bi-pencil"></i>
+          <span>تعديل عقار</span>
+        </button>
+        <button [class.active]="activeTab === 'pending-bookings'"
+          (click)="setTab('pending-bookings')">
+          <i class="bi bi-clock-history"></i>
+          <span>طلبات الحجز</span>
+          <span class="pending-count" *ngIf="pendingBookings.length > 0">
+            {{ pendingBookings.length }}
+          </span>
+        </button>
+        <button [class.active]="activeTab === 'bookings'"
+          (click)="setTab('bookings')">
+          <i class="bi bi-calendar-check"></i>
+          <span>كل الحجوزات</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- المحتوى -->
+    <div class="owner-content">
+
+      <!-- تحميل -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner-border" role="status"></div>
+        <p>جاري التحميل...</p>
+      </div>
+
+      <!-- عقاراتي -->
+      <div *ngIf="activeTab === 'properties' && !loading">
+        <div class="content-header">
+          <h4>عقاراتي</h4>
+          <p>{{ properties.length }} عقار مسجل</p>
+        </div>
+
+        <div class="filter-bar mb-3">
+          <div class="row g-2">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input type="text" class="form-control"
+                  placeholder="ابحث باسم العقار أو الموقع..."
+                  [(ngModel)]="propertyFilter">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" [(ngModel)]="propertyTypeFilter">
+                <option value="">كل الأنواع</option>
+                <option value="farm">مزارع</option>
+                <option value="apartment">شقق</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredProperties.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-house-x"></i>
+          </div>
+          <h5>لا توجد عقارات بعد</h5>
+          <p>أضف عقارك الأول الآن!</p>
+          <button class="btn-add" (click)="setTab('add-property')">
+            <i class="bi bi-plus-circle"></i> إضافة عقار
+          </button>
+        </div>
+
+        <div class="properties-grid" *ngIf="filteredProperties.length > 0">
+          <div class="property-card" *ngFor="let p of filteredProperties">
+            <div class="property-card-header"
+              [ngClass]="p.type?.toLowerCase() === 'farm' ? 'farm' : 'apt'">
+              <i class="bi"
+                [ngClass]="p.type?.toLowerCase() === 'farm' ? 'bi-tree' : 'bi-building'"></i>
+              <div class="property-badges">
+                <span class="type-chip"
+                  [ngClass]="p.type?.toLowerCase() === 'farm' ? 'farm' : 'apt'">
+                  {{ p.type?.toLowerCase() === 'farm' ? 'مزرعة' : 'شقة' }}
+                </span>
+                <span class="approved-chip" [ngClass]="p.isApproved ? 'yes' : 'no'">
+                  {{ p.isApproved ? 'معتمد' : 'معلق' }}
+                </span>
+              </div>
+            </div>
+            <div class="property-card-body">
+              <h5>{{ p.title }}</h5>
+              <p class="location">
+                <i class="bi bi-geo-alt"></i> {{ p.location }}
+              </p>
+              <div class="property-stats">
+                <div class="stat">
+                  <i class="bi bi-cash"></i>
+                  <span>{{ p.pricePerNight }} ريال/ليلة</span>
+                </div>
+                <div class="stat">
+                  <i class="bi bi-people"></i>
+                  <span>{{ p.maxGuests }} ضيوف</span>
+                </div>
+                <div class="stat">
+                  <i class="bi bi-star-fill"></i>
+                  <span>{{ p.averageRating > 0 ? p.averageRating : 'جديد' }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="property-card-footer">
+              <button class="btn-edit" (click)="selectEdit(p)">
+                <i class="bi bi-pencil"></i> تعديل
+              </button>
+              <button class="btn-delete" (click)="deleteProperty(p.id)">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- إضافة عقار -->
+      <div *ngIf="activeTab === 'add-property' && !loading">
+        <div class="content-header">
+          <h4>إضافة عقار جديد</h4>
+          <p>سيتم إرسال العقار للأدمن للمراجعة</p>
+        </div>
+
+        <div class="owner-form">
+          <div *ngIf="addSuccess" class="form-alert success">
+            <i class="bi bi-check-circle-fill"></i> {{ addSuccess }}
+          </div>
+          <div *ngIf="addError" class="form-alert error">
+            <i class="bi bi-exclamation-circle-fill"></i> {{ addError }}
+          </div>
+
+          <div class="form-section">
+            <h6>المعلومات الأساسية</h6>
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label>اسم العقار <span class="required">*</span></label>
+                <input type="text" class="form-control"
+                  placeholder="مثال: مزرعة النخيل الخضراء"
+                  [(ngModel)]="newProperty.title">
+              </div>
+              <div class="col-md-4">
+                <label>نوع العقار <span class="required">*</span></label>
+                <select class="form-select" [(ngModel)]="newProperty.type">
+                  <option value="">اختر النوع</option>
+                  <option value="Farm">مزرعة</option>
+                  <option value="Apartment">شقة</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label>الوصف</label>
+                <textarea class="form-control" rows="3"
+                  placeholder="اكتب وصفاً تفصيلياً..."
+                  [(ngModel)]="newProperty.description"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h6>الموقع والسعر</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>الموقع <span class="required">*</span></label>
+                <input type="text" class="form-control"
+                  placeholder="مثال: الرياض - حي النرجس"
+                  [(ngModel)]="newProperty.location">
+              </div>
+              <div class="col-md-3">
+                <label>السعر / ليلة <span class="required">*</span></label>
+                <div class="input-group">
+                  <input type="number" class="form-control"
+                    placeholder="0" [(ngModel)]="newProperty.pricePerNight">
+                  <span class="input-group-text">ريال</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label>أقصى ضيوف <span class="required">*</span></label>
+                <input type="number" class="form-control"
+                  [min]="1" [(ngModel)]="newProperty.maxGuests">
+              </div>
+              <div class="col-md-6">
+                <label>خط العرض</label>
+                <input type="number" class="form-control"
+                  placeholder="24.7136" [(ngModel)]="newProperty.latitude">
+              </div>
+              <div class="col-md-6">
+                <label>خط الطول</label>
+                <input type="number" class="form-control"
+                  placeholder="46.6753" [(ngModel)]="newProperty.longitude">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-submit" (click)="addProperty()"
+              [disabled]="addLoading">
+              <i class="bi"
+                [ngClass]="addLoading ? 'bi-hourglass-split' : 'bi-plus-circle'"></i>
+              {{ addLoading ? 'جاري الإرسال...' : 'إرسال للمراجعة' }}
+            </button>
+            <button class="btn-reset" (click)="newProperty = {
+              title: '', description: '', type: '',
+              pricePerNight: null, location: '',
+              latitude: null, longitude: null, maxGuests: 1
+            }">
+              <i class="bi bi-arrow-counterclockwise"></i> إعادة تعيين
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- تعديل عقار -->
+      <div *ngIf="activeTab === 'edit-property' && !loading">
+        <div class="content-header">
+          <h4>تعديل العقار</h4>
+          <p>{{ editProperty?.title }}</p>
+        </div>
+
+        <div *ngIf="!editProperty" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-pencil-square"></i>
+          </div>
+          <h5>اختر عقاراً للتعديل</h5>
+          <p>اذهب لتبويب عقاراتي واضغط على تعديل</p>
+          <button class="btn-add" (click)="setTab('properties')">
+            <i class="bi bi-house"></i> عقاراتي
+          </button>
+        </div>
+
+        <div class="owner-form" *ngIf="editProperty">
+          <div *ngIf="editSuccess" class="form-alert success">
+            <i class="bi bi-check-circle-fill"></i> {{ editSuccess }}
+          </div>
+          <div *ngIf="editError" class="form-alert error">
+            <i class="bi bi-exclamation-circle-fill"></i> {{ editError }}
+          </div>
+
+          <div class="form-section">
+            <h6>المعلومات الأساسية</h6>
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label>اسم العقار <span class="required">*</span></label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="editProperty.title">
+              </div>
+              <div class="col-md-4">
+                <label>نوع العقار <span class="required">*</span></label>
+                <select class="form-select" [(ngModel)]="editProperty.type">
+                  <option value="Farm">مزرعة</option>
+                  <option value="Apartment">شقة</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label>الوصف</label>
+                <textarea class="form-control" rows="3"
+                  [(ngModel)]="editProperty.description"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h6>الموقع والسعر</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>الموقع <span class="required">*</span></label>
+                <input type="text" class="form-control"
+                  [(ngModel)]="editProperty.location">
+              </div>
+              <div class="col-md-3">
+                <label>السعر / ليلة <span class="required">*</span></label>
+                <div class="input-group">
+                  <input type="number" class="form-control"
+                    [(ngModel)]="editProperty.pricePerNight">
+                  <span class="input-group-text">ريال</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label>أقصى ضيوف <span class="required">*</span></label>
+                <input type="number" class="form-control"
+                  [min]="1" [(ngModel)]="editProperty.maxGuests">
+              </div>
+              <div class="col-md-6">
+                <label>خط العرض</label>
+                <input type="number" class="form-control"
+                  [(ngModel)]="editProperty.latitude">
+              </div>
+              <div class="col-md-6">
+                <label>خط الطول</label>
+                <input type="number" class="form-control"
+                  [(ngModel)]="editProperty.longitude">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-submit" (click)="updateProperty()"
+              [disabled]="editLoading">
+              <i class="bi"
+                [ngClass]="editLoading ? 'bi-hourglass-split' : 'bi-check-circle'"></i>
+              {{ editLoading ? 'جاري الحفظ...' : 'حفظ التعديلات' }}
+            </button>
+            <button class="btn-reset" (click)="setTab('properties')">
+              <i class="bi bi-arrow-right"></i> رجوع
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- طلبات الحجز المعلقة -->
+      <div *ngIf="activeTab === 'pending-bookings' && !loading">
+        <div class="content-header">
+          <h4>طلبات الحجز</h4>
+          <p>{{ pendingBookings.length }} طلب ينتظر موافقتك</p>
+        </div>
+
+        <div *ngIf="pendingBookings.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <h5>لا توجد طلبات معلقة</h5>
+          <p>كل طلبات الحجز تمت مراجعتها</p>
+        </div>
+
+        <div class="bookings-grid" *ngIf="pendingBookings.length > 0">
+          <div class="booking-card" *ngFor="let b of pendingBookings">
+            <div class="booking-card-header">
+              <div class="booking-icon">
+                <i class="bi bi-calendar-plus"></i>
+              </div>
+              <div>
+                <h5>{{ b.propertyTitle }}</h5>
+                <span class="status-badge status-pending">معلق</span>
+              </div>
+            </div>
+            <div class="booking-details">
+              <div class="bd-item">
+                <i class="bi bi-calendar-check"></i>
+                <div>
+                  <small>الوصول</small>
+                  <span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span>
+                </div>
+              </div>
+              <div class="bd-item">
+                <i class="bi bi-calendar-x"></i>
+                <div>
+                  <small>المغادرة</small>
+                  <span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span>
+                </div>
+              </div>
+              <div class="bd-item">
+                <i class="bi bi-moon"></i>
+                <div>
+                  <small>الليالي</small>
+                  <span>{{ b.nights }}</span>
+                </div>
+              </div>
+              <div class="bd-item">
+                <i class="bi bi-people"></i>
+                <div>
+                  <small>الضيوف</small>
+                  <span>{{ b.guestsCount }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="booking-card-footer">
+              <strong class="total">{{ b.totalPrice }} ريال</strong>
+              <div class="booking-actions">
+                <button class="btn-confirm" (click)="confirmBooking(b.id)">
+                  <i class="bi bi-check-circle"></i> قبول
+                </button>
+                <button class="btn-cancel" (click)="cancelBooking(b.id)">
+                  <i class="bi bi-x-circle"></i> رفض
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- كل الحجوزات -->
+      <div *ngIf="activeTab === 'bookings' && !loading">
+        <div class="content-header">
+          <h4>إدارة الحجوزات</h4>
+          <p>{{ bookings.length }} حجز إجمالي</p>
+        </div>
+
+        <div class="filter-bar mb-3">
+          <div class="row g-2">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="bi bi-search"></i>
+                </span>
+                <input type="text" class="form-control"
+                  placeholder="ابحث باسم العقار..."
+                  [(ngModel)]="bookingFilter">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select" [(ngModel)]="bookingStatusFilter">
+                <option value="">كل الحالات</option>
+                <option value="Pending">معلق</option>
+                <option value="Confirmed">مؤكد</option>
+                <option value="Cancelled">ملغي</option>
+                <option value="Completed">مكتمل</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredBookings.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-calendar-x"></i>
+          </div>
+          <h5>لا توجد حجوزات</h5>
+          <p>لم يتم حجز أي عقار بعد</p>
+        </div>
+
+        <div class="owner-table" *ngIf="filteredBookings.length > 0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>العقار</th>
+                <th>الوصول</th>
+                <th>المغادرة</th>
+                <th>الليالي</th>
+                <th>الضيوف</th>
+                <th>الإجمالي</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of filteredBookings">
+                <td>{{ b.id }}</td>
+                <td>{{ b.propertyTitle }}</td>
+                <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
+                <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
+                <td>{{ b.nights }}</td>
+                <td>{{ b.guestsCount }}</td>
+                <td><strong>{{ b.totalPrice }}</strong> ريال</td>
+                <td>
+                  <span class="status-badge"
+                    [ngClass]="getStatusClass(b.status)">
+                    {{ getStatusLabel(b.status) }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-confirm-sm"
+                      *ngIf="b.status === 'Pending'"
+                      (click)="confirmBooking(b.id)">
+                      <i class="bi bi-check"></i>
+                    </button>
+                    <button class="btn-cancel-sm"
+                      *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
+                      (click)="cancelBooking(b.id)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
