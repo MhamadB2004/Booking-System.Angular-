@@ -39,6 +39,25 @@ export class AdminComponent implements OnInit {
   propertyTypeFilter = '';
 
 
+
+  newProperty = {
+  title: '',
+  description: '',
+  type: '',
+  pricePerNight: null,
+  location: '',
+  latitude: null,
+  longitude: null,
+  maxGuests: 1
+};
+
+addSuccess = '';
+addError = '';
+addLoading = false;
+
+pendingOwners: any[] = [];
+
+
   constructor(
     private auth: AuthService,
     private router: Router,
@@ -68,6 +87,7 @@ setTab(tab: string) {
   else if (tab === 'properties') this.loadProperties();
   else if (tab === 'pending') this.loadPending();
   else if (tab === 'bookings') this.loadBookings();
+  else if (tab === 'approve-owners') this.loadPendingOwners();
 }
   loadStats() {
     this.loading = true;
@@ -143,21 +163,24 @@ loadProperties() {
     });
   }
 
-approveOwner(userId: number) {
-  this.http.patch(`${this.url}/auth/approve-owner/${userId}`, {}, {
-    headers: this.getHeaders(),
-    responseType: 'text' as 'json'
-  }).subscribe({
-    next: () => {
-      const user = this.users.find(u => u.id === userId);
-      if (user) user.isApproved = true;
-      this.cdr.detectChanges();
-    },
-    error: () => {
-      alert('حدث خطأ أثناء الموافقة');
-    }
-  });
-}
+  approveOwner(userId: number) {
+    this.http.patch(`${this.url}/auth/approve-owner/${userId}`, {}, {
+      headers: this.getHeaders(),
+      responseType: 'text' as 'json'
+    }).subscribe({
+      next: () => {
+        const user = this.users.find(u => u.id === userId);
+        if (user) user.isApproved = true;
+        this.pendingOwners = this.pendingOwners.filter(o => o.id !== userId);
+        this.owners = this.owners.map(o =>
+          o.id === userId ? { ...o, isApproved: true } : o
+        );
+        this.cdr.detectChanges();
+      },
+      error: () => alert('حدث خطأ أثناء الموافقة')
+    });
+  }
+
 approveProperty(propertyId: number) {
   this.http.patch(`${this.url}/properties/${propertyId}/approve`, {}, {
     headers: this.getHeaders(),
@@ -274,10 +297,82 @@ get filteredOwners() {
 
 get filteredProperties() {
   return this.properties.filter(p => {
-    const matchText = p.title?.toLowerCase().includes(this.propertyFilter.toLowerCase()) ||
+    const matchText = 
+      p.title?.toLowerCase().includes(this.propertyFilter.toLowerCase()) ||
       p.location?.toLowerCase().includes(this.propertyFilter.toLowerCase());
-    const matchType = !this.propertyTypeFilter || p.type === this.propertyTypeFilter;
+    
+    const matchType = !this.propertyTypeFilter || 
+      p.type?.toLowerCase() === this.propertyTypeFilter.toLowerCase();
+    
     return matchText && matchType;
+  });
+}
+addProperty() {
+  this.addError = '';
+  this.addSuccess = '';
+
+  if (!this.newProperty.title || !this.newProperty.type ||
+      !this.newProperty.pricePerNight || !this.newProperty.location) {
+    this.addError = 'الرجاء تعبئة جميع الحقول المطلوبة';
+    return;
+  }
+
+  this.addLoading = true;
+
+  this.http.post(`${this.url}/properties`, this.newProperty, {
+    headers: this.getHeaders(),
+    responseType: 'text' as 'json'
+  }).subscribe({
+    next: () => {
+      this.addSuccess = 'تم إضافة العقار بنجاح!';
+      this.addLoading = false;
+      this.newProperty = {
+        title: '',
+        description: '',
+        type: '',
+        pricePerNight: null,
+        location: '',
+        latitude: null,
+        longitude: null,
+        maxGuests: 1
+      };
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.addError = err.error || 'حدث خطأ أثناء الإضافة';
+      this.addLoading = false;
+      this.cdr.detectChanges();
+    }
+  });
+  }
+
+  loadPendingOwners() {
+  this.loading = true;
+  this.http.get<any[]>(`${this.url}/admin/users?role=Owner`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.pendingOwners = res.filter((u: any) => !u.isApproved);
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => { this.loading = false; }
+  });
+}
+
+rejectOwner(userId: number) {
+  if (!confirm('هل أنت متأكد من رفض هذا المالك؟')) return;
+  this.http.delete(`${this.url}/admin/users/${userId}`, {
+    headers: this.getHeaders(),
+    responseType: 'text' as 'json'
+  }).subscribe({
+    next: () => {
+      this.pendingOwners = this.pendingOwners.filter(o => o.id !== userId);
+      this.users = this.users.filter(u => u.id !== userId);
+      this.owners = this.owners.filter(o => o.id !== userId);
+      this.cdr.detectChanges();
+    },
+    error: () => alert('حدث خطأ أثناء الرفض')
   });
 }
 }

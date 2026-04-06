@@ -40,6 +40,14 @@
           <i class="bi bi-calendar-check"></i>
           <span>الحجوزات</span>
         </button>
+        <button [class.active]="activeTab === 'add-property'" (click)="setTab('add-property')">
+          <i class="bi bi-plus-circle"></i>
+          <span>إضافة عقار</span>
+        </button>
+        <button [class.active]="activeTab === 'approve-owners'" (click)="setTab('approve-owners')">
+          <i class="bi bi-person-check"></i>
+          <span> ادارة الحسابات  </span>
+        </button>
       </nav>
     </div>
 
@@ -714,6 +722,161 @@
         </div>
       </div>
 
+      <div *ngIf="activeTab === 'add-property' && !loading">
+  <div class="content-header">
+    <h4>إضافة عقار جديد</h4>
+    <p>أضف عقاراً جديداً تحت إدارة المنصة</p>
+  </div>
+
+  <div class="add-property-form">
+
+    <div *ngIf="addSuccess" class="form-alert success">
+      <i class="bi bi-check-circle-fill"></i>
+      {{ addSuccess }}
+    </div>
+
+    <div *ngIf="addError" class="form-alert error">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      {{ addError }}
+    </div>
+
+    <div class="form-section">
+      <h6>المعلومات الأساسية</h6>
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label>اسم العقار <span class="required">*</span></label>
+          <input type="text" class="form-control"
+            placeholder="مثال: مزرعة النخيل الخضراء"
+            [(ngModel)]="newProperty.title">
+        </div>
+        <div class="col-md-4">
+          <label>نوع العقار <span class="required">*</span></label>
+          <select class="form-select" [(ngModel)]="newProperty.type">
+            <option value="">اختر النوع</option>
+            <option value="Farm">مزرعة</option>
+            <option value="Apartment">شقة</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label>الوصف</label>
+          <textarea class="form-control" rows="3"
+            placeholder="اكتب وصفاً تفصيلياً للعقار..."
+            [(ngModel)]="newProperty.description"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h6>الموقع والسعر</h6>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label>الموقع <span class="required">*</span></label>
+          <input type="text" class="form-control"
+            placeholder="مثال: الرياض - حي النرجس"
+            [(ngModel)]="newProperty.location">
+        </div>
+        <div class="col-md-3">
+          <label>السعر / ليلة <span class="required">*</span></label>
+          <div class="input-group">
+            <input type="number" class="form-control"
+              placeholder="0"
+              [(ngModel)]="newProperty.pricePerNight">
+            <span class="input-group-text">ريال</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label>أقصى عدد ضيوف <span class="required">*</span></label>
+          <input type="number" class="form-control"
+            [min]="1" [(ngModel)]="newProperty.maxGuests">
+        </div>
+        <div class="col-md-6">
+          <label>خط العرض (Latitude)</label>
+          <input type="number" class="form-control"
+            placeholder="مثال: 24.7136"
+            [(ngModel)]="newProperty.latitude">
+        </div>
+        <div class="col-md-6">
+          <label>خط الطول (Longitude)</label>
+          <input type="number" class="form-control"
+            placeholder="مثال: 46.6753"
+            [(ngModel)]="newProperty.longitude">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-submit" (click)="addProperty()"
+        [disabled]="addLoading">
+        <i class="bi" [ngClass]="addLoading ? 'bi-hourglass-split' : 'bi-plus-circle'"></i>
+        {{ addLoading ? 'جاري الإضافة...' : 'إضافة العقار' }}
+      </button>
+      <button class="btn-reset" (click)="newProperty = {
+        title: '', description: '', type: '',
+        pricePerNight: null, location: '',
+        latitude: null, longitude: null, maxGuests: 1
+      }">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        إعادة تعيين
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="activeTab === 'approve-owners' && !loading">
+  <div class="content-header">
+    <h4>موافقة على الملاك</h4>
+    <p>{{ pendingOwners.length }} مالك ينتظر الموافقة</p>
+  </div>
+
+  <div *ngIf="pendingOwners.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="bi bi-person-check-fill"></i>
+    </div>
+    <h5>لا يوجد ملاك ينتظرون الموافقة</h5>
+    <p>جميع الملاك المسجلين تمت مراجعتهم</p>
+    <div class="empty-badge">
+      <i class="bi bi-shield-check"></i>
+      كل شي تمام!
+    </div>
+  </div>
+
+  <div class="pending-grid" *ngIf="pendingOwners.length > 0">
+    <div class="pending-card" *ngFor="let o of pendingOwners">
+      <div class="pending-card-header">
+        <div class="user-avatar lg">{{ o.fullName?.charAt(0) }}</div>
+        <div class="pending-info">
+          <h5>{{ o.fullName }}</h5>
+          <span class="role-badge role-owner">مالك</span>
+        </div>
+      </div>
+
+      <div class="pending-details">
+        <div class="pd-item">
+          <i class="bi bi-envelope"></i>
+          <span>{{ o.email }}</span>
+        </div>
+        <div class="pd-item">
+          <i class="bi bi-phone"></i>
+          <span>{{ o.phone }}</span>
+        </div>
+        <div class="pd-item">
+          <i class="bi bi-calendar"></i>
+          <span>{{ o.createdAt | date:'yyyy/MM/dd' }}</span>
+        </div>
+      </div>
+
+      <div class="pending-actions">
+        <button class="btn-approve-lg" (click)="approveOwner(o.id)">
+          <i class="bi bi-check-circle"></i> موافقة
+        </button>
+        <button class="btn-reject" (click)="rejectOwner(o.id)">
+          <i class="bi bi-x-circle"></i> رفض
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
     </div>
   </div>
   
