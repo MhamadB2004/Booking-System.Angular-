@@ -43,6 +43,33 @@ export class OwnerComponent implements OnInit {
   editError = '';
   editLoading = false;
 
+    //الإحصائيات السريعة
+    stats = {
+    confirmedBookings: 0,
+    totalProperties: 0,
+    totalBookings: 0,
+    pendingBookings: 0,
+    totalRevenue: 0,
+    averageRating: 0
+  };
+
+  //الاشعارات 
+
+  notifications: any[] = [];
+  unreadCount = 0;
+
+  //التفييمات 
+
+  reviews: any[] = [];
+
+
+  //تقويم الحجوزات 
+
+  calendar: any[] = [];
+  selectedMonth: Date = new Date();
+  calendarBookings: any[] = [];
+
+
   constructor(
     private auth: AuthService,
     private router: Router,
@@ -56,6 +83,7 @@ export class OwnerComponent implements OnInit {
       return;
     }
     this.loadProperties();
+    this.loadStats()
   }
 
   getHeaders() {
@@ -72,25 +100,51 @@ export class OwnerComponent implements OnInit {
     this.editProperty = null;
     if (tab === 'properties') this.loadProperties();
     else if (tab === 'bookings' || tab === 'pending-bookings') this.loadBookings();
+    else if (tab === 'notifications') this.loadNotifications();
+    else if (tab === 'reviews') this.loadReviews();
+    else if (tab === 'calendar') {
+      if (this.bookings.length === 0) {
+        this.loadBookings();
+        setTimeout(() => { this.loadCalendar(); }, 500);
+      } else {
+        this.loadCalendar();
+      }
+    }
+
   }
 
   // ===========================
   // العقارات
   // ===========================
-  loadProperties() {
-    this.loading = true;
-    this.http.get<any>(`${this.url}/properties?pageSize=100`, {
-      headers: this.getHeaders()
-    }).subscribe({
-      next: (res) => {
-        this.properties = res.data || [];
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: () => { this.loading = false; }
-    });
-  }
+ loadProperties() {
+  this.loading = true;
+  this.http.get<any[]>(`${this.url}/properties/my`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.properties = res || [];
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => {
+      this.properties = [];
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
+  loadStats() {
+  this.http.get<any>(`${this.url}/owner/stats`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.stats = res;
+      this.cdr.detectChanges();
+    },
+    error: () => {}
+  });
+}
   get filteredProperties() {
     return this.properties.filter(p => {
       const matchText =
@@ -274,4 +328,143 @@ export class OwnerComponent implements OnInit {
       default: return '';
     }
   }
+
+  toggleProperty(id: number, currentStatus: boolean) {
+  this.http.patch(`${this.url}/properties/${id}/toggle`, {}, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res: any) => {
+      const p = this.properties.find(p => p.id === id);
+      if (p) p.isAvailable = !currentStatus;
+      this.cdr.detectChanges();
+    },
+    error: () => alert('حدث خطأ')
+  });
+}
+
+  //الاشعارات 
+
+  loadNotifications() {
+  this.loading = true;
+  this.http.get<any>(`${this.url}/notifications`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.notifications = res.notifications || [];
+      this.unreadCount = res.unreadCount || 0;
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => { this.loading = false; }
+  });
+}
+
+markAsRead(id: number) {
+  this.http.patch(`${this.url}/notifications/${id}/read`, {}, {
+    headers: this.getHeaders(),
+    responseType: 'text' as 'json'
+  }).subscribe({
+    next: () => {
+      const n = this.notifications.find(n => n.id === id);
+      if (n) { n.isRead = true; this.unreadCount--; }
+      this.cdr.detectChanges();
+    }
+  });
+}
+
+markAllRead() {
+  this.http.patch(`${this.url}/notifications/read-all`, {}, {
+    headers: this.getHeaders(),
+    responseType: 'text' as 'json'
+  }).subscribe({
+    next: () => {
+      this.notifications.forEach(n => n.isRead = true);
+      this.unreadCount = 0;
+      this.cdr.detectChanges();
+    }
+  });
+}
+
+    //التفييمات 
+    loadReviews() {
+  this.loading = true;
+  this.http.get<any[]>(`${this.url}/owner/reviews`, {
+    headers: this.getHeaders()
+  }).subscribe({
+    next: (res) => {
+      this.reviews = res || [];
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: () => { this.loading = false; }
+  });
+}
+
+//تقويم الحجوزات 
+
+  loadCalendar() {
+  this.loading = true;
+  this.calendarBookings = this.bookings.filter(
+    b => b.status === 'Confirmed' || b.status === 'Pending'
+  );
+  this.generateCalendar();
+  this.loading = false;
+  this.cdr.detectChanges();
+}
+
+generateCalendar() {
+  const year = this.selectedMonth.getFullYear();
+  const month = this.selectedMonth.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  this.calendar = [];
+
+  // أيام فاضية في البداية
+  for (let i = 0; i < firstDay; i++) {
+    this.calendar.push({ day: null, bookings: [] });
+  }
+
+  // أيام الشهر
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const dayBookings = this.calendarBookings.filter(b => {
+      const checkIn = new Date(b.checkIn);
+      const checkOut = new Date(b.checkOut);
+      return date >= checkIn && date < checkOut;
+    });
+    this.calendar.push({ day: d, date, bookings: dayBookings });
+  }
+}
+
+prevMonth() {
+  this.selectedMonth = new Date(
+    this.selectedMonth.getFullYear(),
+    this.selectedMonth.getMonth() - 1, 1
+  );
+  this.generateCalendar();
+  this.cdr.detectChanges();
+}
+
+nextMonth() {
+  this.selectedMonth = new Date(
+    this.selectedMonth.getFullYear(),
+    this.selectedMonth.getMonth() + 1, 1
+  );
+  this.generateCalendar();
+  this.cdr.detectChanges();
+}
+
+get monthName(): string {
+  return this.selectedMonth.toLocaleDateString('ar', {
+    month: 'long', year: 'numeric'
+  });
+}
+
+isToday(day: number): boolean {
+  const today = new Date();
+  return day === today.getDate() &&
+    this.selectedMonth.getMonth() === today.getMonth() &&
+    this.selectedMonth.getFullYear() === today.getFullYear();
+}
 }

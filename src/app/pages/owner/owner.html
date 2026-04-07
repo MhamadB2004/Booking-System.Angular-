@@ -45,11 +45,78 @@
           <i class="bi bi-calendar-check"></i>
           <span>كل الحجوزات</span>
         </button>
+        <button [class.active]="activeTab === 'notifications'"
+          (click)="setTab('notifications')">
+          <i class="bi bi-bell"></i>
+          <span>الإشعارات</span>
+          <span class="pending-count" *ngIf="unreadCount > 0">
+            {{ unreadCount }}
+          </span>
+        </button>
+        <button [class.active]="activeTab === 'reviews'"
+          (click)="setTab('reviews')">
+          <i class="bi bi-star"></i>
+          <span>التقييمات</span>
+        </button>
+        <button [class.active]="activeTab === 'calendar'"
+          (click)="setTab('calendar')">
+          <i class="bi bi-calendar3"></i>
+          <span>تقويم الحجوزات</span>
+        </button>
       </nav>
     </div>
 
     <!-- المحتوى -->
     <div class="owner-content">
+
+        <!-- إحصائيات سريعة — تظهر بكل التبويبات -->
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <div class="qs-icon blue">
+            <i class="bi bi-house-fill"></i>
+          </div>
+          <div>
+            <h6>{{ stats.totalProperties }}</h6>
+            <small>عقاراتي</small>
+          </div>
+        </div>
+        <div class="quick-stat">
+          <div class="qs-icon amber">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div>
+            <h6>{{ stats.pendingBookings }}</h6>
+            <small>حجوزات معلقة</small>
+          </div>
+        </div>
+        <div class="quick-stat">
+          <div class="qs-icon green">
+            <i class="bi bi-calendar-check"></i>
+          </div>
+          <div>
+            <h6>{{ stats.confirmedBookings }}</h6>
+            <small>حجوزات مؤكدة</small>
+          </div>
+        </div>
+        <div class="quick-stat">
+          <div class="qs-icon purple">
+            <i class="bi bi-cash-stack"></i>
+          </div>
+          <div>
+            <h6>{{ stats.totalRevenue }} ريال</h6>
+            <small>إجمالي الإيرادات</small>
+          </div>
+        </div>
+        <div class="quick-stat">
+          <div class="qs-icon teal">
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <div>
+            <h6>{{ stats.averageRating || 'جديد' }}</h6>
+            <small>متوسط التقييم</small>
+          </div>
+        </div>
+      </div>
 
       <!-- تحميل -->
       <div *ngIf="loading" class="loading-state">
@@ -134,6 +201,12 @@
               </div>
             </div>
             <div class="property-card-footer">
+              <button class="btn-toggle"
+                [ngClass]="p.isAvailable ? 'active' : 'inactive'"
+                (click)="toggleProperty(p.id, p.isAvailable)">
+                <i class="bi" [ngClass]="p.isAvailable ? 'bi-pause-circle' : 'bi-play-circle'"></i>
+                {{ p.isAvailable ? 'إيقاف' : 'تفعيل' }}
+              </button>
               <button class="btn-edit" (click)="selectEdit(p)">
                 <i class="bi bi-pencil"></i> تعديل
               </button>
@@ -495,6 +568,180 @@
           </table>
         </div>
       </div>
+
+      <div *ngIf="activeTab === 'notifications' && !loading">
+        <div class="content-header">
+          <div class="header-row">
+            <div>
+              <h4>الإشعارات</h4>
+              <p>{{ unreadCount }} إشعار غير مقروء</p>
+            </div>
+            <button class="btn-mark-all" *ngIf="unreadCount > 0"
+              (click)="markAllRead()">
+              <i class="bi bi-check-all"></i> تحديد الكل كمقروء
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="notifications.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-bell-slash"></i>
+          </div>
+          <h5>لا توجد إشعارات</h5>
+          <p>ستظهر هنا إشعارات الحجوزات والتقييمات</p>
+        </div>
+
+        <div class="notifications-list" *ngIf="notifications.length > 0">
+          <div class="notif-item" *ngFor="let n of notifications"
+            [ngClass]="n.isRead ? 'read' : 'unread'"
+            (click)="markAsRead(n.id)">
+            <div class="notif-icon">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <div class="notif-body">
+              <h6>{{ n.title }}</h6>
+              <p>{{ n.message }}</p>
+              <small>{{ n.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</small>
+            </div>
+            <div class="notif-dot" *ngIf="!n.isRead"></div>
+          </div>
+        </div>
+      </div>
+
+
+         <!--التقييمات  -->
+
+
+      <div *ngIf="activeTab === 'reviews' && !loading">
+        <div class="content-header">
+          <h4>التقييمات</h4>
+          <p>{{ reviews.length }} تقييم على عقاراتك</p>
+        </div>
+
+        <div *ngIf="reviews.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-star"></i>
+          </div>
+          <h5>لا توجد تقييمات بعد</h5>
+          <p>ستظهر هنا تقييمات الزبائن بعد إتمام الحجوزات</p>
+        </div>
+
+        <div class="reviews-list" *ngIf="reviews.length > 0">
+          <div class="review-card" *ngFor="let r of reviews">
+            <div class="review-header">
+              <div class="reviewer">
+                <div class="user-avatar">{{ r.userName?.charAt(0) }}</div>
+                <div>
+                  <h6>{{ r.userName }}</h6>
+                  <small>{{ r.propertyTitle }}</small>
+                </div>
+              </div>
+              <div class="review-right">
+                <div class="stars">
+                  <i class="bi bi-star-fill" *ngFor="let s of [].constructor(r.rating)"></i>
+                  <i class="bi bi-star" *ngFor="let s of [].constructor(5 - r.rating)"></i>
+                </div>
+                <small>{{ r.createdAt | date:'yyyy/MM/dd' }}</small>
+              </div>
+            </div>
+            <p class="review-comment" *ngIf="r.comment">{{ r.comment }}</p>
+          </div>
+        </div>
+      </div>
+
+        <!-- تقويم الحجوزات  -->
+      <div *ngIf="activeTab === 'calendar' && !loading">
+        <div class="content-header">
+          <h4>تقويم الحجوزات</h4>
+          <p>الأيام المحجوزة والمتاحة لعقاراتك</p>
+        </div>
+
+        <div class="calendar-wrap">
+
+          <!-- رأس التقويم -->
+          <div class="calendar-header">
+            <button class="cal-nav" (click)="prevMonth()">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+            <h5>{{ monthName }}</h5>
+            <button class="cal-nav" (click)="nextMonth()">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </div>
+
+          <!-- أيام الأسبوع -->
+          <div class="calendar-days-header">
+            <span>أح</span>
+            <span>إث</span>
+            <span>ثل</span>
+            <span>أر</span>
+            <span>خم</span>
+            <span>جم</span>
+            <span>سب</span>
+          </div>
+
+          <!-- أيام الشهر -->
+          <div class="calendar-grid">
+            <div class="cal-day" *ngFor="let cell of calendar"
+              [ngClass]="{
+                'empty': !cell.day,
+                'today': cell.day && isToday(cell.day),
+                'booked': cell.bookings?.length > 0,
+                'free': cell.day && cell.bookings?.length === 0
+              }">
+              <span class="day-num" *ngIf="cell.day">{{ cell.day }}</span>
+              <div class="day-dots" *ngIf="cell.bookings?.length > 0">
+                <span class="dot" *ngFor="let b of cell.bookings.slice(0,3)"
+                  [ngClass]="b.status === 'Confirmed' ? 'confirmed' : 'pending'">
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- مفتاح الألوان -->
+          <div class="calendar-legend">
+            <div class="legend-item">
+              <span class="dot confirmed"></span> مؤكد
+            </div>
+            <div class="legend-item">
+              <span class="dot pending"></span> معلق
+            </div>
+            <div class="legend-item">
+              <div class="today-dot"></div> اليوم
+            </div>
+          </div>
+
+          <!-- قائمة حجوزات الشهر -->
+          <div class="month-bookings" *ngIf="calendarBookings.length > 0">
+            <h6>حجوزات هذا الشهر</h6>
+            <div class="month-booking-item" *ngFor="let b of calendarBookings">
+              <div class="mbi-dot"
+                [ngClass]="b.status === 'Confirmed' ? 'confirmed' : 'pending'">
+              </div>
+              <div class="mbi-info">
+                <strong>{{ b.propertyTitle }}</strong>
+                <span>{{ b.checkIn | date:'MM/dd' }} ← {{ b.checkOut | date:'MM/dd' }}</span>
+              </div>
+              <span class="status-badge"
+                [ngClass]="getStatusClass(b.status)">
+                {{ getStatusLabel(b.status) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="calendarBookings.length === 0">
+            <div class="empty-icon">
+              <i class="bi bi-calendar3"></i>
+            </div>
+            <h5>لا توجد حجوزات هذا الشهر</h5>
+            <p>كل الأيام متاحة</p>
+          </div>
+
+        </div>
+      </div>
+      
+        <!--/ تقويم الحجوزات  -->
+
 
     </div>
   </div>

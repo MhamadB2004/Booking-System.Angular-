@@ -680,3 +680,446 @@
   .owner-sidebar { width: 100%; }
   .properties-grid { grid-template-columns: 1fr; }
 }
+
+.btn-toggle {
+  background: #FAEEDA;
+  color: #854F0B;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-toggle.active:hover { background: #854F0B; color: white; }
+.btn-toggle.inactive { background: #EAF3DE; color: #3B6D11; }
+.btn-toggle.inactive:hover { background: #3B6D11; color: white; }
+
+
+.quick-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.quick-stat {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.qs-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.qs-icon i { font-size: 18px; }
+.qs-icon.blue   { background: #E6F1FB; color: #185FA5; }
+.qs-icon.amber  { background: #FAEEDA; color: #854F0B; }
+.qs-icon.green  { background: #EAF3DE; color: #3B6D11; }
+.qs-icon.purple { background: #EEEDFE; color: #534AB7; }
+.qs-icon.teal   { background: #E1F5EE; color: #0F6E56; }
+
+.quick-stat h6 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin: 0 0 2px;
+}
+
+.quick-stat small {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.btn-mark-all {
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  color: var(--accent-color);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btn-mark-all:hover {
+  background: var(--accent-color);
+  color: white;
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-item {
+  background: white;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.notif-item.unread {
+  border-right: 3px solid var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color), transparent 97%);
+}
+
+.notif-item:hover { transform: translateX(-3px); }
+
+.notif-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notif-icon i { color: var(--accent-color); font-size: 16px; }
+
+.notif-body { flex: 1; }
+
+.notif-body h6 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 4px;
+}
+
+.notif-body p {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.notif-body small {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+}
+
+.notif-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+/* للتقييمات */
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.reviewer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.reviewer h6 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin: 0 0 2px;
+}
+
+.reviewer small {
+  font-size: 12px;
+  color: var(--accent-color);
+}
+
+.review-right { text-align: left; }
+
+.stars i {
+  color: #ffc107;
+  font-size: 13px;
+}
+
+.stars .bi-star { color: #dee2e6; }
+
+.review-right small {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+  display: block;
+  margin-top: 4px;
+}
+
+.review-comment {
+  font-size: 14px;
+  color: color-mix(in srgb, var(--default-color), transparent 20%);
+  line-height: 1.6;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* تقويم الحجوزات  */
+
+.calendar-wrap {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  max-width: 700px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.calendar-header h5 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin: 0;
+}
+
+.cal-nav {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--default-color), transparent 80%);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--default-color);
+  transition: all 0.2s;
+}
+
+.cal-nav:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.calendar-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.calendar-days-header span {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  padding: 6px 0;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: default;
+  transition: all 0.2s;
+  min-height: 44px;
+}
+
+.cal-day.empty { background: transparent; }
+
+.cal-day.free {
+  background: #f8f9fa;
+}
+
+.cal-day.free:hover {
+  background: #f0f0f0;
+}
+
+.cal-day.booked {
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+}
+
+.cal-day.today {
+  background: var(--accent-color);
+}
+
+.cal-day.today .day-num {
+  color: white !important;
+  font-weight: 700;
+}
+
+.day-num {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--default-color);
+}
+
+.day-dots {
+  display: flex;
+  gap: 3px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.confirmed { background: #3B6D11; }
+.dot.pending   { background: #854F0B; }
+
+.calendar-legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--default-color);
+}
+
+.today-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--accent-color);
+}
+
+.month-bookings h6 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 12px;
+}
+
+.month-booking-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.month-booking-item:last-child { border-bottom: none; }
+
+.mbi-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mbi-dot.confirmed { background: #3B6D11; }
+.mbi-dot.pending   { background: #854F0B; }
+
+.mbi-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mbi-info strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--heading-color);
+}
+
+.mbi-info span {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+}
+
+@media (max-width: 992px) {
+  .quick-stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .quick-stats { grid-template-columns: repeat(2, 1fr); }
+  .calendar-wrap { padding: 16px; }
+}
+
+/* //تقويم الحجوزات  */
