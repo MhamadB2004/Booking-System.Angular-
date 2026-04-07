@@ -140,7 +140,7 @@
             </div>
             <div class="stat-info">
               <h3>{{ stats.revenue.total | number }}</h3>
-              <p>إجمالي الإيرادات (ريال)</p>
+              <p>إجمالي الإيرادات (ليرة )</p>
             </div>
             <div class="stat-trend up">
               <i class="bi bi-graph-up-arrow"></i>
@@ -515,7 +515,7 @@
                     {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
                   </span>
                 </td>
-                <td><strong>{{ p.pricePerNight }}</strong> ريال</td>
+                <td><strong>{{ p.pricePerNight }}</strong> ليرة </td>
                 <td>
                   <i class="bi bi-geo-alt text-accent"></i>
                   {{ p.location }}
@@ -575,7 +575,7 @@
         <i class="bi bi-cash"></i>
         <div>
           <small>السعر / ليلة</small>
-          <span>{{ selectedProperty?.pricePerNight }} ريال</span>
+          <span>{{ selectedProperty?.pricePerNight }} ليرة </span>
         </div>
       </div>
       <div class="modal-item">
@@ -653,7 +653,7 @@
               </div>
               <div class="pd-item">
                 <i class="bi bi-cash"></i>
-                <span>{{ p.pricePerNight }} ريال / ليلة</span>
+                <span>{{ p.pricePerNight }} ليرة  / ليلة</span>
               </div>
               <div class="pd-item">
                 <i class="bi bi-calendar"></i>
@@ -709,7 +709,7 @@
                 <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
                 <td>{{ b.nights }}</td>
                 <td>{{ b.guestsCount }}</td>
-                <td><strong>{{ b.totalPrice }}</strong> ريال</td>
+                <td><strong>{{ b.totalPrice }}</strong> ليرة </td>
                 <td>
                   <span class="status-badge"
                     [ngClass]="getStatusClass(b.status)">
@@ -781,7 +781,7 @@
             <input type="number" class="form-control"
               placeholder="0"
               [(ngModel)]="newProperty.pricePerNight">
-            <span class="input-group-text">ريال</span>
+            <span class="input-group-text">ليرة </span>
           </div>
         </div>
         <div class="col-md-3">

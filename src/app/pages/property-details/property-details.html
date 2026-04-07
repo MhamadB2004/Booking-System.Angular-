@@ -50,7 +50,7 @@
             </div>
             <div class="info-card">
               <i class="bi bi-cash"></i>
-              <span>{{ property.pricePerNight }} ريال / ليلة</span>
+              <span>{{ property.pricePerNight }} ليرة  / ليلة</span>
             </div>
           </div>
 
@@ -89,7 +89,7 @@
           <div class="booking-card">
             <div class="booking-price">
               <span class="amount">{{ property.pricePerNight }}</span>
-              <span class="period"> ريال / ليلة</span>
+              <span class="period"> ليرة  / ليلة</span>
             </div>
 
             <div *ngIf="bookingSuccess" class="alert-success">
@@ -134,11 +134,11 @@
               <div class="price-summary" *ngIf="nights > 0">
                 <div class="summary-row">
                   <span>{{ property.pricePerNight }} × {{ nights }} ليالي</span>
-                  <span>{{ totalPrice }} ريال</span>
+                  <span>{{ totalPrice }} ليرة </span>
                 </div>
                 <div class="summary-total">
                   <span>الإجمالي</span>
-                  <span>{{ totalPrice }} ريال</span>
+                  <span>{{ totalPrice }} ليرة </span>
                 </div>
               </div>
 

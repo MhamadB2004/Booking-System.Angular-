@@ -103,7 +103,7 @@
             <i class="bi bi-cash-stack"></i>
           </div>
           <div>
-            <h6>{{ stats.totalRevenue }} ريال</h6>
+            <h6>{{ stats.totalRevenue }} ليرة </h6>
             <small>إجمالي الإيرادات</small>
           </div>
         </div>
@@ -188,7 +188,7 @@
               <div class="property-stats">
                 <div class="stat">
                   <i class="bi bi-cash"></i>
-                  <span>{{ p.pricePerNight }} ريال/ليلة</span>
+                  <span>{{ p.pricePerNight }} ليرة /ليلة</span>
                 </div>
                 <div class="stat">
                   <i class="bi bi-people"></i>
@@ -273,7 +273,7 @@
                 <div class="input-group">
                   <input type="number" class="form-control"
                     placeholder="0" [(ngModel)]="newProperty.pricePerNight">
-                  <span class="input-group-text">ريال</span>
+                  <span class="input-group-text">ليرة </span>
                 </div>
               </div>
               <div class="col-md-3">
@@ -374,7 +374,7 @@
                 <div class="input-group">
                   <input type="number" class="form-control"
                     [(ngModel)]="editProperty.pricePerNight">
-                  <span class="input-group-text">ريال</span>
+                  <span class="input-group-text">ليرة </span>
                 </div>
               </div>
               <div class="col-md-3">
@@ -466,7 +466,7 @@
               </div>
             </div>
             <div class="booking-card-footer">
-              <strong class="total">{{ b.totalPrice }} ريال</strong>
+              <strong class="total">{{ b.totalPrice }} ليرة </strong>
               <div class="booking-actions">
                 <button class="btn-confirm" (click)="confirmBooking(b.id)">
                   <i class="bi bi-check-circle"></i> قبول
@@ -542,7 +542,7 @@
                 <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
                 <td>{{ b.nights }}</td>
                 <td>{{ b.guestsCount }}</td>
-                <td><strong>{{ b.totalPrice }}</strong> ريال</td>
+                <td><strong>{{ b.totalPrice }}</strong> ليرة </td>
                 <td>
                   <span class="status-badge"
                     [ngClass]="getStatusClass(b.status)">
