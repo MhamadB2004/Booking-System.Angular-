@@ -68,22 +68,28 @@ pay(bookingId: number) {
 cancel(bookingId: number) {
   if (!confirm('هل أنت متأكد من إلغاء الحجز؟')) return;
   this.cancellingId = bookingId;
+
   this.bookingService.cancel(bookingId).subscribe({
-    next: () => {
-      // حدّث الحجز مباشرة بالـ Array بدون ما ترجع للـ API
+    next: (res: any) => {
       const booking = this.bookings.find(b => b.id === bookingId);
       if (booking) booking.status = 'Cancelled';
       this.cancellingId = null;
+
+      if (res?.refundMessage) {
+        alert('✅ ' + res.refundMessage);
+      }
+
       this.cdr.detectChanges();
     },
     error: (err) => {
-      alert(err.error?.message || 'حدث خطأ أثناء الإلغاء');
+      // أظهر رسالة المنع إذا أقل من 24 ساعة
+      const msg = err.error?.message || err.error || 'حدث خطأ أثناء الإلغاء';
+      alert('❌ ' + msg);
       this.cancellingId = null;
       this.cdr.detectChanges();
     }
   });
 }
-
   getStatusClass(status: string): string {
     switch(status) {
       case 'Confirmed': return 'status-confirmed';
@@ -107,4 +113,8 @@ cancel(bookingId: number) {
   goToProperty(title: string) {
     this.router.navigate(['/properties']);
   }
+
+  goToPayment(bookingId: number) {
+  this.router.navigate(['/payment', bookingId]);
+}
 }

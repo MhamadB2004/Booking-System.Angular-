@@ -1,0 +1,53 @@
+<app-header></app-header>
+
+<div class="notif-page">
+  <div class="container">
+
+    <div class="notif-header">
+      <div>
+        <h4>الإشعارات</h4>
+        <p>{{ unreadCount }} إشعار غير مقروء</p>
+      </div>
+      <button class="btn-mark-all" *ngIf="unreadCount > 0"
+        (click)="markAllRead()">
+        <i class="bi bi-check-all"></i> تحديد الكل كمقروء
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+
+    <div *ngIf="!loading && notifications.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <i class="bi bi-bell-slash"></i>
+      </div>
+      <h5>لا توجد إشعارات</h5>
+      <p>ستظهر هنا إشعارات حجوزاتك ومدفوعاتك</p>
+    </div>
+
+    <div class="notif-list" *ngIf="!loading && notifications.length > 0">
+      <div class="notif-item"
+        *ngFor="let n of notifications"
+        [ngClass]="n.isRead ? 'read' : 'unread'"
+        (click)="markAsRead(n.id)">
+        <div class="notif-icon">
+          <i class="bi bi-bell-fill"></i>
+        </div>
+        <div class="notif-body">
+          <h6>{{ n.title }}</h6>
+          <p>{{ n.message }}</p>
+          <small>{{ n.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</small>
+        </div>
+        <div class="notif-actions">
+          <div class="unread-dot" *ngIf="!n.isRead"></div>
+          <button class="btn-delete-notif"
+            (click)="$event.stopPropagation(); deleteNotif(n.id)">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

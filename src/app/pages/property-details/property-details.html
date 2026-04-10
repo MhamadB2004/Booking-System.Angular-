@@ -37,20 +37,38 @@
           <!-- معلومات سريعة -->
           <div class="info-cards">
             <div class="info-card">
-              <i class="bi bi-people"></i>
-              <span>{{ property.maxGuests }} ضيوف</span>
+              <div class="info-label">
+                <i class="bi bi-people"></i>
+                الضيوف
+              </div>
+              <div class="info-value">{{ property.maxGuests }} ضيف</div>
             </div>
             <div class="info-card">
-              <i class="bi bi-star-fill"></i>
-              <span>{{ property.averageRating > 0 ? property.averageRating : 'جديد' }}</span>
+              <div class="info-label">
+                <i class="bi bi-star-fill"></i>
+                التقييم
+              </div>
+              <div class="info-value">
+                <span *ngIf="property.averageRating > 0">
+                  {{ property.averageRating }}
+                  <i class="bi bi-star-fill star-sm"></i>
+                </span>
+                <span *ngIf="property.averageRating === 0" class="new-badge">جديد</span>
+              </div>
             </div>
             <div class="info-card">
-              <i class="bi bi-person"></i>
-              <span>{{ property.ownerName }}</span>
+              <div class="info-label">
+                <i class="bi bi-person"></i>
+                المالك
+              </div>
+              <div class="info-value">{{ property.ownerName }}</div>
             </div>
             <div class="info-card">
-              <i class="bi bi-cash"></i>
-              <span>{{ property.pricePerNight }} ليرة  / ليلة</span>
+              <div class="info-label">
+                <i class="bi bi-cash"></i>
+                السعر
+              </div>
+              <div class="info-value">{{ property.pricePerNight }} ليرة /ليلة</div>
             </div>
           </div>
 

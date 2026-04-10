@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { NotificationStateService } from '../../services/notification-state';
 
 @Component({
   selector: 'app-header',
@@ -10,17 +14,72 @@ import { AuthService } from '../../services/auth';
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   role = '';
+  unreadCount = 0;
+  url = 'https://localhost:7167/api';
+  private sub: Subscription = new Subscription();
 
-  constructor(private auth: AuthService) {
+  constructor(
+    private auth: AuthService,
+    private http: HttpClient,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private notifState: NotificationStateService
+  ) {}
+
+  ngOnInit() {
+    this.updateState();
+
+    // اشترك بالتغييرات
+    this.sub.add(
+      this.notifState.count$.subscribe(count => {
+        this.unreadCount = count;
+        this.cdr.detectChanges();
+      })
+    );
+
+    this.sub.add(
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd)
+      ).subscribe(() => {
+        this.updateState();
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+
+  updateState() {
     this.isLoggedIn = this.auth.isLoggedIn();
     this.role = this.auth.getRole();
+    if (this.isLoggedIn) this.loadUnread();
+    this.cdr.detectChanges();
+  }
+
+  getHeaders() {
+    return new HttpHeaders({
+      Authorization: `Bearer ${this.auth.getToken()}`
+    });
+  }
+
+  loadUnread() {
+    this.http.get<any>(`${this.url}/notifications`, {
+      headers: this.getHeaders()
+    }).subscribe({
+      next: (res) => {
+        this.notifState.setCount(res.unreadCount || 0);
+        this.cdr.detectChanges();
+      },
+      error: () => {}
+    });
   }
 
   logout() {
     this.auth.logout();
-    window.location.href = '/login';
+    this.router.navigate(['/login']);
   }
 }

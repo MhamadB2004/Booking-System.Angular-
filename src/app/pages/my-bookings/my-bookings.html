@@ -77,12 +77,11 @@
 
           <div class="booking-actions">
             <!-- زر الدفع — بس لما الحجز مؤكد -->
-            <button class="btn-pay"
+           <button class="btn-pay"
               *ngIf="b.status === 'Confirmed'"
-              (click)="pay(b.id)"
-              [disabled]="payingId === b.id">
+              (click)="goToPayment(b.id)">
               <i class="bi bi-credit-card"></i>
-              {{ payingId === b.id ? 'جاري الدفع...' : 'ادفع الآن' }}
+              ادفع الآن
             </button>
 
             <!-- زر الإلغاء — بس لما الحجز معلق أو مؤكد -->

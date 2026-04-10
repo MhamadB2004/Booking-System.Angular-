@@ -1,0 +1,221 @@
+<app-header></app-header>
+
+<div class="payment-page">
+  <div class="container">
+
+    <!-- تحميل -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+
+    <!-- خطأ تحميل -->
+    <div *ngIf="!loading && error && !booking" class="error-state">
+      <i class="bi bi-exclamation-circle"></i>
+      <h4>{{ error }}</h4>
+      <button (click)="goToBookings()">ارجع للحجوزات</button>
+    </div>
+
+    <!-- نجاح الدفع -->
+    <div *ngIf="success" class="success-state">
+      <div class="success-icon">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      <h3>تم الدفع بنجاح!</h3>
+      <p>شكراً لك — تم تأكيد حجزك</p>
+      <div class="transaction-ref">
+        <small>رقم العملية</small>
+        <strong>{{ transactionRef }}</strong>
+      </div>
+      <div class="success-details">
+        <div class="sd-item">
+          <span>العقار</span>
+          <strong>{{ booking.propertyTitle }}</strong>
+        </div>
+        <div class="sd-item">
+          <span>الوصول</span>
+          <strong>{{ booking.checkIn | date:'yyyy/MM/dd' }}</strong>
+        </div>
+        <div class="sd-item">
+          <span>المغادرة</span>
+          <strong>{{ booking.checkOut | date:'yyyy/MM/dd' }}</strong>
+        </div>
+        <div class="sd-item total">
+          <span>المبلغ المدفوع</span>
+          <strong>{{ booking.totalPrice }} ريال</strong>
+        </div>
+      </div>
+      <button class="btn-back" (click)="goToBookings()">
+        <i class="bi bi-arrow-right"></i>
+        العودة لحجوزاتي
+      </button>
+    </div>
+
+    <!-- صفحة الدفع -->
+    <div *ngIf="!loading && booking && !success" class="payment-layout">
+
+      <!-- يسار — نموذج الدفع -->
+      <div class="payment-form-wrap">
+        <h4 class="form-title">
+          <i class="bi bi-credit-card"></i>
+          إتمام الدفع
+        </h4>
+
+        <div *ngIf="error" class="form-error">
+          <i class="bi bi-exclamation-circle"></i>
+          {{ error }}
+        </div>
+
+        <!-- طريقة الدفع -->
+        <div class="payment-methods">
+          <div class="method-option"
+            [class.active]="method === 'Card'"
+            (click)="method = 'Card'">
+            <i class="bi bi-credit-card"></i>
+            <span>بطاقة ائتمان</span>
+          </div>
+          <div class="method-option"
+            [class.active]="method === 'Cash'"
+            (click)="method = 'Cash'">
+            <i class="bi bi-cash"></i>
+            <span>دفع نقدي</span>
+          </div>
+        </div>
+
+        <!-- بيانات البطاقة -->
+        <div class="card-form" *ngIf="method === 'Card'">
+          <div class="card-preview">
+            <div class="card-chip"></div>
+            <div class="card-number-preview">
+              {{ card.number || '**** **** **** ****' }}
+            </div>
+            <div class="card-bottom">
+              <div>
+                <small>اسم الحامل</small>
+                <span>{{ card.name || 'FULL NAME' }}</span>
+              </div>
+              <div>
+                <small>تاريخ الانتهاء</small>
+                <span>{{ card.expiry || 'MM/YY' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>اسم حامل البطاقة</label>
+            <input type="text" class="form-control"
+              placeholder="الاسم كما على البطاقة"
+              [(ngModel)]="card.name">
+          </div>
+
+          <div class="form-group">
+            <label>رقم البطاقة</label>
+            <div class="input-icon">
+              <input type="text" class="form-control"
+                placeholder="0000 0000 0000 0000"
+                maxlength="19"
+                [value]="card.number"
+                (input)="formatCardNumber($event)">
+              <i class="bi bi-credit-card-2-front"></i>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="form-group">
+                <label>تاريخ الانتهاء</label>
+                <input type="text" class="form-control"
+                  placeholder="MM/YY"
+                  maxlength="5"
+                  [value]="card.expiry"
+                  (input)="formatExpiry($event)">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>CVV</label>
+                <div class="input-icon">
+                  <input type="password" class="form-control"
+                    placeholder="***"
+                    maxlength="3"
+                    [(ngModel)]="card.cvv">
+                  <i class="bi bi-shield-lock"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- دفع نقدي -->
+        <div class="cash-info" *ngIf="method === 'Cash'">
+          <i class="bi bi-info-circle"></i>
+          <p>سيتم تأكيد حجزك وعليك دفع المبلغ عند الوصول للعقار.</p>
+        </div>
+
+        <!-- زر الدفع -->
+        <button class="btn-pay" (click)="pay()" [disabled]="paying">
+          <span *ngIf="!paying">
+            <i class="bi bi-lock-fill"></i>
+            دفع {{ booking.totalPrice }} ريال
+          </span>
+          <span *ngIf="paying" class="paying-state">
+            <div class="spinner-border spinner-border-sm"></div>
+            جاري معالجة الدفع...
+          </span>
+        </button>
+
+        <div class="secure-badge">
+          <i class="bi bi-shield-check"></i>
+          <span>دفع آمن ومشفر</span>
+        </div>
+      </div>
+
+      <!-- يمين — ملخص الحجز -->
+      <div class="booking-summary">
+        <h5>ملخص الحجز</h5>
+
+        <div class="summary-property">
+          <div class="sp-icon"
+            [ngClass]="booking.propertyType === 'Farm' ? 'farm' : 'apt'">
+            <i class="bi"
+              [ngClass]="booking.propertyType === 'Farm' ?
+                'bi-tree' : 'bi-building'"></i>
+          </div>
+          <div>
+            <h6>{{ booking.propertyTitle }}</h6>
+            <p>{{ booking.propertyLocation }}</p>
+          </div>
+        </div>
+
+        <div class="summary-details">
+          <div class="sd-row">
+            <span><i class="bi bi-calendar-check"></i> تاريخ الوصول</span>
+            <strong>{{ booking.checkIn | date:'yyyy/MM/dd' }}</strong>
+          </div>
+          <div class="sd-row">
+            <span><i class="bi bi-calendar-x"></i> تاريخ المغادرة</span>
+            <strong>{{ booking.checkOut | date:'yyyy/MM/dd' }}</strong>
+          </div>
+          <div class="sd-row">
+            <span><i class="bi bi-moon"></i> عدد الليالي</span>
+            <strong>{{ booking.nights }} ليالي</strong>
+          </div>
+          <div class="sd-row">
+            <span><i class="bi bi-people"></i> عدد الضيوف</span>
+            <strong>{{ booking.guestsCount }} ضيوف</strong>
+          </div>
+        </div>
+
+        <div class="summary-total">
+          <span>الإجمالي</span>
+          <strong>{{ booking.totalPrice }} ريال</strong>
+        </div>
+
+        <div class="summary-note">
+          <i class="bi bi-info-circle"></i>
+          <p>يمكنك إلغاء الحجز قبل 24 ساعة من تاريخ الوصول</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

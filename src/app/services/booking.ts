@@ -31,11 +31,11 @@ private url = 'https://localhost:7167/api';
     });
   }
 
-  cancel(id: number) {
-    return this.http.patch(`${this.url}/bookings/${id}/cancel`, {}, {
-      headers: this.getHeaders()
-    });
-  }
+cancel(id: number) {
+  return this.http.patch<any>(`${this.url}/bookings/${id}/cancel`, {}, {
+    headers: this.getHeaders()
+  });
+}
 
   private getHeaders() {
     const token = localStorage.getItem('token');

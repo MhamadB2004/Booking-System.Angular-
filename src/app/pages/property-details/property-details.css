@@ -295,3 +295,34 @@
     height: 280px;
   }
 }
+
+.info-label {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.info-label i { color: var(--accent-color); }
+
+.info-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.star-sm {
+  color: #ffc107;
+  font-size: 12px;
+}
+
+.new-badge {
+  background: #EAF3DE;
+  color: #3B6D11;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}

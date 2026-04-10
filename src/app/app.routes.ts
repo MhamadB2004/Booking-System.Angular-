@@ -8,6 +8,8 @@ import { PropertyDetailsComponent } from './pages/property-details/property-deta
 import { MyBookingsComponent } from './pages/my-bookings/my-bookings';
 import { AdminComponent } from './pages/admin/admin';
 import { OwnerComponent } from './pages/owner/owner';
+import { PaymentComponent } from './pages/payment/payment';
+import { NotificationsComponent } from './pages/notifications/notifications';
 
 
 export const routes: Routes = [
@@ -20,6 +22,8 @@ export const routes: Routes = [
   { path: 'my-bookings', component: MyBookingsComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
   { path: 'owner', component: OwnerComponent, canActivate: [authGuard] },
+  { path: 'payment/:id', component: PaymentComponent, canActivate: [authGuard] },
+  { path: 'notifications', component: NotificationsComponent, canActivate: [authGuard] },
 
 
 ];
