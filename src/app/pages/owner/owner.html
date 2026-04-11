@@ -432,6 +432,10 @@
               </div>
               <div>
                 <h5>{{ b.propertyTitle }}</h5>
+                <p class="customer-name">
+                  <i class="bi bi-person"></i>
+                  {{ b.customerName }}
+                </p>
                 <span class="status-badge status-pending">معلق</span>
               </div>
             </div>
@@ -521,51 +525,69 @@
 
         <div class="owner-table" *ngIf="filteredBookings.length > 0">
           <table class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>العقار</th>
-                <th>الوصول</th>
-                <th>المغادرة</th>
-                <th>الليالي</th>
-                <th>الضيوف</th>
-                <th>الإجمالي</th>
-                <th>الحالة</th>
-                <th>إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let b of filteredBookings">
-                <td>{{ b.id }}</td>
-                <td>{{ b.propertyTitle }}</td>
-                <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
-                <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
-                <td>{{ b.nights }}</td>
-                <td>{{ b.guestsCount }}</td>
-                <td><strong>{{ b.totalPrice }}</strong> ليرة </td>
-                <td>
-                  <span class="status-badge"
-                    [ngClass]="getStatusClass(b.status)">
-                    {{ getStatusLabel(b.status) }}
-                  </span>
-                </td>
-                <td>
-                  <div class="action-btns">
-                    <button class="btn-confirm-sm"
-                      *ngIf="b.status === 'Pending'"
-                      (click)="confirmBooking(b.id)">
-                      <i class="bi bi-check"></i>
-                    </button>
-                    <button class="btn-cancel-sm"
-                      *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
-                      (click)="cancelBooking(b.id)">
-                      <i class="bi bi-x"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الزبون</th>
+              <th>العقار</th>
+              <th>الوصول</th>
+              <th>المغادرة</th>
+              <th>الليالي</th>
+              <th>الضيوف</th>
+              <th>الإجمالي</th>
+              <th>الدفع</th>
+              <th>الحالة</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of filteredBookings">
+              <td>{{ b.id }}</td>
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar-sm">{{ b.customerName?.charAt(0) }}</div>
+                  <span>{{ b.customerName }}</span>
+                </div>
+              </td>
+              <td>{{ b.propertyTitle }}</td>
+              <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
+              <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
+              <td>{{ b.nights }}</td>
+              <td>{{ b.guestsCount }}</td>
+              <td><strong>{{ b.totalPrice }}</strong> ريال</td>
+              <td>
+                <span *ngIf="b.paymentMethod" class="payment-chip"
+                  [ngClass]="b.paymentMethod === 'Card' ? 'card' : 'cash'">
+                  <i class="bi" [ngClass]="b.paymentMethod === 'Card' ?
+                    'bi-credit-card' : 'bi-cash'"></i>
+                  {{ b.paymentMethod === 'Card' ? 'بطاقة' : 'نقدي' }}
+                </span>
+                <span *ngIf="!b.paymentMethod" class="payment-chip unpaid">
+                  لم يدفع
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="getStatusClass(b.status)">
+                  {{ getStatusLabel(b.status) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn-confirm-sm"
+                    *ngIf="b.status === 'Pending'"
+                    (click)="confirmBooking(b.id)">
+                    <i class="bi bi-check"></i>
+                  </button>
+                  <button class="btn-cancel-sm"
+                    *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
+                    (click)="cancelBooking(b.id)">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         </div>
       </div>
 

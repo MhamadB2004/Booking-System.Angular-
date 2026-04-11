@@ -6,6 +6,9 @@ import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
 import { NotificationStateService } from '../../services/notification-state';
 
+
+
+
 @Component({
   selector: 'app-notifications',
   standalone: true,
@@ -19,6 +22,9 @@ export class NotificationsComponent implements OnInit {
   unreadCount = 0;
   loading = true;
 
+
+  selectedNotif: any = null;
+  
   constructor(
     private auth: AuthService,
     private http: HttpClient,
@@ -94,4 +100,15 @@ markAllRead() {
       }
     });
   }
+
+showDetail(n: any) {
+  this.selectedNotif = n;
+  if (!n.isRead) this.markAsRead(n.id);
+  this.cdr.detectChanges();
+}
+
+closeDetail() {
+  this.selectedNotif = null;
+  this.cdr.detectChanges();
+}
 }

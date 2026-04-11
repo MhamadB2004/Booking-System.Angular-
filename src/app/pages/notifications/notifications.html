@@ -30,7 +30,7 @@
       <div class="notif-item"
         *ngFor="let n of notifications"
         [ngClass]="n.isRead ? 'read' : 'unread'"
-        (click)="markAsRead(n.id)">
+        (click)="showDetail(n)">
         <div class="notif-icon">
           <i class="bi bi-bell-fill"></i>
         </div>
@@ -48,6 +48,26 @@
         </div>
       </div>
     </div>
-
+      <!-- Modal تفاصيل الإشعار -->
+      <div class="notif-modal" *ngIf="selectedNotif" (click)="closeDetail()">
+        <div class="notif-modal-card" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <div class="notif-icon-lg">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <button class="modal-close" (click)="closeDetail()">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h5>{{ selectedNotif.title }}</h5>
+            <p>{{ selectedNotif.message }}</p>
+            <div class="notif-meta">
+              <i class="bi bi-clock"></i>
+              <span>{{ selectedNotif.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 </div>

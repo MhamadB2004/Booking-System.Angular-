@@ -10,6 +10,7 @@ import { AdminComponent } from './pages/admin/admin';
 import { OwnerComponent } from './pages/owner/owner';
 import { PaymentComponent } from './pages/payment/payment';
 import { NotificationsComponent } from './pages/notifications/notifications';
+import { AboutComponent } from './pages/about/about';
 
 
 export const routes: Routes = [
@@ -24,6 +25,6 @@ export const routes: Routes = [
   { path: 'owner', component: OwnerComponent, canActivate: [authGuard] },
   { path: 'payment/:id', component: PaymentComponent, canActivate: [authGuard] },
   { path: 'notifications', component: NotificationsComponent, canActivate: [authGuard] },
-
+  { path: 'about', component: AboutComponent },
 
 ];

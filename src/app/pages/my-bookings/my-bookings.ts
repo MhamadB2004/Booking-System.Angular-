@@ -66,25 +66,46 @@ pay(bookingId: number) {
 }
 
 cancel(bookingId: number) {
-  if (!confirm('هل أنت متأكد من إلغاء الحجز؟')) return;
-  this.cancellingId = bookingId;
+  const booking = this.bookings.find(b => b.id === bookingId);
 
+  // تحقق إذا دافع
+  if (booking?.status === 'Confirmed') {
+    const checkIn = new Date(booking.checkIn);
+    const hoursLeft = (checkIn.getTime() - Date.now()) / (1000 * 60 * 60);
+
+    if (hoursLeft >= 24) {
+      // دافع وبقي أكثر من 24 ساعة — استرداد مع خصم 5%
+      const deduction = booking.totalPrice * 0.05;
+      const refund = booking.totalPrice - deduction;
+
+      const confirmed = confirm(
+        `تنبيه: سيتم خصم 5% رسوم إلغاء\n\n` +
+        `المبلغ الكلي: ${booking.totalPrice} ريال\n` +
+        `رسوم الإلغاء (5%): ${deduction.toFixed(2)} ريال\n` +
+        `المبلغ المسترد: ${refund.toFixed(2)} ريال\n\n` +
+        `هل تريد المتابعة؟`
+      );
+      if (!confirmed) return;
+    } else if (hoursLeft < 24 && hoursLeft > 0) {
+      // أقل من 24 ساعة — لا إلغاء
+      alert('❌ لا يمكن إلغاء الحجز — تبقى أقل من 24 ساعة على موعد الوصول');
+      return;
+    }
+  } else {
+    if (!confirm('هل أنت متأكد من إلغاء الحجز؟')) return;
+  }
+
+  this.cancellingId = bookingId;
   this.bookingService.cancel(bookingId).subscribe({
     next: (res: any) => {
-      const booking = this.bookings.find(b => b.id === bookingId);
-      if (booking) booking.status = 'Cancelled';
+      const b = this.bookings.find(b => b.id === bookingId);
+      if (b) b.status = 'Cancelled';
       this.cancellingId = null;
-
-      if (res?.refundMessage) {
-        alert('✅ ' + res.refundMessage);
-      }
-
+      if (res?.refundMessage) alert('✅ ' + res.refundMessage);
       this.cdr.detectChanges();
     },
     error: (err) => {
-      // أظهر رسالة المنع إذا أقل من 24 ساعة
-      const msg = err.error?.message || err.error || 'حدث خطأ أثناء الإلغاء';
-      alert('❌ ' + msg);
+      alert('❌ ' + (err.error?.message || err.error || 'حدث خطأ'));
       this.cancellingId = null;
       this.cdr.detectChanges();
     }
