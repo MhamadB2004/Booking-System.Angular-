@@ -47,4 +47,34 @@ getAll(filters?: any, page: number = 1, pageSize: number = 9) {
     const token = localStorage.getItem('token');
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
+  // رفع صور
+uploadImages(propertyId: number, files: File[]) {
+  const formData = new FormData();
+  files.forEach(file => formData.append('images', file));
+  
+  return this.http.post<any>(
+    `${this.url}/properties/${propertyId}/images`,
+    formData,
+    { headers: new HttpHeaders({ 
+      Authorization: `Bearer ${localStorage.getItem('token')}` 
+    })}
+  );
+}
+
+// حذف صورة
+deleteImage(imageId: number) {
+  return this.http.delete(
+    `${this.url}/properties/images/${imageId}`,
+    { headers: this.getHeaders() }
+  );
+}
+
+// تعيين صورة رئيسية
+setMainImage(imageId: number) {
+  return this.http.patch(
+    `${this.url}/properties/images/${imageId}/set-main`,
+    {},
+    { headers: this.getHeaders() }
+  );
+}
 }

@@ -81,4 +81,11 @@ export class PropertiesComponent implements OnInit {
   goToDetails(id: number) {
     this.router.navigate(['/property', id]);
   }
+  getImageUrl(url: string): string {
+  if (!url) return '';
+  // إذا كانت URL خارجية (unsplash مثلاً) ارجعها كما هي
+  if (url.startsWith('http')) return url;
+  // إذا كانت local أضيف الـ API URL
+  return `https://localhost:7167${url}`;
+}
 }

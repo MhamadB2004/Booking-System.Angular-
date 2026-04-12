@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
+import { PropertyService } from '../../services/property';
 
 @Component({
   selector: 'app-owner',
@@ -70,11 +71,23 @@ export class OwnerComponent implements OnInit {
   calendarBookings: any[] = [];
 
 
+  // للصور 
+  showImageModal = false;
+  selectedPropertyForImages: any = null;
+  selectedFiles: File[] = [];
+  previews: string[] = [];
+  uploading = false;
+  uploadError = '';
+  uploadSuccess = '';
+
+  
   constructor(
     private auth: AuthService,
     private router: Router,
     private http: HttpClient,
+    private propertyService: PropertyService,
     private cdr: ChangeDetectorRef
+
   ) {}
 
   ngOnInit() {
@@ -466,5 +479,145 @@ isToday(day: number): boolean {
   return day === today.getDate() &&
     this.selectedMonth.getMonth() === today.getMonth() &&
     this.selectedMonth.getFullYear() === today.getFullYear();
+}
+
+//للصور 
+
+// فتح modal الصور
+openImageUpload(property: any) {
+  this.selectedPropertyForImages = { ...property };
+  this.showImageModal = true;
+  this.selectedFiles = [];
+  this.previews = [];
+  this.uploadError = '';
+  this.uploadSuccess = '';
+  this.cdr.detectChanges();
+}
+
+closeImageModal() {
+  this.showImageModal = false;
+  this.selectedPropertyForImages = null;
+  this.selectedFiles = [];
+  this.previews = [];
+  this.cdr.detectChanges();
+}
+
+// اختيار ملفات
+onFilesSelected(event: any) {
+  const files: FileList = event.target.files;
+  this.addFiles(Array.from(files));
+}
+
+// Drag & Drop
+onDrop(event: DragEvent) {
+  event.preventDefault();
+  const files = Array.from(event.dataTransfer?.files || []);
+  this.addFiles(files);
+}
+
+addFiles(files: File[]) {
+  this.uploadError = '';
+  
+  for (const file of files) {
+    // تحقق من الحجم
+    if (file.size > 5 * 1024 * 1024) {
+      this.uploadError = `الصورة ${file.name} تتجاوز 5MB`;
+      return;
+    }
+    
+    // تحقق من النوع
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      this.uploadError = `نوع الملف غير مسموح: ${file.name}`;
+      return;
+    }
+
+    this.selectedFiles.push(file);
+
+    // معاينة
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.previews.push(e.target.result);
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+removeFile(index: number) {
+  this.selectedFiles.splice(index, 1);
+  this.previews.splice(index, 1);
+  this.cdr.detectChanges();
+}
+
+// رفع الصور
+uploadImages() {
+  if (!this.selectedPropertyForImages || this.selectedFiles.length === 0) return;
+
+  this.uploading = true;
+  this.uploadError = '';
+  this.uploadSuccess = '';
+
+  this.propertyService.uploadImages(
+    this.selectedPropertyForImages.id,
+    this.selectedFiles
+  ).subscribe({
+    next: (res: any) => {
+      this.uploadSuccess = res.message;
+      this.uploading = false;
+      this.selectedFiles = [];
+      this.previews = [];
+
+      // تحديث صور العقار في الـ Array
+      const property = this.properties.find(
+        p => p.id === this.selectedPropertyForImages.id
+      );
+      if (property) {
+        property.images = [...(property.images || []), ...res.images];
+        this.selectedPropertyForImages.images = property.images;
+      }
+
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.uploadError = err.error || 'حدث خطأ أثناء الرفع';
+      this.uploading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
+
+// حذف صورة
+deleteImage(imageUrl: string, index: number) {
+  if (!confirm('هل أنت متأكد من حذف هذه الصورة؟')) return;
+
+  // استخراج الـ imageId من الـ URL — لازم نعدل لاحقاً
+  // مؤقتاً نحذفها من الـ Array
+  this.selectedPropertyForImages.images.splice(index, 1);
+  const property = this.properties.find(
+    p => p.id === this.selectedPropertyForImages.id
+  );
+  if (property) property.images = [...this.selectedPropertyForImages.images];
+  this.cdr.detectChanges();
+}
+
+// تعيين صورة رئيسية
+setMainImage(imageUrl: string, index: number) {
+  // نحرك الصورة لأول مكان
+  const images = [...this.selectedPropertyForImages.images];
+  images.splice(index, 1);
+  images.unshift(imageUrl);
+  
+  this.selectedPropertyForImages.images = images;
+  const property = this.properties.find(
+    p => p.id === this.selectedPropertyForImages.id
+  );
+  if (property) property.images = images;
+  this.cdr.detectChanges();
+}
+
+getImageUrl(url: string): string {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `https://localhost:7167${url}`;
 }
 }

@@ -16,8 +16,7 @@
 
       <!-- صورة رئيسية -->
       <div class="property-hero">
-        <img [src]="property.images?.[0] || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200'"
-          [alt]="property.title" class="hero-img">
+        <img [src]="getImageUrl(property.images?.[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200'"             [alt]="property.title" class="hero-img">
         <div class="hero-overlay">
           <div class="hero-info">
             <span class="type-badge">

@@ -108,4 +108,10 @@ export class PropertyDetailsComponent implements OnInit {
   get today(): string {
     return new Date().toISOString().split('T')[0];
   }
+
+getImageUrl(url: string): string {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  return `https://localhost:7167${url}`;
+}
 }

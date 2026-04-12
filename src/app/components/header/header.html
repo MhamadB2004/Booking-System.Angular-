@@ -20,7 +20,15 @@
           <li *ngIf="role === 'Admin'">
             <a routerLink="/admin" routerLinkActive="active">الأدمن</a>
           </li>
-          <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+          <li>
+            <a routerLink="/about" routerLinkActive="active">About</a>
+          </li>
+          <li *ngIf="isLoggedIn">
+            <a routerLink="/profile" routerLinkActive="active">
+              <i class="bi bi-person-circle"></i>
+              profile
+            </a>
+          </li>
 
           <!-- زر الإشعارات -->
           <li *ngIf="role === 'Customer'">

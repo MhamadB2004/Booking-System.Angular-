@@ -15,6 +15,9 @@ import { NotificationStateService } from '../../services/notification-state';
   styleUrl: './header.css'
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+
+
+
   isLoggedIn = false;
   role = '';
   unreadCount = 0;
@@ -59,7 +62,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.isLoggedIn) this.loadUnread();
     this.cdr.detectChanges();
   }
-
   getHeaders() {
     return new HttpHeaders({
       Authorization: `Bearer ${this.auth.getToken()}`
@@ -82,4 +84,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.auth.logout();
     this.router.navigate(['/login']);
   }
+
+
 }

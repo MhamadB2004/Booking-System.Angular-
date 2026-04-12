@@ -1,0 +1,209 @@
+<app-header></app-header>
+
+<div class="profile-page">
+  <div class="container">
+
+    <!-- تحميل -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border" role="status"></div>
+    </div>
+
+    <div *ngIf="!loading && user" class="profile-layout">
+
+      <!-- يسار — بطاقة المستخدم -->
+      <div class="profile-sidebar">
+        <div class="profile-card">
+          <div class="profile-avatar">
+            {{ user.fullName?.charAt(0) }}
+          </div>
+          <h4>{{ user.fullName }}</h4>
+          <span class="role-badge">
+            <i class="bi" [ngClass]="getRoleIcon()"></i>
+            {{ getRoleLabel() }}
+          </span>
+          <div class="profile-meta">
+            <div class="meta-item">
+              <i class="bi bi-envelope"></i>
+              <span>{{ user.email }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="bi bi-phone"></i>
+              <span>{{ user.phone }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="bi bi-calendar"></i>
+              <span>عضو منذ {{ user.createdAt | date:'yyyy/MM/dd' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- روابط سريعة حسب الدور -->
+        <div class="quick-links">
+          <a *ngIf="user.role === 'Customer'" 
+            routerLink="/my-bookings" class="quick-link">
+            <i class="bi bi-calendar-check"></i>
+            <span>حجوزاتي</span>
+            <i class="bi bi-chevron-left"></i>
+          </a>
+          <a *ngIf="user.role === 'Customer'" 
+            routerLink="/notifications" class="quick-link">
+            <i class="bi bi-bell"></i>
+            <span>الإشعارات</span>
+            <i class="bi bi-chevron-left"></i>
+          </a>
+          <a *ngIf="user.role === 'Owner'" 
+            routerLink="/owner" class="quick-link">
+            <i class="bi bi-house"></i>
+            <span>لوحة المالك</span>
+            <i class="bi bi-chevron-left"></i>
+          </a>
+          <a *ngIf="user.role === 'Admin'" 
+            routerLink="/admin" class="quick-link">
+            <i class="bi bi-shield-check"></i>
+            <span>لوحة الأدمن</span>
+            <i class="bi bi-chevron-left"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- يمين — التبويبات -->
+      <div class="profile-content">
+
+        <!-- Tabs -->
+        <div class="profile-tabs">
+          <button [class.active]="activeTab === 'info'"
+            (click)="activeTab = 'info'">
+            <i class="bi bi-person"></i>
+            البيانات الشخصية
+          </button>
+          <button [class.active]="activeTab === 'password'"
+            (click)="activeTab = 'password'">
+            <i class="bi bi-lock"></i>
+            تغيير كلمة المرور
+          </button>
+        </div>
+
+        <!-- تبويب البيانات -->
+        <div class="tab-content" *ngIf="activeTab === 'info'">
+          <div class="tab-header">
+            <h5>تعديل البيانات الشخصية</h5>
+            <p>يمكنك تعديل اسمك وإيميلك ورقم هاتفك</p>
+          </div>
+
+          <div *ngIf="profileSuccess" class="form-alert success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ profileSuccess }}
+          </div>
+          <div *ngIf="profileError" class="form-alert error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ profileError }}
+          </div>
+
+          <div class="form-group">
+            <label>الاسم الكامل</label>
+            <div class="input-icon">
+              <i class="bi bi-person"></i>
+              <input type="text" class="form-control"
+                [(ngModel)]="profileForm.fullName"
+                placeholder="الاسم الكامل">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>البريد الإلكتروني</label>
+            <div class="input-icon">
+              <i class="bi bi-envelope"></i>
+              <input type="email" class="form-control"
+                [(ngModel)]="profileForm.email"
+                placeholder="البريد الإلكتروني">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <div class="input-icon">
+              <i class="bi bi-phone"></i>
+              <input type="tel" class="form-control"
+                [(ngModel)]="profileForm.phone"
+                placeholder="رقم الهاتف">
+            </div>
+          </div>
+
+          <button class="btn-save" (click)="updateProfile()"
+            [disabled]="profileLoading">
+            <i class="bi" 
+              [ngClass]="profileLoading ? 'bi-hourglass-split' : 'bi-check-circle'"></i>
+            {{ profileLoading ? 'جاري الحفظ...' : 'حفظ التعديلات' }}
+          </button>
+        </div>
+
+        <!-- تبويب كلمة المرور -->
+        <div class="tab-content" *ngIf="activeTab === 'password'">
+          <div class="tab-header">
+            <h5>تغيير كلمة المرور</h5>
+            <p>اختر كلمة مرور قوية لحماية حسابك</p>
+          </div>
+
+          <div *ngIf="passwordSuccess" class="form-alert success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ passwordSuccess }}
+          </div>
+          <div *ngIf="passwordError" class="form-alert error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ passwordError }}
+          </div>
+
+          <div class="form-group">
+            <label>كلمة المرور الحالية</label>
+            <div class="input-icon">
+              <i class="bi bi-lock"></i>
+              <input type="password" class="form-control"
+                [(ngModel)]="passwordForm.currentPassword"
+                placeholder="كلمة المرور الحالية">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>كلمة المرور الجديدة</label>
+            <div class="input-icon">
+              <i class="bi bi-lock-fill"></i>
+              <input type="password" class="form-control"
+                [(ngModel)]="passwordForm.newPassword"
+                placeholder="كلمة المرور الجديدة">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>تأكيد كلمة المرور</label>
+            <div class="input-icon">
+              <i class="bi bi-shield-lock"></i>
+              <input type="password" class="form-control"
+                [(ngModel)]="passwordForm.confirmPassword"
+                placeholder="أعد كتابة كلمة المرور">
+            </div>
+            <!-- مؤشر التطابق -->
+            <small class="match-indicator"
+              *ngIf="passwordForm.newPassword && passwordForm.confirmPassword">
+              <span *ngIf="passwordForm.newPassword === passwordForm.confirmPassword"
+                class="match">
+                <i class="bi bi-check-circle-fill"></i> كلمتا المرور متطابقتان
+              </span>
+              <span *ngIf="passwordForm.newPassword !== passwordForm.confirmPassword"
+                class="no-match">
+                <i class="bi bi-x-circle-fill"></i> كلمتا المرور غير متطابقتين
+              </span>
+            </small>
+          </div>
+
+          <button class="btn-save" (click)="changePassword()"
+            [disabled]="passwordLoading">
+            <i class="bi"
+              [ngClass]="passwordLoading ? 'bi-hourglass-split' : 'bi-shield-check'"></i>
+            {{ passwordLoading ? 'جاري التغيير...' : 'تغيير كلمة المرور' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -40,4 +41,31 @@ private url = 'https://localhost:7167/api';
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
+
+  // جلب البروفايل
+getProfile() {
+  return this.http.get<any>(`${this.url}/auth/profile`, {
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    })
+  });
+}
+
+// تحديث البروفايل
+updateProfile(data: any) {
+  return this.http.put<any>(`${this.url}/auth/profile`, data, {
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    })
+  });
+}
+
+// تغيير كلمة المرور
+changePassword(data: any) {
+  return this.http.put<any>(`${this.url}/auth/change-password`, data, {
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`
+    })
+  });
+}
 }

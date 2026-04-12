@@ -11,6 +11,7 @@ import { OwnerComponent } from './pages/owner/owner';
 import { PaymentComponent } from './pages/payment/payment';
 import { NotificationsComponent } from './pages/notifications/notifications';
 import { AboutComponent } from './pages/about/about';
+import { ProfileComponent } from './pages/profile/profile';
 
 
 export const routes: Routes = [
@@ -26,5 +27,6 @@ export const routes: Routes = [
   { path: 'payment/:id', component: PaymentComponent, canActivate: [authGuard] },
   { path: 'notifications', component: NotificationsComponent, canActivate: [authGuard] },
   { path: 'about', component: AboutComponent },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
 
 ];
