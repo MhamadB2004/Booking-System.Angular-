@@ -76,21 +76,111 @@
           </div>
 
           <div class="booking-actions">
-            <!-- زر الدفع — بس لما الحجز مؤكد -->
-           <button class="btn-pay"
+            <button class="btn-pay"
               *ngIf="b.status === 'Confirmed'"
               (click)="goToPayment(b.id)">
               <i class="bi bi-credit-card"></i>
               ادفع الآن
             </button>
 
-            <!-- زر الإلغاء — بس لما الحجز معلق أو مؤكد -->
             <button class="btn-cancel"
               *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
-              (click)="cancel(b.id)"
+              (click)="openCancelModal(b.id)"
               [disabled]="cancellingId === b.id">
               <i class="bi bi-x-circle"></i>
               {{ cancellingId === b.id ? 'جاري الإلغاء...' : 'إلغاء' }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Modal الإلغاء -->
+    <div class="cancel-modal-overlay" *ngIf="showCancelModal"
+      (click)="closeCancelModal()">
+      <div class="cancel-modal-card" (click)="$event.stopPropagation()">
+
+        <!-- الحالة 1ب: خصم 5% — أقل من 24 ساعة + دفع -->
+        <div *ngIf="cancelType === 'withDeduction'">
+          <div class="modal-icon warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+          </div>
+          <h5>تحذير — رسوم إلغاء</h5>
+          <p class="modal-desc">
+            تبقى <strong>أقل من 24 ساعة</strong> على موعد وصولك.
+            سيتم خصم 5% من المبلغ كرسوم إلغاء.
+          </p>
+          <div class="deduction-summary">
+            <div class="ds-row">
+              <span>المبلغ الكلي المدفوع</span>
+              <strong>{{ cancelBookingData?.totalPrice }} ليرة</strong>
+            </div>
+            <div class="ds-row deduction">
+              <span>رسوم الإلغاء (5%)</span>
+              <strong>- {{ deductionAmount }} ليرة</strong>
+            </div>
+            <div class="ds-row refund">
+              <span>المبلغ المسترد</span>
+              <strong>{{ refundAmount }} ليرة</strong>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-modal-confirm" (click)="confirmCancel()">
+              <i class="bi bi-check-circle"></i>
+              موافق على الإلغاء والخصم
+            </button>
+            <button class="btn-modal-close" (click)="closeCancelModal()">
+              <i class="bi bi-x"></i> تراجع
+            </button>
+          </div>
+        </div>
+
+        <!-- الحالة 1أ: استرداد كامل — أكثر من 24 ساعة + دفع -->
+        <div *ngIf="cancelType === 'fullRefund'">
+          <div class="modal-icon info">
+            <i class="bi bi-info-circle-fill"></i>
+          </div>
+          <h5>تأكيد إلغاء الحجز</h5>
+          <p class="modal-desc">
+            سيتم إلغاء حجزك في
+            <strong>{{ cancelBookingData?.propertyTitle }}</strong>
+            واسترداد المبلغ كاملاً.
+          </p>
+          <div class="deduction-summary">
+            <div class="ds-row refund">
+              <span>المبلغ المسترد كاملاً</span>
+              <strong>{{ refundAmount }} ليرة</strong>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-modal-confirm" (click)="confirmCancel()">
+              <i class="bi bi-check-circle"></i>
+              تأكيد الإلغاء
+            </button>
+            <button class="btn-modal-close" (click)="closeCancelModal()">
+              <i class="bi bi-x"></i> تراجع
+            </button>
+          </div>
+        </div>
+
+        <!-- الحالة 2: إلغاء مجاني — لم يدفع -->
+        <div *ngIf="cancelType === 'free'">
+          <div class="modal-icon success">
+            <i class="bi bi-calendar-x-fill"></i>
+          </div>
+          <h5>تأكيد إلغاء الحجز</h5>
+          <p class="modal-desc">
+            هل أنت متأكد من إلغاء حجزك في
+            <strong>{{ cancelBookingData?.propertyTitle }}</strong>؟
+          </p>
+          <div class="modal-actions">
+            <button class="btn-modal-confirm" (click)="confirmCancel()">
+              <i class="bi bi-check-circle"></i>
+              نعم، إلغاء الحجز
+            </button>
+            <button class="btn-modal-close" (click)="closeCancelModal()">
+              <i class="bi bi-x"></i> تراجع
             </button>
           </div>
         </div>

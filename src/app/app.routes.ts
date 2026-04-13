@@ -15,18 +15,21 @@ import { ProfileComponent } from './pages/profile/profile';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }, 
   { path: 'login', component: LoginComponent },
-  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
-  { path: 'properties', component: PropertiesComponent, canActivate: [authGuard] },
-  { path: 'property/:id', component: PropertyDetailsComponent, canActivate: [authGuard] },
+  { path: 'about', component: AboutComponent },
+
+  //   بدون authGuard — متاح للجميع
+  { path: 'home', component: HomeComponent },
+  { path: 'properties', component: PropertiesComponent },
+  { path: 'property/:id', component: PropertyDetailsComponent },
+
+  //   تحتاج تسجيل دخول
   { path: 'my-bookings', component: MyBookingsComponent, canActivate: [authGuard] },
-  { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
-  { path: 'owner', component: OwnerComponent, canActivate: [authGuard] },
   { path: 'payment/:id', component: PaymentComponent, canActivate: [authGuard] },
   { path: 'notifications', component: NotificationsComponent, canActivate: [authGuard] },
-  { path: 'about', component: AboutComponent },
+  { path: 'owner', component: OwnerComponent, canActivate: [authGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-
 ];

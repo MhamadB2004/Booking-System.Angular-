@@ -41,7 +41,7 @@
         </div>
         <div class="sd-item total">
           <span>المبلغ المدفوع</span>
-          <strong>{{ booking.totalPrice }} ريال</strong>
+          <strong>{{ booking.totalPrice }} ليرة</strong>
         </div>
       </div>
       <button class="btn-back" (click)="goToBookings()">
@@ -155,7 +155,7 @@
         <button class="btn-pay" (click)="pay()" [disabled]="paying">
           <span *ngIf="!paying">
             <i class="bi bi-lock-fill"></i>
-            دفع {{ booking.totalPrice }} ريال
+            دفع {{ booking.totalPrice }} ليرة
           </span>
           <span *ngIf="paying" class="paying-state">
             <div class="spinner-border spinner-border-sm"></div>
@@ -207,7 +207,7 @@
 
         <div class="summary-total">
           <span>الإجمالي</span>
-          <strong>{{ booking.totalPrice }} ريال</strong>
+          <strong>{{ booking.totalPrice }} ليرة</strong>
         </div>
 
         <div class="summary-note">

@@ -6,6 +6,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
 import { PropertyService } from '../../services/property';
+import {ToastService} from '../../services/toast'
+
 
 @Component({
   selector: 'app-owner',
@@ -34,8 +36,7 @@ export class OwnerComponent implements OnInit {
     pricePerNight: null, location: '',
     latitude: null, longitude: null, maxGuests: 1
   };
-  addSuccess = '';
-  addError = '';
+
   addLoading = false;
 
   // تعديل عقار
@@ -86,7 +87,8 @@ export class OwnerComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private propertyService: PropertyService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService
 
   ) {}
 
@@ -106,8 +108,6 @@ export class OwnerComponent implements OnInit {
 
   setTab(tab: string) {
     this.activeTab = tab;
-    this.addSuccess = '';
-    this.addError = '';
     this.editSuccess = '';
     this.editError = '';
     this.editProperty = null;
@@ -170,12 +170,9 @@ export class OwnerComponent implements OnInit {
   }
 
   addProperty() {
-    this.addError = '';
-    this.addSuccess = '';
-
     if (!this.newProperty.title || !this.newProperty.type ||
         !this.newProperty.pricePerNight || !this.newProperty.location) {
-      this.addError = 'الرجاء تعبئة جميع الحقول المطلوبة';
+      this.toast.show('الرجاء تعبئة جميع الحقول المطلوبة', 'error');
       return;
     }
 
@@ -184,7 +181,10 @@ export class OwnerComponent implements OnInit {
       headers: this.getHeaders()
     }).subscribe({
       next: () => {
-        this.addSuccess = 'تم إرسال طلب إضافة العقار — ينتظر موافقة الأدمن';
+        this.toast.show(
+          'تم إرسال طلب إضافة العقار — ينتظر موافقة الأدمن ✅',
+          'success'
+        );
         this.addLoading = false;
         this.newProperty = {
           title: '', description: '', type: '',
@@ -194,12 +194,13 @@ export class OwnerComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.addError = err.error || 'حدث خطأ أثناء الإضافة';
+        this.toast.show(err.error || 'حدث خطأ أثناء الإضافة', 'error');
         this.addLoading = false;
         this.cdr.detectChanges();
       }
     });
   }
+
 
   selectEdit(p: any) {
     this.editProperty = { ...p };
@@ -210,12 +211,9 @@ export class OwnerComponent implements OnInit {
   }
 
   updateProperty() {
-    this.editError = '';
-    this.editSuccess = '';
-
     if (!this.editProperty.title || !this.editProperty.type ||
         !this.editProperty.pricePerNight || !this.editProperty.location) {
-      this.editError = 'الرجاء تعبئة جميع الحقول المطلوبة';
+      this.toast.show('الرجاء تعبئة جميع الحقول المطلوبة', 'error');
       return;
     }
 
@@ -226,13 +224,13 @@ export class OwnerComponent implements OnInit {
       responseType: 'text' as 'json'
     }).subscribe({
       next: () => {
-        this.editSuccess = 'تم تحديث العقار بنجاح!';
+        this.toast.show('تم تحديث العقار بنجاح!', 'success');
         this.editLoading = false;
         this.loadProperties();
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.editError = err.error || 'حدث خطأ أثناء التعديل';
+        this.toast.show(err.error || 'حدث خطأ أثناء التعديل', 'error');
         this.editLoading = false;
         this.cdr.detectChanges();
       }
@@ -241,17 +239,19 @@ export class OwnerComponent implements OnInit {
 
   deleteProperty(id: number) {
     if (!confirm('هل أنت متأكد من حذف هذا العقار؟')) return;
-    this.http.delete(`${this.url}/admin/properties/${id}`, {
+    this.http.delete(`${this.url}/properties/${id}`, {
       headers: this.getHeaders(),
       responseType: 'text' as 'json'
     }).subscribe({
       next: () => {
         this.properties = this.properties.filter(p => p.id !== id);
+        this.toast.show('تم حذف العقار بنجاح', 'success');
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ أثناء الحذف')
+      error: () => this.toast.show('حدث خطأ أثناء الحذف', 'error')
     });
   }
+
 
   // ===========================
   // الحجوزات
@@ -301,9 +301,10 @@ export class OwnerComponent implements OnInit {
       next: () => {
         const b = this.bookings.find(b => b.id === id);
         if (b) b.status = 'Confirmed';
+        this.toast.show('تم تأكيد الحجز بنجاح ✅', 'success');
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ أثناء التأكيد')
+      error: () => this.toast.show('حدث خطأ أثناء التأكيد', 'error')
     });
   }
 
@@ -316,9 +317,10 @@ export class OwnerComponent implements OnInit {
       next: () => {
         const b = this.bookings.find(b => b.id === id);
         if (b) b.status = 'Cancelled';
+        this.toast.show('تم إلغاء الحجز', 'warning');
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ أثناء الإلغاء')
+      error: () => this.toast.show('حدث خطأ أثناء الإلغاء', 'error')
     });
   }
 
@@ -399,7 +401,7 @@ markAllRead() {
 }
 
     //التفييمات 
-    loadReviews() {
+  loadReviews() {
   this.loading = true;
   this.http.get<any[]>(`${this.url}/owner/reviews`, {
     headers: this.getHeaders()

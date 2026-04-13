@@ -69,7 +69,7 @@
     <!-- المحتوى -->
     <div class="owner-content">
 
-        <!-- إحصائيات سريعة — تظهر بكل التبويبات -->
+      <!-- إحصائيات سريعة — تظهر بكل التبويبات -->
       <div class="quick-stats">
         <div class="quick-stat">
           <div class="qs-icon blue">
@@ -103,7 +103,7 @@
             <i class="bi bi-cash-stack"></i>
           </div>
           <div>
-            <h6>{{ stats.totalRevenue }} ليرة </h6>
+            <h6>{{ stats.totalRevenue }} ليرة</h6>
             <small>إجمالي الإيرادات</small>
           </div>
         </div>
@@ -124,7 +124,7 @@
         <p>جاري التحميل...</p>
       </div>
 
-      <!-- عقاراتي -->
+      <!-- ==================== عقاراتي ==================== -->
       <div *ngIf="activeTab === 'properties' && !loading">
         <div class="content-header">
           <h4>عقاراتي</h4>
@@ -213,6 +213,7 @@
               <button class="btn-delete" (click)="deleteProperty(p.id)">
                 <i class="bi bi-trash3"></i>
               </button>
+              <!-- ✅ زر الصور -->
               <button class="btn-images" (click)="openImageUpload(p)">
                 <i class="bi bi-images"></i>
                 صور ({{ p.images?.length || 0 }})
@@ -220,95 +221,92 @@
             </div>
           </div>
         </div>
-                <!-- ✅ أضيف Modal هون -->
+
+        <!-- ✅ Modal رفع الصور -->
         <div class="modal-overlay" *ngIf="showImageModal" (click)="closeImageModal()">
-            <div class="image-modal-card" (click)="$event.stopPropagation()">
-              
-              <div class="image-modal-header">
-                <h5>
-                  <i class="bi bi-images"></i>
-                  صور {{ selectedPropertyForImages?.title }}
-                </h5>
-                <button class="modal-close" (click)="closeImageModal()">
-                  <i class="bi bi-x-lg"></i>
-                </button>
-              </div>
+          <div class="image-modal-card" (click)="$event.stopPropagation()">
 
-              <div class="image-modal-body">
-                
-                <!-- الصور الحالية -->
-                <div class="current-images" 
-                  *ngIf="selectedPropertyForImages?.images?.length > 0">
-                  <h6>الصور الحالية</h6>
-                  <div class="images-grid">
-                    <div class="image-item" 
-                      *ngFor="let img of selectedPropertyForImages?.images; let i = index">
-                      <img [src]="getImageUrl(img)" [alt]="'صورة ' + (i+1)">                      <div class="image-actions">
-                        <button class="btn-set-main" (click)="setMainImage(img, i)">
-                          <i class="bi bi-star"></i>
-                        </button>
-                        <button class="btn-delete-img" (click)="deleteImage(img, i)">
-                          <i class="bi bi-trash3"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div class="image-modal-header">
+              <h5>
+                <i class="bi bi-images"></i>
+                صور {{ selectedPropertyForImages?.title }}
+              </h5>
+              <button class="modal-close" (click)="closeImageModal()">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
 
-                <!-- رفع صور جديدة -->
-                <div class="upload-section">
-                  <h6>رفع صور جديدة</h6>
-                  
-                  <div class="upload-area" 
-                    (click)="fileInput.click()"
-                    (dragover)="$event.preventDefault()"
-                    (drop)="onDrop($event)">
-                    <i class="bi bi-cloud-upload"></i>
-                    <p>اسحب الصور هنا أو اضغط للاختيار</p>
-                    <small>JPG, PNG, WEBP — أقصى 5MB للصورة</small>
-                    <input #fileInput type="file" 
-                      multiple accept="image/*"
-                      style="display:none"
-                      (change)="onFilesSelected($event)">
-                  </div>
+            <div class="image-modal-body">
 
-                  <div class="preview-grid" *ngIf="selectedFiles.length > 0">
-                    <div class="preview-item" 
-                      *ngFor="let f of selectedFiles; let i = index">
-                      <img [src]="previews[i]" [alt]="f.name">
-                      <button class="btn-remove-preview" (click)="removeFile(i)">
-                        <i class="bi bi-x"></i>
+              <!-- الصور الحالية -->
+              <div class="current-images"
+                *ngIf="selectedPropertyForImages?.images?.length > 0">
+                <h6>الصور الحالية</h6>
+                <div class="images-grid">
+                  <div class="image-item"
+                    *ngFor="let img of selectedPropertyForImages?.images; let i = index">
+                    <img [src]="getImageUrl(img)" [alt]="'صورة ' + (i+1)">
+                    <div class="image-actions">
+                      <button class="btn-set-main"
+                        title="تعيين كصورة رئيسية"
+                        (click)="setMainImage(img, i)">
+                        <i class="bi bi-star"></i>
+                      </button>
+                      <button class="btn-delete-img"
+                        title="حذف"
+                        (click)="deleteImage(img, i)">
+                        <i class="bi bi-trash3"></i>
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <div *ngIf="uploadError" class="form-alert error mt-2">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    {{ uploadError }}
-                  </div>
+              <!-- رفع صور جديدة -->
+              <div class="upload-section">
+                <h6>رفع صور جديدة</h6>
 
-                  <div *ngIf="uploadSuccess" class="form-alert success mt-2">
-                    <i class="bi bi-check-circle-fill"></i>
-                    {{ uploadSuccess }}
-                  </div>
-
-                  <button class="btn-submit mt-3" 
-                    *ngIf="selectedFiles.length > 0"
-                    (click)="uploadImages()"
-                    [disabled]="uploading">
-                    <i class="bi" 
-                      [ngClass]="uploading ? 'bi-hourglass-split' : 'bi-upload'"></i>
-                    {{ uploading ? 'جاري الرفع...' : 'رفع ' + selectedFiles.length + ' صورة' }}
-                  </button>
+                <div class="upload-area"
+                  (click)="fileInput.click()"
+                  (dragover)="$event.preventDefault()"
+                  (drop)="onDrop($event)">
+                  <i class="bi bi-cloud-upload"></i>
+                  <p>اسحب الصور هنا أو اضغط للاختيار</p>
+                  <small>JPG, PNG, WEBP — أقصى 5MB للصورة</small>
+                  <input #fileInput type="file"
+                    multiple accept="image/*"
+                    style="display:none"
+                    (change)="onFilesSelected($event)">
                 </div>
 
+                <!-- معاينة الصور المختارة -->
+                <div class="preview-grid" *ngIf="selectedFiles.length > 0">
+                  <div class="preview-item"
+                    *ngFor="let f of selectedFiles; let i = index">
+                    <img [src]="previews[i]" [alt]="f.name">
+                    <button class="btn-remove-preview" (click)="removeFile(i)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <button class="btn-submit mt-3"
+                  *ngIf="selectedFiles.length > 0"
+                  (click)="uploadImages()"
+                  [disabled]="uploading">
+                  <i class="bi"
+                    [ngClass]="uploading ? 'bi-hourglass-split' : 'bi-upload'"></i>
+                  {{ uploading ? 'جاري الرفع...' : 'رفع ' + selectedFiles.length + ' صورة' }}
+                </button>
               </div>
+
             </div>
           </div>
-          <!-- ✅ نهاية Modal -->
+        </div>
+
       </div>
 
-      <!-- إضافة عقار -->
+      <!-- ==================== إضافة عقار ==================== -->
       <div *ngIf="activeTab === 'add-property' && !loading">
         <div class="content-header">
           <h4>إضافة عقار جديد</h4>
@@ -316,13 +314,6 @@
         </div>
 
         <div class="owner-form">
-          <div *ngIf="addSuccess" class="form-alert success">
-            <i class="bi bi-check-circle-fill"></i> {{ addSuccess }}
-          </div>
-          <div *ngIf="addError" class="form-alert error">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ addError }}
-          </div>
-
           <div class="form-section">
             <h6>المعلومات الأساسية</h6>
             <div class="row g-3">
@@ -363,7 +354,7 @@
                 <div class="input-group">
                   <input type="number" class="form-control"
                     placeholder="0" [(ngModel)]="newProperty.pricePerNight">
-                  <span class="input-group-text">ليرة </span>
+                  <span class="input-group-text">ليرة</span>
                 </div>
               </div>
               <div class="col-md-3">
@@ -402,7 +393,7 @@
         </div>
       </div>
 
-      <!-- تعديل عقار -->
+      <!-- ==================== تعديل عقار ==================== -->
       <div *ngIf="activeTab === 'edit-property' && !loading">
         <div class="content-header">
           <h4>تعديل العقار</h4>
@@ -421,13 +412,6 @@
         </div>
 
         <div class="owner-form" *ngIf="editProperty">
-          <div *ngIf="editSuccess" class="form-alert success">
-            <i class="bi bi-check-circle-fill"></i> {{ editSuccess }}
-          </div>
-          <div *ngIf="editError" class="form-alert error">
-            <i class="bi bi-exclamation-circle-fill"></i> {{ editError }}
-          </div>
-
           <div class="form-section">
             <h6>المعلومات الأساسية</h6>
             <div class="row g-3">
@@ -464,7 +448,7 @@
                 <div class="input-group">
                   <input type="number" class="form-control"
                     [(ngModel)]="editProperty.pricePerNight">
-                  <span class="input-group-text">ليرة </span>
+                  <span class="input-group-text">ليرة</span>
                 </div>
               </div>
               <div class="col-md-3">
@@ -499,7 +483,7 @@
         </div>
       </div>
 
-      <!-- طلبات الحجز المعلقة -->
+      <!-- ==================== طلبات الحجز المعلقة ==================== -->
       <div *ngIf="activeTab === 'pending-bookings' && !loading">
         <div class="content-header">
           <h4>طلبات الحجز</h4>
@@ -560,7 +544,7 @@
               </div>
             </div>
             <div class="booking-card-footer">
-              <strong class="total">{{ b.totalPrice }} ليرة </strong>
+              <strong class="total">{{ b.totalPrice }} ليرة</strong>
               <div class="booking-actions">
                 <button class="btn-confirm" (click)="confirmBooking(b.id)">
                   <i class="bi bi-check-circle"></i> قبول
@@ -574,7 +558,7 @@
         </div>
       </div>
 
-      <!-- كل الحجوزات -->
+      <!-- ==================== كل الحجوزات ==================== -->
       <div *ngIf="activeTab === 'bookings' && !loading">
         <div class="content-header">
           <h4>إدارة الحجوزات</h4>
@@ -615,72 +599,73 @@
 
         <div class="owner-table" *ngIf="filteredBookings.length > 0">
           <table class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>الزبون</th>
-              <th>العقار</th>
-              <th>الوصول</th>
-              <th>المغادرة</th>
-              <th>الليالي</th>
-              <th>الضيوف</th>
-              <th>الإجمالي</th>
-              <th>الدفع</th>
-              <th>الحالة</th>
-              <th>إجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let b of filteredBookings">
-              <td>{{ b.id }}</td>
-              <td>
-                <div class="user-cell">
-                  <div class="user-avatar-sm">{{ b.customerName?.charAt(0) }}</div>
-                  <span>{{ b.customerName }}</span>
-                </div>
-              </td>
-              <td>{{ b.propertyTitle }}</td>
-              <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
-              <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
-              <td>{{ b.nights }}</td>
-              <td>{{ b.guestsCount }}</td>
-              <td><strong>{{ b.totalPrice }}</strong> ريال</td>
-              <td>
-                <span *ngIf="b.paymentMethod" class="payment-chip"
-                  [ngClass]="b.paymentMethod === 'Card' ? 'card' : 'cash'">
-                  <i class="bi" [ngClass]="b.paymentMethod === 'Card' ?
-                    'bi-credit-card' : 'bi-cash'"></i>
-                  {{ b.paymentMethod === 'Card' ? 'بطاقة' : 'نقدي' }}
-                </span>
-                <span *ngIf="!b.paymentMethod" class="payment-chip unpaid">
-                  لم يدفع
-                </span>
-              </td>
-              <td>
-                <span class="status-badge" [ngClass]="getStatusClass(b.status)">
-                  {{ getStatusLabel(b.status) }}
-                </span>
-              </td>
-              <td>
-                <div class="action-btns">
-                  <button class="btn-confirm-sm"
-                    *ngIf="b.status === 'Pending'"
-                    (click)="confirmBooking(b.id)">
-                    <i class="bi bi-check"></i>
-                  </button>
-                  <button class="btn-cancel-sm"
-                    *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
-                    (click)="cancelBooking(b.id)">
-                    <i class="bi bi-x"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الزبون</th>
+                <th>العقار</th>
+                <th>الوصول</th>
+                <th>المغادرة</th>
+                <th>الليالي</th>
+                <th>الضيوف</th>
+                <th>الإجمالي</th>
+                <th>الدفع</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let b of filteredBookings">
+                <td>{{ b.id }}</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar-sm">{{ b.customerName?.charAt(0) }}</div>
+                    <span>{{ b.customerName }}</span>
+                  </div>
+                </td>
+                <td>{{ b.propertyTitle }}</td>
+                <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
+                <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
+                <td>{{ b.nights }}</td>
+                <td>{{ b.guestsCount }}</td>
+                <td><strong>{{ b.totalPrice }}</strong> ريال</td>
+                <td>
+                  <span *ngIf="b.paymentMethod" class="payment-chip"
+                    [ngClass]="b.paymentMethod === 'Card' ? 'card' : 'cash'">
+                    <i class="bi"
+                      [ngClass]="b.paymentMethod === 'Card' ? 'bi-credit-card' : 'bi-cash'"></i>
+                    {{ b.paymentMethod === 'Card' ? 'بطاقة' : 'نقدي' }}
+                  </span>
+                  <span *ngIf="!b.paymentMethod" class="payment-chip unpaid">
+                    لم يدفع
+                  </span>
+                </td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(b.status)">
+                    {{ getStatusLabel(b.status) }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-confirm-sm"
+                      *ngIf="b.status === 'Pending'"
+                      (click)="confirmBooking(b.id)">
+                      <i class="bi bi-check"></i>
+                    </button>
+                    <button class="btn-cancel-sm"
+                      *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
+                      (click)="cancelBooking(b.id)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
+      <!-- ==================== الإشعارات ==================== -->
       <div *ngIf="activeTab === 'notifications' && !loading">
         <div class="content-header">
           <div class="header-row">
@@ -720,10 +705,7 @@
         </div>
       </div>
 
-
-         <!--التقييمات  -->
-
-
+      <!-- ==================== التقييمات ==================== -->
       <div *ngIf="activeTab === 'reviews' && !loading">
         <div class="content-header">
           <h4>التقييمات</h4>
@@ -750,8 +732,10 @@
               </div>
               <div class="review-right">
                 <div class="stars">
-                  <i class="bi bi-star-fill" *ngFor="let s of [].constructor(r.rating)"></i>
-                  <i class="bi bi-star" *ngFor="let s of [].constructor(5 - r.rating)"></i>
+                  <i class="bi bi-star-fill"
+                    *ngFor="let s of [].constructor(r.rating)"></i>
+                  <i class="bi bi-star"
+                    *ngFor="let s of [].constructor(5 - r.rating)"></i>
                 </div>
                 <small>{{ r.createdAt | date:'yyyy/MM/dd' }}</small>
               </div>
@@ -761,7 +745,7 @@
         </div>
       </div>
 
-        <!-- تقويم الحجوزات  -->
+      <!-- ==================== تقويم الحجوزات ==================== -->
       <div *ngIf="activeTab === 'calendar' && !loading">
         <div class="content-header">
           <h4>تقويم الحجوزات</h4>
@@ -770,7 +754,6 @@
 
         <div class="calendar-wrap">
 
-          <!-- رأس التقويم -->
           <div class="calendar-header">
             <button class="cal-nav" (click)="prevMonth()">
               <i class="bi bi-chevron-right"></i>
@@ -781,7 +764,6 @@
             </button>
           </div>
 
-          <!-- أيام الأسبوع -->
           <div class="calendar-days-header">
             <span>أح</span>
             <span>إث</span>
@@ -792,7 +774,6 @@
             <span>سب</span>
           </div>
 
-          <!-- أيام الشهر -->
           <div class="calendar-grid">
             <div class="cal-day" *ngFor="let cell of calendar"
               [ngClass]="{
@@ -803,14 +784,14 @@
               }">
               <span class="day-num" *ngIf="cell.day">{{ cell.day }}</span>
               <div class="day-dots" *ngIf="cell.bookings?.length > 0">
-                <span class="dot" *ngFor="let b of cell.bookings.slice(0,3)"
+                <span class="dot"
+                  *ngFor="let b of cell.bookings.slice(0,3)"
                   [ngClass]="b.status === 'Confirmed' ? 'confirmed' : 'pending'">
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- مفتاح الألوان -->
           <div class="calendar-legend">
             <div class="legend-item">
               <span class="dot confirmed"></span> مؤكد
@@ -823,7 +804,6 @@
             </div>
           </div>
 
-          <!-- قائمة حجوزات الشهر -->
           <div class="month-bookings" *ngIf="calendarBookings.length > 0">
             <h6>حجوزات هذا الشهر</h6>
             <div class="month-booking-item" *ngFor="let b of calendarBookings">
@@ -834,8 +814,7 @@
                 <strong>{{ b.propertyTitle }}</strong>
                 <span>{{ b.checkIn | date:'MM/dd' }} ← {{ b.checkOut | date:'MM/dd' }}</span>
               </div>
-              <span class="status-badge"
-                [ngClass]="getStatusClass(b.status)">
+              <span class="status-badge" [ngClass]="getStatusClass(b.status)">
                 {{ getStatusLabel(b.status) }}
               </span>
             </div>
@@ -851,9 +830,6 @@
 
         </div>
       </div>
-      
-        <!--/ تقويم الحجوزات  -->
-
 
     </div>
   </div>

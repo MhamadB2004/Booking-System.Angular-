@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { CommonModule } from '@angular/common';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-register',
@@ -17,17 +18,17 @@ export class RegisterComponent {
   phone = '';
   password = '';
   role = 'Customer';
-  error = '';
-  success = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private toast: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   register() {
-    this.error = '';
-    this.success = '';
-
     if (!this.fullName || !this.email || !this.phone || !this.password) {
-      this.error = 'Please fill in all fields';
+      this.toast.show('الرجاء تعبئة جميع الحقول', 'error');
       return;
     }
 
@@ -40,14 +41,23 @@ export class RegisterComponent {
     }).subscribe({
       next: (res: any) => {
         if (res.needsApproval) {
-          this.success = 'Account created! Please wait for admin approval.';
+          // ✅ مالك — ينتظر موافقة
+          this.toast.show(
+            'تم إنشاء حسابك بنجاح! حسابك قيد المراجعة — سيتم إشعارك عند موافقة الأدمن 🎉',
+            'info'
+          );
         } else {
-          this.success = 'Account created successfully! Redirecting...';
-          setTimeout(() => this.router.navigate(['/login']), 2000);
+          // ✅ زبون — مباشر للـ login
+          this.toast.show('تم إنشاء الحساب بنجاح! جاري التحويل...', 'success');
+          setTimeout(() => this.router.navigate(['/login']), 2500);
         }
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.error = err.error || 'Registration failed. Please try again.';
+        // ✅ إذا الإيميل مسجل مسبقاً أو أي خطأ
+        const msg = err.error || 'حدث خطأ أثناء التسجيل';
+        this.toast.show(msg, 'error');
+        this.cdr.detectChanges();
       }
     });
   }

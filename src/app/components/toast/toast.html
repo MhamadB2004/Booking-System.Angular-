@@ -1,0 +1,25 @@
+<div class="toast-container">
+  <div class="toast-item"
+    *ngFor="let t of toasts"
+    [ngClass]="t.type"
+    (click)="remove(t.id)">
+
+    <div class="toast-icon">
+      <i class="bi" [ngClass]="{
+        'bi-check-circle-fill': t.type === 'success',
+        'bi-exclamation-circle-fill': t.type === 'error',
+        'bi-exclamation-triangle-fill': t.type === 'warning',
+        'bi-info-circle-fill': t.type === 'info'
+      }"></i>
+    </div>
+
+    <span class="toast-message">{{ t.message }}</span>
+
+    <button class="toast-close" (click)="remove(t.id)">
+      <i class="bi bi-x"></i>
+    </button>
+
+    <!-- شريط المؤقت -->
+    <div class="toast-progress"></div>
+  </div>
+</div>

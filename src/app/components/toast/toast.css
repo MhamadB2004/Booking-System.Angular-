@@ -1,0 +1,83 @@
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 380px;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.toast-item.success { background: #EAF3DE; border-right: 4px solid #3B6D11; }
+.toast-item.error   { background: #FCEBEB; border-right: 4px solid #A32D2D; }
+.toast-item.warning { background: #FAEEDA; border-right: 4px solid #854F0B; }
+.toast-item.info    { background: #E6F1FB; border-right: 4px solid #185FA5; }
+
+.toast-icon i { font-size: 20px; }
+.toast-item.success .toast-icon i { color: #3B6D11; }
+.toast-item.error   .toast-icon i { color: #A32D2D; }
+.toast-item.warning .toast-icon i { color: #854F0B; }
+.toast-item.info    .toast-icon i { color: #185FA5; }
+
+.toast-message {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.toast-item.success .toast-message { color: #3B6D11; }
+.toast-item.error   .toast-message { color: #A32D2D; }
+.toast-item.warning .toast-message { color: #854F0B; }
+.toast-item.info    .toast-message { color: #185FA5; }
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.6;
+  padding: 0;
+  line-height: 1;
+}
+
+.toast-close:hover { opacity: 1; }
+
+/* شريط المؤقت */
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 3px;
+  width: 100%;
+  animation: progress 4s linear forwards;
+}
+
+.toast-item.success .toast-progress { background: #3B6D11; }
+.toast-item.error   .toast-progress { background: #A32D2D; }
+.toast-item.warning .toast-progress { background: #854F0B; }
+.toast-item.info    .toast-progress { background: #185FA5; }
+
+@keyframes progress {
+  from { width: 100%; }
+  to   { width: 0%;   }
+}
