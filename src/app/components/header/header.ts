@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -16,12 +16,11 @@ import { NotificationStateService } from '../../services/notification-state';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-
-
   isLoggedIn = false;
   role = '';
   unreadCount = 0;
   url = 'https://localhost:7167/api';
+  menuOpen = false; // ✅ حالة المنيو للموبايل
   private sub: Subscription = new Subscription();
 
   constructor(
@@ -35,7 +34,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.updateState();
 
-    // اشترك بالتغييرات
     this.sub.add(
       this.notifState.count$.subscribe(count => {
         this.unreadCount = count;
@@ -43,10 +41,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
       })
     );
 
+    // ✅ أغلق المنيو عند التنقل
     this.sub.add(
       this.router.events.pipe(
         filter(e => e instanceof NavigationEnd)
       ).subscribe(() => {
+        this.menuOpen = false;
         this.updateState();
       })
     );
@@ -56,12 +56,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  // ✅ أغلق المنيو عند الضغط خارجه
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.header-container')) {
+      this.menuOpen = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+    this.cdr.detectChanges();
+  }
+
   updateState() {
     this.isLoggedIn = this.auth.isLoggedIn();
     this.role = this.auth.getRole();
     if (this.isLoggedIn) this.loadUnread();
     this.cdr.detectChanges();
   }
+
   getHeaders() {
     return new HttpHeaders({
       Authorization: `Bearer ${this.auth.getToken()}`
@@ -81,9 +97,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    this.menuOpen = false;
     this.auth.logout();
     this.router.navigate(['/login']);
   }
-
-
 }

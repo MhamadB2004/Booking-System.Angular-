@@ -1,9 +1,11 @@
-
+/* ===========================
+   Header Base
+=========================== */
 .header {
   --background-color: rgba(255, 255, 255, 0);
   color: var(--default-color);
   background-color: var(--background-color);
-  padding: 20px 0;
+  padding: 15px 0;
   transition: all 0.5s;
   z-index: 997;
 }
@@ -11,115 +13,358 @@
 .header .header-container {
   background: var(--surface-color);
   border-radius: 50px;
-  padding: 5px 25px;
+  padding: 8px 25px;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
+/* اللوغو */
 .header .logo {
   line-height: 1;
+  text-decoration: none !important;
 }
 
-.header .logo h1 {
+.header .logo h1.sitename {
   font-size: 22px;
   margin: 0;
   font-weight: 700;
-  color: var(--heading-color);
+  color: var(--heading-color) !important;
+  text-decoration: none !important;
 }
 
-.header .btn-getstarted,
-.header .btn-getstarted:focus {
-  color: var(--contrast-color);
-  background: var(--accent-color);
-  font-size: 14px;
-  padding: 8px 20px;
-  margin: 0 0 0 30px;
-  border-radius: 50px;
-  transition: 0.3s;
-  text-decoration: none;
-}
-
-.header .btn-getstarted:hover {
-  background: color-mix(in srgb, var(--accent-color), transparent 15%);
-}
-
-.navmenu ul {
+/* ===========================
+   Desktop Nav
+=========================== */
+.navmenu .nav-inner ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 30px;
+  align-items: center;
+  gap: 4px;
 }
 
-.navmenu ul li a {
+.navmenu .nav-inner ul li a {
   color: var(--nav-color);
   text-decoration: none;
   font-family: var(--nav-font);
   font-size: 14px;
   font-weight: 500;
-  transition: 0.3s;
+  transition: all 0.3s;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.navmenu ul li a:hover,
-.navmenu ul li a.active {
-  color: var(--nav-hover-color);
+.navmenu .nav-inner ul li a i {
+  font-size: 15px;
+  display: none; /* أيقونات مخفية بالديسكتوب */
 }
 
-@media (max-width: 1200px) {
-  .header {
-    padding-top: 10px;
-  }
-
-  .header .header-container {
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 10px 5px 10px 15px;
-  }
-
-  .header .logo { order: 1; }
-  .header .btn-getstarted {
-    order: 2;
-    margin: 0 10px 0 0;
-    padding: 6px 15px;
-  }
-  .header .navmenu { order: 3; }
-}
-.header .logo .sitename {
-  color: var(--heading-color) !important;
-  text-decoration: none !important;
+.navmenu .nav-inner ul li a:hover,
+.navmenu .nav-inner ul li a.active {
+  color: var(--accent-color);
+  background: color-mix(in srgb, var(--accent-color), transparent 92%);
 }
 
-.header .logo {
-  text-decoration: none !important;
-}
-
-.header .btn-getstarted {
+/* Get Started Desktop */
+.desktop-actions .btn-getstarted {
   color: var(--contrast-color) !important;
   background: var(--accent-color) !important;
+  font-size: 14px;
+  padding: 8px 20px;
+  margin-right: 0;
+  margin-left: 16px;
+  border-radius: 50px;
+  transition: 0.3s;
   text-decoration: none !important;
+  white-space: nowrap;
 }
 
+.desktop-actions .btn-getstarted:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 15%) !important;
+}
+
+/* الإشعارات */
 .notif-btn {
   position: relative;
-  display: flex !important;
-  align-items: center;
-}
-
-.notif-btn i {
-  font-size: 18px;
 }
 
 .notif-badge {
   position: absolute;
-  top: -6px;
-  left: -6px;
+  top: -4px;
+  right: -4px;
   background: #E24B4A;
   color: white;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* logout item */
+.logout-item a {
+  color: #A32D2D !important;
+}
+
+.logout-item a:hover {
+  background: #FCEBEB !important;
+  color: #A32D2D !important;
+}
+
+/* Mobile Header في المنيو */
+.nav-mobile-header { display: none; }
+.nav-overlay { display: none; }
+.nav-footer { display: none; }
+
+/* ===========================
+   زر الهامبرغر
+=========================== */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  z-index: 1001;
+}
+
+.mobile-menu-btn:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 90%);
+}
+
+.mobile-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--heading-color);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animation للهامبرغر */
+.mobile-menu-btn.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.mobile-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.mobile-menu-btn.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ===========================
+   Responsive — Tablet & Mobile
+=========================== */
+@media (max-width: 991px) {
+
+  .header {
+    padding: 10px 0;
+  }
+
+  .header .header-container {
+    border-radius: 16px;
+    margin: 0 12px;
+    padding: 10px 16px;
+  }
+
+  /* إظهار زر الهامبرغر */
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  /* إخفاء Get Started بالديسكتوب على الموبايل */
+  .desktop-actions {
+    display: none;
+  }
+
+  /* ===========================
+     Drawer Menu للموبايل
+  =========================== */
+  .navmenu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    z-index: 9998;
+    transition: right 0.3s ease;
+  }
+
+  .navmenu.mobile-open {
+    right: 0;
+  }
+
+  /* Overlay خلف المنيو */
+  .nav-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+
+  .nav-inner {
+    background: var(--surface-color);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    overflow-y: auto;
+  }
+
+  /* هيدر المنيو الموبايل */
+  .nav-mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  }
+
+  .nav-mobile-header .sitename {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--heading-color);
+  }
+
+  .nav-close-btn {
+    background: #f5f5f5;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--default-color);
+    transition: all 0.2s;
+  }
+
+  .nav-close-btn:hover {
+    background: #FCEBEB;
+    color: #A32D2D;
+  }
+
+  /* قائمة الروابط */
+  .navmenu .nav-inner ul {
+    flex-direction: column;
+    gap: 0;
+    padding: 12px 12px;
+    flex: 1;
+  }
+
+  .navmenu .nav-inner ul li {
+    width: 100%;
+  }
+
+  .navmenu .nav-inner ul li a {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* إظهار الأيقونات بالموبايل */
+  .navmenu .nav-inner ul li a i {
+    display: block;
+    font-size: 18px;
+    width: 22px;
+    color: var(--accent-color);
+  }
+
+  .navmenu .nav-inner ul li a:hover,
+  .navmenu .nav-inner ul li a.active {
+    background: color-mix(in srgb, var(--accent-color), transparent 90%);
+    color: var(--accent-color);
+  }
+
+  /* فاصل قبل الخروج */
+  .logout-item {
+    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  .logout-item a i { color: #A32D2D !important; }
+
+  /* Get Started للموبايل */
+  .nav-footer {
+    display: block;
+    padding: 16px;
+    border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+    margin-top: auto;
+  }
+
+  .btn-getstarted-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--accent-color);
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-getstarted-mobile:hover {
+    background: color-mix(in srgb, var(--accent-color), transparent 10%);
+    color: white;
+  }
+
+  /* الإشعارات بالموبايل */
+  .notif-btn .notif-badge {
+    position: static;
+    margin-right: auto;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+}
+
+/* ===========================
+   Small Mobile (< 480px)
+=========================== */
+@media (max-width: 480px) {
+  .header .header-container {
+    margin: 0 8px;
+    padding: 8px 12px;
+  }
+
+  .header .logo h1.sitename {
+    font-size: 18px;
+  }
+
+  .navmenu {
+    width: 100%;
+    right: -100%;
+  }
 }
