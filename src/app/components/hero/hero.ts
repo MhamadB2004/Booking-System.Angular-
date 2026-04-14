@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PropertyService } from '../../services/property';
 
+
 @Component({
   selector: 'app-hero',
   standalone: true,
