@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { PropertyService } from '../../services/property';
 import { BookingService } from '../../services/booking';
 import { AuthService } from '../../services/auth';
@@ -22,6 +23,10 @@ export class PropertyDetailsComponent implements OnInit {
   bookingError = '';
   isLoggedIn = false;
   role = '';
+  reviews: any[] = [];
+  averageRating = 0;
+  totalReviews = 0;
+  url = 'https://localhost:7167/api';
 
   booking = {
     checkIn: '',
@@ -36,6 +41,7 @@ export class PropertyDetailsComponent implements OnInit {
     private propertyService: PropertyService,
     private bookingService: BookingService,
     private auth: AuthService,
+    private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -43,7 +49,10 @@ export class PropertyDetailsComponent implements OnInit {
     this.isLoggedIn = this.auth.isLoggedIn();
     this.role = this.auth.getRole();
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) this.loadProperty(+id);
+    if (id) {
+      this.loadProperty(+id);
+      this.loadReviews(+id);
+    }
   }
 
   loadProperty(id: number) {
@@ -59,6 +68,28 @@ export class PropertyDetailsComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  loadReviews(propertyId: number) {
+    this.http.get<any>(`${this.url}/reviews/property/${propertyId}`).subscribe({
+      next: (res) => {
+        this.reviews = res.reviews || [];
+        this.averageRating = res.averageRating || 0;
+        this.totalReviews = res.totalReviews || 0;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.reviews = [];
+      }
+    });
+  }
+
+  getStars(rating: number): number[] {
+    return Array(rating).fill(0);
+  }
+
+  getEmptyStars(rating: number): number[] {
+    return Array(5 - rating).fill(0);
   }
 
   book() {

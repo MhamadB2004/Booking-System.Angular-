@@ -78,24 +78,57 @@
           </div>
 
           <!-- التقييمات -->
-          <div class="section-card" *ngIf="property.reviews?.length > 0">
-            <h4>التقييمات</h4>
-            <div class="review-item" *ngFor="let r of property.reviews">
-              <div class="review-header">
-                <div class="reviewer">
-                  <div class="avatar">{{ r.userName?.charAt(0) }}</div>
-                  <div>
-                    <strong>{{ r.userName }}</strong>
-                    <div class="stars">
-                      <i class="bi bi-star-fill" *ngFor="let s of [].constructor(r.rating)"></i>
+          <div class="section-card">
+            <div class="reviews-header">
+              <h4>
+                <i class="bi bi-star-fill text-warning"></i>
+                التقييمات
+                <span class="reviews-count" *ngIf="totalReviews > 0">({{ totalReviews }})</span>
+              </h4>
+              <!-- متوسط التقييم -->
+              <div class="rating-summary" *ngIf="totalReviews > 0">
+                <div class="rating-big">{{ averageRating }}</div>
+                <div class="rating-stars-big">
+                  <i class="bi bi-star-fill" *ngFor="let s of getStars(averageRating)"></i>
+                  <i class="bi bi-star" *ngFor="let s of getEmptyStars(averageRating)"></i>
+                  <span>من 5</span>
+                </div>
+                <div class="rating-label">متوسط التقييم</div>
+              </div>
+            </div>
+
+            <!-- لا يوجد تقييمات -->
+            <div class="no-reviews" *ngIf="reviews.length === 0">
+              <i class="bi bi-chat-square-text"></i>
+              <p>لا توجد تقييمات لهذا العقار بعد</p>
+              <small>كن أول من يقيّم هذا العقار!</small>
+            </div>
+
+            <!-- قائمة التقييمات -->
+            <div class="reviews-list" *ngIf="reviews.length > 0">
+              <div class="review-item" *ngFor="let r of reviews">
+                <div class="review-header">
+                  <div class="reviewer">
+                    <div class="avatar">{{ r.userName?.charAt(0)?.toUpperCase() }}</div>
+                    <div class="reviewer-info">
+                      <strong class="reviewer-name">{{ r.userName }}</strong>
+                      <div class="stars">
+                        <i class="bi bi-star-fill" *ngFor="let s of getStars(r.rating)"></i>
+                        <i class="bi bi-star" *ngFor="let s of getEmptyStars(r.rating)"></i>
+                        <span class="rating-num">{{ r.rating }}/5</span>
+                      </div>
                     </div>
                   </div>
+                  <span class="review-date">
+                    <i class="bi bi-clock"></i>
+                    {{ r.createdAt | date:'yyyy/MM/dd' }}
+                  </span>
                 </div>
-                <span class="review-date">
-                  {{ r.createdAt | date:'yyyy/MM/dd' }}
-                </span>
+                <p class="review-comment" *ngIf="r.comment">{{ r.comment }}</p>
+                <p class="review-no-comment" *ngIf="!r.comment">
+                  <i class="bi bi-chat-dots"></i> لم يترك المستخدم تعليقاً
+                </p>
               </div>
-              <p class="review-comment">{{ r.comment }}</p>
             </div>
           </div>
 

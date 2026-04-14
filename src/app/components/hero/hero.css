@@ -1,4 +1,3 @@
-
 .hero {
   position: relative;
   background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color), transparent 95%) 0%, color-mix(in srgb, var(--background-color), transparent 5%) 100%);
@@ -350,9 +349,117 @@
   }
 }
 
-/*--------------------------------------------------------------
-# Home About Section
---------------------------------------------------------------*/
+
+/* ===========================
+   Counter Animation
+=========================== */
+.counter-val {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent-color);
+  transition: all 0.1s;
+}
+
+.counter-suffix {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* ===========================
+   Secondary Image Label
+=========================== */
+.secondary-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.65));
+  color: white;
+  padding: 12px 10px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.secondary-label i { font-size: 13px; }
+
+/* ===========================
+   Agent Avatar Icon (بدل صورة)
+=========================== */
+.agent-avatar-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid white;
+}
+
+.agent-avatar-icon i {
+  font-size: 22px;
+  color: white;
+}
+
+/* ===========================
+   Small Image Overlay
+=========================== */
+.small-img-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: white;
+  padding: 16px 10px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 0 0 16px 16px;
+}
+
+.small-img-overlay i { font-size: 13px; }
+
+/* ===========================
+   Stats Grid في About
+=========================== */
+.home-about .content-wrapper .stats-grid .stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent-color);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  transition: all 0.1s;
+}
+
+.home-about .content-wrapper .stats-grid .stat-number span {
+  font-size: 1.4rem;
+}
+
+/* ===========================
+   Feature item — أيقونة filled
+=========================== */
+.home-about .content-wrapper .features-list .feature-item i.bi-check-circle-fill {
+  color: var(--accent-color);
+}
+
+/* ===========================
+   Small image position relative
+=========================== */
+.home-about .image-section .secondary-images .small-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
 .home-about .image-section {
   position: relative;
 }

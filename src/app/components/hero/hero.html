@@ -3,14 +3,16 @@
     <div class="hero-content">
       <div class="row align-items-center">
 
+        <!-- ==================== Hero Text ==================== -->
         <div class="col-lg-6 hero-text">
           <div class="hero-badge">
             <i class="bi bi-star-fill"></i>
             <span>Premium Properties</span>
           </div>
           <h1>Discover Your Perfect Farm or Apartment</h1>
-          <p>Browse thousands of verified listings from trusted agents. Find your dream property today.</p>
+          <p>Browse hundreds of verified listings from trusted owners. Find your dream property today.</p>
 
+          <!-- Search Form -->
           <div class="search-form">
             <div class="row g-3">
               <div class="col-12">
@@ -54,23 +56,24 @@
             </div>
           </div>
 
+          <!-- Hero Stats — من الـ API مع عداد متحرك -->
           <div class="hero-stats">
             <div class="row">
               <div class="col-4">
                 <div class="stat-item">
-                  <h3>{{ stats.totalProperties }}+</h3>
+                  <h3 class="counter-val">{{ displayed.totalProperties }}<span class="counter-suffix">+</span></h3>
                   <p>Properties Listed</p>
                 </div>
               </div>
               <div class="col-4">
                 <div class="stat-item">
-                  <h3>{{ stats.totalOwners }}+</h3>
+                  <h3 class="counter-val">{{ displayed.totalOwners }}<span class="counter-suffix">+</span></h3>
                   <p>Verified Owners</p>
                 </div>
               </div>
               <div class="col-4">
                 <div class="stat-item">
-                  <h3>{{ stats.satisfaction}}%</h3>
+                  <h3 class="counter-val">{{ displayed.satisfaction }}<span class="counter-suffix">%</span></h3>
                   <p>Client Satisfaction</p>
                 </div>
               </div>
@@ -79,24 +82,35 @@
 
         </div><!-- End hero-text -->
 
+        <!-- ==================== Hero Images ==================== -->
         <div class="col-lg-6 hero-images">
           <div class="image-stack">
+
             <div class="main-image">
               <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800"
                 alt="Luxury Property" class="img-fluid">
               <div class="property-tag">
-                <span class="price">450 ليرة </span>
-                <span class="type">Featured</span>
+                <span class="price">450 ليرة</span>
+                <span class="type">
+                  <i class="bi bi-star-fill"></i> Featured
+                </span>
               </div>
             </div>
+
             <div class="secondary-image">
               <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400"
                 alt="Property Interior" class="img-fluid">
+              <div class="secondary-label">
+                <i class="bi bi-house-heart"></i>
+                <span>Interior</span>
+              </div>
             </div>
+
             <div class="floating-card">
               <div class="agent-info">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100"
-                  alt="Agent" class="agent-avatar">
+                <div class="agent-avatar-icon">
+                  <i class="bi bi-buildings"></i>
+                </div>
                 <div class="agent-details">
                   <h5>TheProperty</h5>
                   <p>Top Real Estate Platform</p>
@@ -106,130 +120,139 @@
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i>
                     <i class="bi bi-star-fill"></i>
-                    <span>4.9 (127 reviews)</span>
+                    <span>{{ displayed.totalBookings }}+ Bookings</span>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div><!-- End hero-images -->
 
-          <div class="marginandPaddnig">
+      </div><!-- End row -->
+    </div>
+  </div>
+</section>
 
-          </div>
-        
+<!-- ==================== Home About Section ==================== -->
+<section id="home-about" class="home-about section">
+  <div class="container">
+    <div class="row align-items-center gy-5">
 
-             <!-- Home About Section -->
-    <section id="home-about" class="home-about section">
+      <!-- الصور -->
+      <div class="col-lg-6 order-lg-2">
+        <div class="image-section">
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+          <div class="main-image-wrapper">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800"
+              alt="Premium Property" class="img-fluid main-image">
 
-        <div class="row align-items-center gy-5">
-
-          <div class="col-lg-6 order-lg-2" data-aos="fade-left" data-aos-delay="200">
-            <div class="image-section">
-              <div class="main-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800" alt="Premium Property" class="img-fluid main-image">
-                <div class="floating-card">
-                  <div class="card-content">
-                    <div class="icon">
-                      <i class="bi bi-award"></i>
-                    </div>
-                    <div class="text">
-                      <span class="number"><span data-purecounter-start="0" data-purecounter-end="12" data-purecounter-duration="1" class="purecounter"></span>+</span>
-                      <span class="label">Awards Won</span>
-                    </div>
-                  </div>
+            <!-- بطاقة العدادات على الصورة -->
+            <div class="floating-card">
+              <div class="card-content">
+                <div class="icon">
+                  <i class="bi bi-award-fill"></i>
                 </div>
-              </div>
-              <div class="secondary-images">
-                <div class="small-image">
-                  <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800" alt="Interior Design" class="img-fluid">
-                </div>
-                <div class="small-image">
-                  <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800" alt="Expert Agent" class="img-fluid">
+                <div class="text">
+                  <span class="number">{{ displayedAbout.awardsWon }}+</span>
+                  <span class="label">Awards Won</span>
                 </div>
               </div>
             </div>
           </div>
 
-<!-- ////////////////////////////////// -->
- 
-          <div class="col-lg-6 order-lg-1" data-aos="fade-right" data-aos-delay="300">
-            <div class="content-wrapper">
-              <div class="section-badge">
-                <i class="bi bi-buildings"></i>
-                <span>Premium Real Estate</span>
+          <!-- الصور الصغيرة -->
+          <div class="secondary-images">
+            <div class="small-image">
+              <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400"
+                alt="Interior Design" class="img-fluid">
+              <div class="small-img-overlay">
+                <i class="bi bi-house-heart"></i>
+                <span>Interior</span>
               </div>
-
-              <h2>Transforming Real Estate Dreams Into Reality</h2>
-
-              <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore dolore magna aliqua. Enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip consequat.</p>
-
-              <div class="stats-grid">
-                <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
-                  <div class="stat-number">
-                    <span data-purecounter-start="0" data-purecounter-end="2800" data-purecounter-duration="2" class="purecounter"></span>+
-                  </div>
-                  <div class="stat-label">Properties Listed</div>
-                </div>
-
-                <div class="stat-item" data-aos="zoom-in" data-aos-delay="450">
-                  <div class="stat-number">
-                    <span data-purecounter-start="0" data-purecounter-end="95" data-purecounter-duration="1" class="purecounter"></span>%
-                  </div>
-                  <div class="stat-label">Success Rate</div>
-                </div>
-
-                <div class="stat-item" data-aos="zoom-in" data-aos-delay="500">
-                  <div class="stat-number">
-                    <span data-purecounter-start="0" data-purecounter-end="24" data-purecounter-duration="1" class="purecounter"></span>/7
-                  </div>
-                  <div class="stat-label">Client Support</div>
-                </div>
-              </div>
-
-              <div class="features-list">
-                <div class="feature-item">
-                  <i class="bi bi-check-circle"></i>
-                  <span>Expert market analysis and pricing strategies</span>
-                </div>
-                <div class="feature-item">
-                  <i class="bi bi-check-circle"></i>
-                  <span>Personalized property matching services</span>
-                </div>
-                <div class="feature-item">
-                  <i class="bi bi-check-circle"></i>
-                  <span>Professional photography and virtual tours</span>
-                </div>
-              </div>
-
-              <div class="cta-wrapper">
-                <a routerLink="/about" class="btn-primary">
-                  <span>Learn More About Us</span>
-                  <i class="bi bi-arrow-right-circle"></i>
-                </a>
-                <div class="contact-quick">
-                  <i class="bi bi-headset"></i>
-                  <div class="contact-text">
-                    <span>Need assistance?</span>
-                    <a href="tel:+15559876543">+963 962 465 452</a>
-                  </div>
-                </div>
+            </div>
+            <div class="small-image">
+              <img src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?w=400"
+                alt="Property View" class="img-fluid">
+              <div class="small-img-overlay">
+                <i class="bi bi-geo-alt"></i>
+                <span>Locations</span>
               </div>
             </div>
           </div>
 
         </div>
-
       </div>
 
-    </section><!-- /Home About Section -->
-        
-        
-        
+      <!-- المحتوى -->
+      <div class="col-lg-6 order-lg-1">
+        <div class="content-wrapper">
+
+          <div class="section-badge">
+            <i class="bi bi-buildings"></i>
+            <span>Premium Real Estate</span>
+          </div>
+
+          <h2>Transforming Real Estate Dreams Into Reality</h2>
+
+          <p>We connect property owners with customers through a secure, transparent platform. Whether you're looking for a serene farm getaway or a modern city apartment — we have the perfect place for you.</p>
+
+          <!-- Stats Grid — عدادات من API -->
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number">
+                {{ displayedAbout.properties }}<span>+</span>
+              </div>
+              <div class="stat-label">Properties Listed</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">
+                {{ displayedAbout.successRate }}<span>%</span>
+              </div>
+              <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">
+                {{ displayedAbout.support }}<span>/7</span>
+              </div>
+              <div class="stat-label">Client Support</div>
+            </div>
+          </div>
+
+          <!-- Features -->
+          <div class="features-list">
+            <div class="feature-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Expert market analysis and pricing strategies</span>
+            </div>
+            <div class="feature-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Personalized property matching services</span>
+            </div>
+            <div class="feature-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Professional photography and virtual tours</span>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="cta-wrapper">
+            <a routerLink="/about" class="btn-primary">
+              <span>Learn More About Us</span>
+              <i class="bi bi-arrow-right-circle"></i>
+            </a>
+            <div class="contact-quick">
+              <i class="bi bi-headset"></i>
+              <div class="contact-text">
+                <span>Need assistance?</span>
+                <a href="tel:+963962465452">+963 962 465 452</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
+
     </div>
   </div>
-
 </section>
