@@ -232,11 +232,12 @@
   height: 100%;
   box-shadow: 0 4px 22px color-mix(in srgb, var(--default-color), transparent 90%);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .featured-properties .stack-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 28px color-mix(in srgb, var(--default-color), transparent 86%);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--accent-color), transparent 75%);
 }
 
 .featured-properties .stack-card .stack-media {

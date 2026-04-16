@@ -28,6 +28,11 @@ export class PropertyDetailsComponent implements OnInit {
   totalReviews = 0;
   url = 'https://localhost:7167/api';
 
+  // Slider الصور
+  activeSlide = 0;
+  isSliding = false;
+  slideDirection: 'left' | 'right' = 'left';
+
   booking = {
     checkIn: '',
     checkOut: '',
@@ -90,6 +95,44 @@ export class PropertyDetailsComponent implements OnInit {
 
   getEmptyStars(rating: number): number[] {
     return Array(5 - rating).fill(0);
+  }
+
+  // ===========================
+  // Slider الصور
+  // ===========================
+  get images(): string[] {
+    if (!this.property?.images?.length) return [];
+    return this.property.images.map((img: string) => this.getImageUrl(img));
+  }
+
+  prevSlide() {
+    if (this.isSliding || this.images.length <= 1) return;
+    this.slideDirection = 'right';
+    this.isSliding = true;
+    setTimeout(() => {
+      this.activeSlide = (this.activeSlide - 1 + this.images.length) % this.images.length;
+      this.isSliding = false;
+    }, 300);
+  }
+
+  nextSlide() {
+    if (this.isSliding || this.images.length <= 1) return;
+    this.slideDirection = 'left';
+    this.isSliding = true;
+    setTimeout(() => {
+      this.activeSlide = (this.activeSlide + 1) % this.images.length;
+      this.isSliding = false;
+    }, 300);
+  }
+
+  goToSlide(index: number) {
+    if (this.isSliding || index === this.activeSlide) return;
+    this.slideDirection = index > this.activeSlide ? 'left' : 'right';
+    this.isSliding = true;
+    setTimeout(() => {
+      this.activeSlide = index;
+      this.isSliding = false;
+    }, 300);
   }
 
   book() {

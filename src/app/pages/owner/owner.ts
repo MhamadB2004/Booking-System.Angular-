@@ -485,7 +485,7 @@ isToday(day: number): boolean {
 
 //للصور 
 
-// فتح modal الصور
+// فتح modal الصور — يظهر أمام المستخدم مباشرة
 openImageUpload(property: any) {
   this.selectedPropertyForImages = { ...property };
   this.showImageModal = true;
@@ -494,6 +494,10 @@ openImageUpload(property: any) {
   this.uploadError = '';
   this.uploadSuccess = '';
   this.cdr.detectChanges();
+  // scroll للأعلى حتى يشوف الـ modal
+  setTimeout(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 50);
 }
 
 closeImageModal() {

@@ -54,9 +54,10 @@
 <div class="featured-properties">
   <div class="row gy-4 mt-4" *ngIf="!loading && properties.length > 0">
     <div class="col-lg-4" *ngFor="let p of properties">
-      <article class="stack-card">
+      <article class="stack-card" (click)="goToDetails(p.id)" style="cursor:pointer">
         <figure class="stack-media">
-            <img [src]="getImageUrl(p.images?.[0]) || 'https://images.unsplash.com/...'"  [alt]="p.title" class="img-fluid" loading="lazy">
+          <img [src]="getImageUrl(p.images?.[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800'"
+            [alt]="p.title" class="img-fluid" loading="lazy">
           <figcaption>
             <span class="chip" [ngClass]="p.type === 'Farm' ? 'exclusive' : 'new'">
               {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
@@ -64,11 +65,7 @@
           </figcaption>
         </figure>
         <div class="stack-body">
-          <h5>
-            <a (click)="goToDetails(p.id)" style="cursor:pointer">
-              {{ p.title }}
-            </a>
-          </h5>
+          <h5>{{ p.title }}</h5>
           <div class="stack-loc">
             <i class="bi bi-geo-alt"></i> {{ p.location }}
           </div>
@@ -82,10 +79,10 @@
             </li>
           </ul>
           <div class="stack-foot">
-            <span class="stack-price">{{ p.pricePerNight }} ليرة </span>
-            <a (click)="goToDetails(p.id)" class="stack-link" style="cursor:pointer">
-              التفاصيل
-            </a>
+            <span class="stack-price">{{ p.pricePerNight }} ليرة</span>
+            <span class="stack-link">
+              <i class="bi bi-arrow-left-circle"></i> التفاصيل
+            </span>
           </div>
         </div>
       </article>
