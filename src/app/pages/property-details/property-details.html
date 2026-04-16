@@ -14,19 +14,91 @@
     <!-- المحتوى -->
     <div *ngIf="!loading && property">
 
-      <!-- صورة رئيسية -->
-      <div class="property-hero">
-        <img [src]="getImageUrl(property.images?.[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200'"             [alt]="property.title" class="hero-img">
-        <div class="hero-overlay">
-          <div class="hero-info">
+      <!-- ===========================
+           IMAGE SLIDER / CAROUSEL
+      =========================== -->
+      <div class="property-slider">
+
+        <!-- الشريط الرئيسي -->
+        <div class="slider-main" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+
+          <!-- الصور -->
+          <div class="slider-track" [style.transform]="'translateX(' + (-activeSlide * 100) + '%)'">
+            <div class="slide-item" *ngFor="let img of sliderImages; let i = index">
+              <img [src]="img" [alt]="property.title + ' - صورة ' + (i + 1)" loading="lazy">
+            </div>
+          </div>
+
+          <!-- Overlay معلومات العقار -->
+          <div class="slider-overlay">
             <span class="type-badge">
+              <i class="bi" [ngClass]="property.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
               {{ property.type === 'Farm' ? 'مزرعة' : 'شقة' }}
             </span>
-            <h1>{{ property.title }}</h1>
-            <p><i class="bi bi-geo-alt"></i> {{ property.location }}</p>
+            <div class="slider-title-block">
+              <h1>{{ property.title }}</h1>
+              <p><i class="bi bi-geo-alt-fill"></i> {{ property.location }}</p>
+            </div>
+          </div>
+
+          <!-- زر السابق -->
+          <button class="slider-btn slider-btn--prev"
+            (click)="prevSlide()"
+            [disabled]="sliderImages.length <= 1"
+            aria-label="الصورة السابقة">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+
+          <!-- زر التالي -->
+          <button class="slider-btn slider-btn--next"
+            (click)="nextSlide()"
+            [disabled]="sliderImages.length <= 1"
+            aria-label="الصورة التالية">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+
+          <!-- عداد الصور -->
+          <div class="slider-counter" *ngIf="sliderImages.length > 1">
+            <i class="bi bi-images"></i>
+            {{ activeSlide + 1 }} / {{ sliderImages.length }}
+          </div>
+
+          <!-- لا توجد صور -->
+          <div class="slider-no-image" *ngIf="sliderImages.length === 0">
+            <i class="bi bi-image"></i>
+            <span>لا توجد صور</span>
           </div>
         </div>
+
+        <!-- Dots / Thumbnails Navigation -->
+        <div class="slider-nav" *ngIf="sliderImages.length > 1">
+
+          <!-- Dots للموبايل -->
+          <div class="slider-dots">
+            <button class="dot"
+              *ngFor="let img of sliderImages; let i = index"
+              [class.active]="i === activeSlide"
+              (click)="goToSlide(i)"
+              [attr.aria-label]="'الانتقال للصورة ' + (i + 1)">
+            </button>
+          </div>
+
+          <!-- Thumbnails للديسكتوب -->
+          <div class="slider-thumbs">
+            <div class="thumb-item"
+              *ngFor="let img of sliderImages; let i = index"
+              [class.active]="i === activeSlide"
+              (click)="goToSlide(i)">
+              <img [src]="img" [alt]="'صورة ' + (i + 1)" loading="lazy">
+              <div class="thumb-overlay" *ngIf="i === activeSlide">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+      <!-- End Slider -->
 
       <div class="row g-4 mt-2">
 
@@ -85,7 +157,6 @@
                 التقييمات
                 <span class="reviews-count" *ngIf="totalReviews > 0">({{ totalReviews }})</span>
               </h4>
-              <!-- متوسط التقييم -->
               <div class="rating-summary" *ngIf="totalReviews > 0">
                 <div class="rating-big">{{ averageRating }}</div>
                 <div class="rating-stars-big">
@@ -97,14 +168,12 @@
               </div>
             </div>
 
-            <!-- لا يوجد تقييمات -->
             <div class="no-reviews" *ngIf="reviews.length === 0">
               <i class="bi bi-chat-square-text"></i>
               <p>لا توجد تقييمات لهذا العقار بعد</p>
               <small>كن أول من يقيّم هذا العقار!</small>
             </div>
 
-            <!-- قائمة التقييمات -->
             <div class="reviews-list" *ngIf="reviews.length > 0">
               <div class="review-item" *ngFor="let r of reviews">
                 <div class="review-header">
@@ -139,7 +208,7 @@
           <div class="booking-card">
             <div class="booking-price">
               <span class="amount">{{ property.pricePerNight }}</span>
-              <span class="period"> ليرة  / ليلة</span>
+              <span class="period"> ليرة / ليلة</span>
             </div>
 
             <div *ngIf="bookingSuccess" class="alert-success">
@@ -180,15 +249,14 @@
                   placeholder="أي طلبات خاصة..."></textarea>
               </div>
 
-              <!-- ملخص السعر -->
               <div class="price-summary" *ngIf="nights > 0">
                 <div class="summary-row">
                   <span>{{ property.pricePerNight }} × {{ nights }} ليالي</span>
-                  <span>{{ totalPrice }} ليرة </span>
+                  <span>{{ totalPrice }} ليرة</span>
                 </div>
                 <div class="summary-total">
                   <span>الإجمالي</span>
-                  <span>{{ totalPrice }} ليرة </span>
+                  <span>{{ totalPrice }} ليرة</span>
                 </div>
               </div>
 
