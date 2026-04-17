@@ -16,11 +16,23 @@
           <div class="profile-avatar">
             {{ user.fullName?.charAt(0) }}
           </div>
+
           <h4>{{ user.fullName }}</h4>
+
           <span class="role-badge">
             <i class="bi" [ngClass]="getRoleIcon()"></i>
             {{ getRoleLabel() }}
           </span>
+
+          <!-- ✅ شارة "زبون موثوق" — تظهر إذا اكتمل 3+ حجوزات -->
+          <div class="trusted-badge" *ngIf="user.role === 'Customer' && isTrustedCustomer">
+            <i class="bi bi-patch-check-fill"></i>
+            <div class="trusted-text">
+              <span class="trusted-title">زبون موثوق</span>
+              <span class="trusted-desc">يُسمح لك بالدفع كاش فوراً</span>
+            </div>
+          </div>
+
           <div class="profile-meta">
             <div class="meta-item">
               <i class="bi bi-envelope"></i>
@@ -37,32 +49,122 @@
           </div>
         </div>
 
-        <!-- روابط سريعة حسب الدور -->
+        <!-- ✅ إحصائيات سريعة حسب الدور -->
+        <div class="quick-stats-card" *ngIf="profileStats">
+          <div class="qs-title">
+            <i class="bi bi-bar-chart-line"></i>
+            إحصائياتي
+          </div>
+
+          <!-- للزبون -->
+          <ng-container *ngIf="user.role === 'Customer'">
+            <div class="qs-item">
+              <span class="qs-label">حجوزات مكتملة</span>
+              <span class="qs-value completed">{{ profileStats.completedBookings }}</span>
+            </div>
+            <div class="qs-item">
+              <span class="qs-label">حجوزات إجمالية</span>
+              <span class="qs-value">{{ profileStats.totalBookings }}</span>
+            </div>
+            <div class="qs-item" *ngIf="isTrustedCustomer">
+              <span class="qs-label">حالة الثقة</span>
+              <span class="qs-value trusted">✅ موثوق</span>
+            </div>
+            <div class="qs-item" *ngIf="!isTrustedCustomer">
+              <span class="qs-label">للدفع كاش فوراً</span>
+              <span class="qs-value pending">{{ 3 - profileStats.completedBookings }} حجوزات أخرى</span>
+            </div>
+          </ng-container>
+
+          <!-- للمالك -->
+          <ng-container *ngIf="user.role === 'Owner'">
+            <div class="qs-item">
+              <span class="qs-label">إجمالي الإيرادات</span>
+              <span class="qs-value revenue">{{ profileStats.totalRevenue }} ليرة</span>
+            </div>
+            <div class="qs-item">
+              <span class="qs-label">عقارات نشطة</span>
+              <span class="qs-value">{{ profileStats.activeProperties }}</span>
+            </div>
+            <div class="qs-item">
+              <span class="qs-label">متوسط التقييم</span>
+              <span class="qs-value">{{ profileStats.averageRating || 'جديد' }}</span>
+            </div>
+          </ng-container>
+
+          <!-- للأدمن -->
+          <ng-container *ngIf="user.role === 'Admin'">
+            <div class="qs-item">
+              <span class="qs-label">إجمالي المستخدمين</span>
+              <span class="qs-value">{{ profileStats.totalUsers }}</span>
+            </div>
+            <div class="qs-item">
+              <span class="qs-label">العقارات المعتمدة</span>
+              <span class="qs-value">{{ profileStats.approvedProperties }}</span>
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- ✅ روابط سريعة ذكية حسب دور المستخدم -->
         <div class="quick-links">
-          <a *ngIf="user.role === 'Customer'" 
-            routerLink="/my-bookings" class="quick-link">
-            <i class="bi bi-calendar-check"></i>
-            <span>حجوزاتي</span>
-            <i class="bi bi-chevron-left"></i>
-          </a>
-          <a *ngIf="user.role === 'Customer'" 
-            routerLink="/notifications" class="quick-link">
-            <i class="bi bi-bell"></i>
-            <span>الإشعارات</span>
-            <i class="bi bi-chevron-left"></i>
-          </a>
-          <a *ngIf="user.role === 'Owner'" 
-            routerLink="/owner" class="quick-link">
-            <i class="bi bi-house"></i>
-            <span>لوحة المالك</span>
-            <i class="bi bi-chevron-left"></i>
-          </a>
-          <a *ngIf="user.role === 'Admin'" 
-            routerLink="/admin" class="quick-link">
-            <i class="bi bi-shield-check"></i>
-            <span>لوحة الأدمن</span>
-            <i class="bi bi-chevron-left"></i>
-          </a>
+
+          <!-- روابط الزبون -->
+          <ng-container *ngIf="user.role === 'Customer'">
+            <a routerLink="/my-bookings" class="quick-link">
+              <i class="bi bi-calendar-check"></i>
+              <span>حجوزاتي</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/notifications" class="quick-link">
+              <i class="bi bi-bell"></i>
+              <span>الإشعارات</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/properties" class="quick-link">
+              <i class="bi bi-search"></i>
+              <span>تصفح العقارات</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </ng-container>
+
+          <!-- روابط المالك -->
+          <ng-container *ngIf="user.role === 'Owner'">
+            <a routerLink="/owner" class="quick-link" [queryParams]="{tab: 'properties'}">
+              <i class="bi bi-house"></i>
+              <span>عقاراتي</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/owner" class="quick-link" [queryParams]="{tab: 'pending-bookings'}">
+              <i class="bi bi-clock-history"></i>
+              <span>الحجوزات الواردة</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/owner" class="quick-link" [queryParams]="{tab: 'notifications'}">
+              <i class="bi bi-bell"></i>
+              <span>الإشعارات</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </ng-container>
+
+          <!-- روابط الأدمن -->
+          <ng-container *ngIf="user.role === 'Admin'">
+            <a routerLink="/admin" class="quick-link">
+              <i class="bi bi-shield-check"></i>
+              <span>لوحة الإدارة</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/admin" class="quick-link">
+              <i class="bi bi-people"></i>
+              <span>إدارة المستخدمين</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/admin" class="quick-link">
+              <i class="bi bi-house-gear"></i>
+              <span>إدارة العقارات</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </ng-container>
+
         </div>
       </div>
 
@@ -71,13 +173,11 @@
 
         <!-- Tabs -->
         <div class="profile-tabs">
-          <button [class.active]="activeTab === 'info'"
-            (click)="activeTab = 'info'">
+          <button [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">
             <i class="bi bi-person"></i>
             البيانات الشخصية
           </button>
-          <button [class.active]="activeTab === 'password'"
-            (click)="activeTab = 'password'">
+          <button [class.active]="activeTab === 'password'" (click)="activeTab = 'password'">
             <i class="bi bi-lock"></i>
             تغيير كلمة المرور
           </button>
@@ -129,10 +229,8 @@
             </div>
           </div>
 
-          <button class="btn-save" (click)="updateProfile()"
-            [disabled]="profileLoading">
-            <i class="bi" 
-              [ngClass]="profileLoading ? 'bi-hourglass-split' : 'bi-check-circle'"></i>
+          <button class="btn-save" (click)="updateProfile()" [disabled]="profileLoading">
+            <i class="bi" [ngClass]="profileLoading ? 'bi-hourglass-split' : 'bi-check-circle'"></i>
             {{ profileLoading ? 'جاري الحفظ...' : 'حفظ التعديلات' }}
           </button>
         </div>
@@ -184,21 +282,17 @@
             <!-- مؤشر التطابق -->
             <small class="match-indicator"
               *ngIf="passwordForm.newPassword && passwordForm.confirmPassword">
-              <span *ngIf="passwordForm.newPassword === passwordForm.confirmPassword"
-                class="match">
+              <span *ngIf="passwordForm.newPassword === passwordForm.confirmPassword" class="match">
                 <i class="bi bi-check-circle-fill"></i> كلمتا المرور متطابقتان
               </span>
-              <span *ngIf="passwordForm.newPassword !== passwordForm.confirmPassword"
-                class="no-match">
+              <span *ngIf="passwordForm.newPassword !== passwordForm.confirmPassword" class="no-match">
                 <i class="bi bi-x-circle-fill"></i> كلمتا المرور غير متطابقتين
               </span>
             </small>
           </div>
 
-          <button class="btn-save" (click)="changePassword()"
-            [disabled]="passwordLoading">
-            <i class="bi"
-              [ngClass]="passwordLoading ? 'bi-hourglass-split' : 'bi-shield-check'"></i>
+          <button class="btn-save" (click)="changePassword()" [disabled]="passwordLoading">
+            <i class="bi" [ngClass]="passwordLoading ? 'bi-hourglass-split' : 'bi-shield-check'"></i>
             {{ passwordLoading ? 'جاري التغيير...' : 'تغيير كلمة المرور' }}
           </button>
         </div>

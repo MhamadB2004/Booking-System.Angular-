@@ -3,7 +3,7 @@
 <div class="admin-page">
   <div class="admin-layout">
 
-    <!-- Sidebar -->
+    <!-- Sidebar — ✅ حُذف تبويب "إضافة عقار" لأنه خاص بالمالك فقط -->
     <div class="admin-sidebar">
       <div class="sidebar-header">
         <div class="sidebar-icon">
@@ -40,13 +40,10 @@
           <i class="bi bi-calendar-check"></i>
           <span>الحجوزات</span>
         </button>
-        <button [class.active]="activeTab === 'add-property'" (click)="setTab('add-property')">
-          <i class="bi bi-plus-circle"></i>
-          <span>إضافة عقار</span>
-        </button>
+        <!-- ✅ تبويب "إضافة عقار" محذوف — الصلاحية للمالك فقط -->
         <button [class.active]="activeTab === 'approve-owners'" (click)="setTab('approve-owners')">
           <i class="bi bi-person-check"></i>
-          <span> ادارة الحسابات  </span>
+          <span>إدارة الحسابات</span>
         </button>
       </nav>
     </div>
@@ -69,48 +66,34 @@
 
         <div class="stats-grid">
           <div class="stat-card blue">
-            <div class="stat-icon">
-              <i class="bi bi-people-fill"></i>
-            </div>
+            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
             <div class="stat-info">
               <h3>{{ stats.users.totalCustomers }}</h3>
               <p>إجمالي الزبائن</p>
             </div>
-            <div class="stat-trend up">
-              <i class="bi bi-arrow-up-right"></i>
-            </div>
+            <div class="stat-trend up"><i class="bi bi-arrow-up-right"></i></div>
           </div>
 
           <div class="stat-card green">
-            <div class="stat-icon">
-              <i class="bi bi-person-badge-fill"></i>
-            </div>
+            <div class="stat-icon"><i class="bi bi-person-badge-fill"></i></div>
             <div class="stat-info">
               <h3>{{ stats.users.totalOwners }}</h3>
               <p>إجمالي الملاك</p>
             </div>
-            <div class="stat-trend up">
-              <i class="bi bi-arrow-up-right"></i>
-            </div>
+            <div class="stat-trend up"><i class="bi bi-arrow-up-right"></i></div>
           </div>
 
           <div class="stat-card amber">
-            <div class="stat-icon">
-              <i class="bi bi-house-fill"></i>
-            </div>
+            <div class="stat-icon"><i class="bi bi-house-fill"></i></div>
             <div class="stat-info">
               <h3>{{ stats.properties.approved }}</h3>
               <p>عقارات معتمدة</p>
             </div>
-            <div class="stat-trend up">
-              <i class="bi bi-arrow-up-right"></i>
-            </div>
+            <div class="stat-trend up"><i class="bi bi-arrow-up-right"></i></div>
           </div>
 
           <div class="stat-card red">
-            <div class="stat-icon">
-              <i class="bi bi-hourglass-split"></i>
-            </div>
+            <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
             <div class="stat-info">
               <h3>{{ stats.properties.pendingApproval }}</h3>
               <p>تنتظر موافقة</p>
@@ -121,9 +104,7 @@
           </div>
 
           <div class="stat-card teal">
-            <div class="stat-icon">
-              <i class="bi bi-calendar2-check-fill"></i>
-            </div>
+            <div class="stat-icon"><i class="bi bi-calendar2-check-fill"></i></div>
             <div class="stat-info">
               <h3>{{ stats.bookings.total }}</h3>
               <p>إجمالي الحجوزات</p>
@@ -135,16 +116,12 @@
           </div>
 
           <div class="stat-card purple">
-            <div class="stat-icon">
-              <i class="bi bi-cash-stack"></i>
-            </div>
+            <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
             <div class="stat-info">
               <h3>{{ stats.revenue.total | number }}</h3>
-              <p>إجمالي الإيرادات (ليرة )</p>
+              <p>إجمالي الإيرادات (ليرة)</p>
             </div>
-            <div class="stat-trend up">
-              <i class="bi bi-graph-up-arrow"></i>
-            </div>
+            <div class="stat-trend up"><i class="bi bi-graph-up-arrow"></i></div>
           </div>
         </div>
 
@@ -189,13 +166,10 @@
           <h4>إدارة المستخدمين</h4>
           <p>{{ users.length }} مستخدم مسجل</p>
         </div>
-
-          <div class="admin-table">
-            <div class="filter-bar mb-3">
+        <div class="admin-table">
+          <div class="filter-bar mb-3">
             <div class="input-group">
-              <span class="input-group-text">
-                <i class="bi bi-search"></i>
-              </span>
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
               <input type="text" class="form-control"
                 placeholder="ابحث باسم المستخدم أو الإيميل..."
                 [(ngModel)]="userFilter">
@@ -204,19 +178,12 @@
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>المستخدم</th>
-                <th>الإيميل</th>
-                <th>الهاتف</th>
-                <th>الدور</th>
-                <th>الحالة</th>
-                <th>تاريخ التسجيل</th>
-                <th>إجراءات</th>
+                <th>#</th><th>المستخدم</th><th>الإيميل</th><th>الهاتف</th>
+                <th>الدور</th><th>الحالة</th><th>تاريخ التسجيل</th><th>إجراءات</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let u of filteredUsers" style="cursor:pointer"
-                          (click)="showUserDetails(u)">
+              <tr *ngFor="let u of filteredUsers" style="cursor:pointer" (click)="showUserDetails(u)">
                 <td>{{ u.id }}</td>
                 <td>
                   <div class="user-cell">
@@ -240,15 +207,10 @@
                 <td>{{ u.createdAt | date:'yyyy/MM/dd' }}</td>
                 <td>
                   <div class="action-btns" (click)="$event.stopPropagation()">
-                    <button class="btn-approve"
-                      *ngIf="u.role === 'Owner' && !u.isApproved"
-                      (click)="approveOwner(u.id)">
+                    <button class="btn-approve" *ngIf="u.role === 'Owner' && !u.isApproved" (click)="approveOwner(u.id)">
                       <i class="bi bi-check-lg"></i> موافقة
                     </button>
-                    <button class="btn-delete"
-                      *ngIf="u.role !== 'Admin'"
-                      (click)="deleteUser(u.id)"
-                      title="حذف">
+                    <button class="btn-delete" *ngIf="u.role !== 'Admin'" (click)="deleteUser(u.id)" title="حذف">
                       <i class="bi bi-trash3"></i>
                     </button>
                   </div>
@@ -257,216 +219,170 @@
             </tbody>
           </table>
         </div>
-        <!-- Modal تفاصيل المستخدم/المالك -->
-<div class="modal-overlay" *ngIf="showUserModal" (click)="closeModals()">
-  <div class="modal-card" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="user-avatar lg">{{ selectedUser?.fullName?.charAt(0) }}</div>
-      <div>
-        <h5>{{ selectedUser?.fullName }}</h5>
-        <span class="role-badge" [ngClass]="'role-' + selectedUser?.role?.toLowerCase()">
-          {{ getRoleLabel(selectedUser?.role) }}
-        </span>
-      </div>
-      <button class="modal-close" (click)="closeModals()">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-item">
-        <i class="bi bi-envelope"></i>
-        <div>
-          <small>الإيميل</small>
-          <span>{{ selectedUser?.email }}</span>
+        <!-- Modal تفاصيل المستخدم -->
+        <div class="modal-overlay" *ngIf="showUserModal" (click)="closeModals()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <div class="user-avatar lg">{{ selectedUser?.fullName?.charAt(0) }}</div>
+              <div>
+                <h5>{{ selectedUser?.fullName }}</h5>
+                <span class="role-badge" [ngClass]="'role-' + selectedUser?.role?.toLowerCase()">
+                  {{ getRoleLabel(selectedUser?.role) }}
+                </span>
+              </div>
+              <button class="modal-close" (click)="closeModals()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+              <div class="modal-item">
+                <i class="bi bi-envelope"></i>
+                <div><small>الإيميل</small><span>{{ selectedUser?.email }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-phone"></i>
+                <div><small>الهاتف</small><span>{{ selectedUser?.phone }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-calendar"></i>
+                <div><small>تاريخ التسجيل</small><span>{{ selectedUser?.createdAt | date:'yyyy/MM/dd' }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-shield-check"></i>
+                <div>
+                  <small>الحالة</small>
+                  <span [style.color]="selectedUser?.isApproved ? '#3B6D11' : '#854F0B'">
+                    {{ selectedUser?.isApproved ? 'مفعّل' : 'معلق' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-approve" *ngIf="selectedUser?.role === 'Owner' && !selectedUser?.isApproved"
+                (click)="approveOwner(selectedUser.id); closeModals()">
+                <i class="bi bi-check-lg"></i> موافقة على المالك
+              </button>
+              <button class="btn-delete-lg" *ngIf="selectedUser?.role !== 'Admin'"
+                (click)="deleteUser(selectedUser.id); closeModals()">
+                <i class="bi bi-trash3"></i> حذف المستخدم
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-phone"></i>
-        <div>
-          <small>الهاتف</small>
-          <span>{{ selectedUser?.phone }}</span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-calendar"></i>
-        <div>
-          <small>تاريخ التسجيل</small>
-          <span>{{ selectedUser?.createdAt | date:'yyyy/MM/dd' }}</span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-shield-check"></i>
-        <div>
-          <small>الحالة</small>
-          <span [style.color]="selectedUser?.isApproved ? '#3B6D11' : '#854F0B'">
-            {{ selectedUser?.isApproved ? 'مفعّل' : 'معلق' }}
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-approve"
-        *ngIf="selectedUser?.role === 'Owner' && !selectedUser?.isApproved"
-        (click)="approveOwner(selectedUser.id); closeModals()">
-        <i class="bi bi-check-lg"></i> موافقة على المالك
-      </button>
-      <button class="btn-delete-lg"
-        *ngIf="selectedUser?.role !== 'Admin'"
-        (click)="deleteUser(selectedUser.id); closeModals()">
-        <i class="bi bi-trash3"></i> حذف المستخدم
-      </button>
-    </div>
-  </div>
-</div>
-
       </div>
 
+      <!-- الملاك -->
       <div *ngIf="activeTab === 'owners' && !loading">
-  <div class="content-header">
-    <h4>إدارة الملاك</h4>
-    <p>{{ owners.length }} مالك مسجل</p>
-  </div>
-
-  <div class="filter-bar mb-3">
-    <div class="input-group">
-      <span class="input-group-text">
-        <i class="bi bi-search"></i>
-      </span>
-      <input type="text" class="form-control"
-        placeholder="ابحث باسم المالك أو الإيميل..."
-        [(ngModel)]="ownerFilter">
-    </div>
-  </div>
-
-  <div class="admin-table">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>المالك</th>
-          <th>الإيميل</th>
-          <th>الهاتف</th>
-          <th>الحالة</th>
-          <th>تاريخ التسجيل</th>
-          <th>إجراءات</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let o of filteredOwners" style="cursor:pointer"
-          (click)="showUserDetails(o)">
-          <td>{{ o.id }}</td>
-          <td>
-            <div class="user-cell">
-              <div class="user-avatar">{{ o.fullName?.charAt(0) }}</div>
-              <span>{{ o.fullName }}</span>
+        <div class="content-header">
+          <h4>إدارة الملاك</h4>
+          <p>{{ owners.length }} مالك مسجل</p>
+        </div>
+        <div class="filter-bar mb-3">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control"
+              placeholder="ابحث باسم المالك أو الإيميل..."
+              [(ngModel)]="ownerFilter">
+          </div>
+        </div>
+        <div class="admin-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th><th>المالك</th><th>الإيميل</th><th>الهاتف</th>
+                <th>الحالة</th><th>تاريخ التسجيل</th><th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let o of filteredOwners" style="cursor:pointer" (click)="showUserDetails(o)">
+                <td>{{ o.id }}</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar">{{ o.fullName?.charAt(0) }}</div>
+                    <span>{{ o.fullName }}</span>
+                  </div>
+                </td>
+                <td>{{ o.email }}</td>
+                <td>{{ o.phone }}</td>
+                <td>
+                  <span class="status-dot" [ngClass]="o.isApproved ? 'active' : 'inactive'">
+                    <i class="bi" [ngClass]="o.isApproved ? 'bi-check-circle-fill' : 'bi-clock-fill'"></i>
+                    {{ o.isApproved ? 'مفعّل' : 'معلق' }}
+                  </span>
+                </td>
+                <td>{{ o.createdAt | date:'yyyy/MM/dd' }}</td>
+                <td>
+                  <div class="action-btns" (click)="$event.stopPropagation()">
+                    <button class="btn-approve" *ngIf="!o.isApproved" (click)="approveOwner(o.id)">
+                      <i class="bi bi-check-lg"></i> موافقة
+                    </button>
+                    <button class="btn-delete" (click)="deleteUser(o.id)"><i class="bi bi-trash3"></i></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Modal -->
+        <div class="modal-overlay" *ngIf="showUserModal" (click)="closeModals()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <div class="user-avatar lg">{{ selectedUser?.fullName?.charAt(0) }}</div>
+              <div>
+                <h5>{{ selectedUser?.fullName }}</h5>
+                <span class="role-badge" [ngClass]="'role-' + selectedUser?.role?.toLowerCase()">
+                  {{ getRoleLabel(selectedUser?.role) }}
+                </span>
+              </div>
+              <button class="modal-close" (click)="closeModals()"><i class="bi bi-x-lg"></i></button>
             </div>
-          </td>
-          <td>{{ o.email }}</td>
-          <td>{{ o.phone }}</td>
-          <td>
-            <span class="status-dot"
-              [ngClass]="o.isApproved ? 'active' : 'inactive'">
-              <i class="bi"
-                [ngClass]="o.isApproved ? 'bi-check-circle-fill' : 'bi-clock-fill'"></i>
-              {{ o.isApproved ? 'مفعّل' : 'معلق' }}
-            </span>
-          </td>
-          <td>{{ o.createdAt | date:'yyyy/MM/dd' }}</td>
-          <td>
-            <div class="action-btns" (click)="$event.stopPropagation()">
-              <button class="btn-approve"
-                *ngIf="!o.isApproved"
-                (click)="approveOwner(o.id)">
-                <i class="bi bi-check-lg"></i> موافقة
+            <div class="modal-body">
+              <div class="modal-item">
+                <i class="bi bi-envelope"></i>
+                <div><small>الإيميل</small><span>{{ selectedUser?.email }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-phone"></i>
+                <div><small>الهاتف</small><span>{{ selectedUser?.phone }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-calendar"></i>
+                <div><small>تاريخ التسجيل</small><span>{{ selectedUser?.createdAt | date:'yyyy/MM/dd' }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-shield-check"></i>
+                <div>
+                  <small>الحالة</small>
+                  <span [style.color]="selectedUser?.isApproved ? '#3B6D11' : '#854F0B'">
+                    {{ selectedUser?.isApproved ? 'مفعّل' : 'معلق' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-approve" *ngIf="selectedUser?.role === 'Owner' && !selectedUser?.isApproved"
+                (click)="approveOwner(selectedUser.id); closeModals()">
+                <i class="bi bi-check-lg"></i> موافقة على المالك
               </button>
-              <button class="btn-delete" (click)="deleteUser(o.id)">
-                <i class="bi bi-trash3"></i>
+              <button class="btn-delete-lg" *ngIf="selectedUser?.role !== 'Admin'"
+                (click)="deleteUser(selectedUser.id); closeModals()">
+                <i class="bi bi-trash3"></i> حذف المستخدم
               </button>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- Modal تفاصيل المستخدم/المالك -->
-<div class="modal-overlay" *ngIf="showUserModal" (click)="closeModals()">
-  <div class="modal-card" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="user-avatar lg">{{ selectedUser?.fullName?.charAt(0) }}</div>
-      <div>
-        <h5>{{ selectedUser?.fullName }}</h5>
-        <span class="role-badge" [ngClass]="'role-' + selectedUser?.role?.toLowerCase()">
-          {{ getRoleLabel(selectedUser?.role) }}
-        </span>
-      </div>
-      <button class="modal-close" (click)="closeModals()">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-item">
-        <i class="bi bi-envelope"></i>
-        <div>
-          <small>الإيميل</small>
-          <span>{{ selectedUser?.email }}</span>
+          </div>
         </div>
       </div>
-      <div class="modal-item">
-        <i class="bi bi-phone"></i>
-        <div>
-          <small>الهاتف</small>
-          <span>{{ selectedUser?.phone }}</span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-calendar"></i>
-        <div>
-          <small>تاريخ التسجيل</small>
-          <span>{{ selectedUser?.createdAt | date:'yyyy/MM/dd' }}</span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-shield-check"></i>
-        <div>
-          <small>الحالة</small>
-          <span [style.color]="selectedUser?.isApproved ? '#3B6D11' : '#854F0B'">
-            {{ selectedUser?.isApproved ? 'مفعّل' : 'معلق' }}
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-approve"
-        *ngIf="selectedUser?.role === 'Owner' && !selectedUser?.isApproved"
-        (click)="approveOwner(selectedUser.id); closeModals()">
-        <i class="bi bi-check-lg"></i> موافقة على المالك
-      </button>
-      <button class="btn-delete-lg"
-        *ngIf="selectedUser?.role !== 'Admin'"
-        (click)="deleteUser(selectedUser.id); closeModals()">
-        <i class="bi bi-trash3"></i> حذف المستخدم
-      </button>
-    </div>
-  </div>
-</div>
 
-</div>
       <!-- العقارات -->
       <div *ngIf="activeTab === 'properties' && !loading">
         <div class="content-header">
           <h4>إدارة العقارات</h4>
           <p>{{ properties.length }} عقار معتمد</p>
         </div>
-
         <div class="admin-table">
-
           <div class="filter-bar mb-3">
             <div class="row g-2">
               <div class="col-md-8">
                 <div class="input-group">
-                  <span class="input-group-text">
-                    <i class="bi bi-search"></i>
-                  </span>
+                  <span class="input-group-text"><i class="bi bi-search"></i></span>
                   <input type="text" class="form-control"
                     placeholder="ابحث باسم العقار أو الموقع..."
                     [(ngModel)]="propertyFilter">
@@ -481,45 +397,31 @@
               </div>
             </div>
           </div>
-
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>العقار</th>
-                <th>النوع</th>
-                <th>السعر/ليلة</th>
-                <th>الموقع</th>
-                <th>المالك</th>
-                <th>التقييم</th>
-                <th>إجراءات</th>
+                <th>#</th><th>العقار</th><th>النوع</th><th>السعر/ليلة</th>
+                <th>الموقع</th><th>المالك</th><th>التقييم</th><th>إجراءات</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let p of filteredProperties" style="cursor:pointer"
-                          (click)="showPropertyDetails(p)">
+              <tr *ngFor="let p of filteredProperties" style="cursor:pointer" (click)="showPropertyDetails(p)">
                 <td>{{ p.id }}</td>
                 <td>
                   <div class="property-cell">
-                    <div class="property-icon-sm"
-                      [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
-                      <i class="bi"
-                        [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
+                    <div class="property-icon-sm" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                      <i class="bi" [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
                     </div>
                     <span>{{ p.title }}</span>
                   </div>
                 </td>
                 <td>
-                  <span class="type-chip"
-                    [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                  <span class="type-chip" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
                     {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
                   </span>
                 </td>
-                <td><strong>{{ p.pricePerNight }}</strong> ليرة </td>
-                <td>
-                  <i class="bi bi-geo-alt text-accent"></i>
-                  {{ p.location }}
-                </td>
+                <td><strong>{{ p.pricePerNight }}</strong> ليرة</td>
+                <td><i class="bi bi-geo-alt text-accent"></i> {{ p.location }}</td>
                 <td>{{ p.ownerName }}</td>
                 <td>
                   <span class="rating-cell">
@@ -537,76 +439,56 @@
           </table>
         </div>
         <!-- Modal تفاصيل العقار -->
-<div class="modal-overlay" *ngIf="showPropertyModal" (click)="closeModals()">
-  <div class="modal-card" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <div class="property-icon-lg"
-        [ngClass]="selectedProperty?.type === 'Farm' ? 'farm' : 'apt'">
-        <i class="bi"
-          [ngClass]="selectedProperty?.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
-      </div>
-      <div>
-        <h5>{{ selectedProperty?.title }}</h5>
-        <span class="type-chip"
-          [ngClass]="selectedProperty?.type === 'Farm' ? 'farm' : 'apt'">
-          {{ selectedProperty?.type === 'Farm' ? 'مزرعة' : 'شقة' }}
-        </span>
-      </div>
-      <button class="modal-close" (click)="closeModals()">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-item">
-        <i class="bi bi-geo-alt"></i>
-        <div>
-          <small>الموقع</small>
-          <span>{{ selectedProperty?.location }}</span>
+        <div class="modal-overlay" *ngIf="showPropertyModal" (click)="closeModals()">
+          <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+              <div class="property-icon-lg" [ngClass]="selectedProperty?.type === 'Farm' ? 'farm' : 'apt'">
+                <i class="bi" [ngClass]="selectedProperty?.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
+              </div>
+              <div>
+                <h5>{{ selectedProperty?.title }}</h5>
+                <span class="type-chip" [ngClass]="selectedProperty?.type === 'Farm' ? 'farm' : 'apt'">
+                  {{ selectedProperty?.type === 'Farm' ? 'مزرعة' : 'شقة' }}
+                </span>
+              </div>
+              <button class="modal-close" (click)="closeModals()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+              <div class="modal-item">
+                <i class="bi bi-geo-alt"></i>
+                <div><small>الموقع</small><span>{{ selectedProperty?.location }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-person"></i>
+                <div><small>المالك</small><span>{{ selectedProperty?.ownerName }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-cash"></i>
+                <div><small>السعر / ليلة</small><span>{{ selectedProperty?.pricePerNight }} ليرة</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-people"></i>
+                <div><small>أقصى عدد ضيوف</small><span>{{ selectedProperty?.maxGuests }}</span></div>
+              </div>
+              <div class="modal-item">
+                <i class="bi bi-star-fill"></i>
+                <div>
+                  <small>متوسط التقييم</small>
+                  <span>{{ selectedProperty?.averageRating > 0 ? selectedProperty?.averageRating : 'لا يوجد تقييم بعد' }}</span>
+                </div>
+              </div>
+              <div class="modal-item" *ngIf="selectedProperty?.description">
+                <i class="bi bi-card-text"></i>
+                <div><small>الوصف</small><span>{{ selectedProperty?.description }}</span></div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-delete-lg" (click)="deleteProperty(selectedProperty.id); closeModals()">
+                <i class="bi bi-trash3"></i> حذف العقار
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-person"></i>
-        <div>
-          <small>المالك</small>
-          <span>{{ selectedProperty?.ownerName }}</span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-cash"></i>
-        <div>
-          <small>السعر / ليلة</small>
-          <span>{{ selectedProperty?.pricePerNight }} ليرة </span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-people"></i>
-        <div>
-          <small>أقصى عدد ضيوف</small>
-          <span>{{ selectedProperty?.maxGuests }}</span>
-        </div>
-      </div>
-      <div class="modal-item">
-        <i class="bi bi-star-fill"></i>
-        <div>
-          <small>متوسط التقييم</small>
-          <span>{{ selectedProperty?.averageRating > 0 ? selectedProperty?.averageRating : 'لا يوجد تقييم بعد' }}</span>
-        </div>
-      </div>
-      <div class="modal-item" *ngIf="selectedProperty?.description">
-        <i class="bi bi-card-text"></i>
-        <div>
-          <small>الوصف</small>
-          <span>{{ selectedProperty?.description }}</span>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-delete-lg" (click)="deleteProperty(selectedProperty.id); closeModals()">
-        <i class="bi bi-trash3"></i> حذف العقار
-      </button>
-    </div>
-  </div>
-</div>
       </div>
 
       <!-- تنتظر موافقة -->
@@ -615,50 +497,30 @@
           <h4>عقارات تنتظر الموافقة</h4>
           <p>{{ pendingProperties.length }} عقار في انتظار المراجعة</p>
         </div>
-
         <div *ngIf="pendingProperties.length === 0" class="empty-state">
           <i class="bi bi-check-circle"></i>
           <h5>لا توجد عقارات معلقة</h5>
           <p>كل العقارات تمت مراجعتها</p>
         </div>
-
         <div class="pending-grid" *ngIf="pendingProperties.length > 0">
           <div class="pending-card" *ngFor="let p of pendingProperties">
             <div class="pending-card-header">
-              <div class="pending-icon"
-                [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
-                <i class="bi"
-                  [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
+              <div class="pending-icon" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                <i class="bi" [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
               </div>
               <div class="pending-info">
                 <h5>{{ p.title }}</h5>
-                <span class="type-chip"
-                  [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                <span class="type-chip" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
                   {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
                 </span>
               </div>
             </div>
             <div class="pending-details">
-              <div class="pd-item">
-                <i class="bi bi-geo-alt"></i>
-                <span>{{ p.location }}</span>
-              </div>
-              <div class="pd-item">
-                <i class="bi bi-person"></i>
-                <span>{{ p.ownerName }}</span>
-              </div>
-              <div class="pd-item">
-                <i class="bi bi-people"></i>
-                <span>{{ p.maxGuests }} ضيوف</span>
-              </div>
-              <div class="pd-item">
-                <i class="bi bi-cash"></i>
-                <span>{{ p.pricePerNight }} ليرة  / ليلة</span>
-              </div>
-              <div class="pd-item">
-                <i class="bi bi-calendar"></i>
-                <span>{{ p.createdAt | date:'yyyy/MM/dd' }}</span>
-              </div>
+              <div class="pd-item"><i class="bi bi-geo-alt"></i><span>{{ p.location }}</span></div>
+              <div class="pd-item"><i class="bi bi-person"></i><span>{{ p.ownerName }}</span></div>
+              <div class="pd-item"><i class="bi bi-people"></i><span>{{ p.maxGuests }} ضيوف</span></div>
+              <div class="pd-item"><i class="bi bi-cash"></i><span>{{ p.pricePerNight }} ليرة / ليلة</span></div>
+              <div class="pd-item"><i class="bi bi-calendar"></i><span>{{ p.createdAt | date:'yyyy/MM/dd' }}</span></div>
             </div>
             <div class="pending-actions">
               <button class="btn-approve-lg" (click)="approveProperty(p.id)">
@@ -670,7 +532,6 @@
             </div>
           </div>
         </div>
-        
       </div>
 
       <!-- الحجوزات -->
@@ -679,20 +540,12 @@
           <h4>إدارة الحجوزات</h4>
           <p>{{ bookings.length }} حجز إجمالي</p>
         </div>
-
         <div class="admin-table">
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>الزبون</th>
-                <th>العقار</th>
-                <th>الوصول</th>
-                <th>المغادرة</th>
-                <th>الليالي</th>
-                <th>الضيوف</th>
-                <th>الإجمالي</th>
-                <th>الحالة</th>
+                <th>#</th><th>الزبون</th><th>العقار</th><th>الوصول</th>
+                <th>المغادرة</th><th>الليالي</th><th>الضيوف</th><th>الإجمالي</th><th>الحالة</th>
               </tr>
             </thead>
             <tbody>
@@ -709,10 +562,9 @@
                 <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
                 <td>{{ b.nights }}</td>
                 <td>{{ b.guestsCount }}</td>
-                <td><strong>{{ b.totalPrice }}</strong> ليرة </td>
+                <td><strong>{{ b.totalPrice }}</strong> ليرة</td>
                 <td>
-                  <span class="status-badge"
-                    [ngClass]="getStatusClass(b.status)">
+                  <span class="status-badge" [ngClass]="getStatusClass(b.status)">
                     {{ getStatusLabel(b.status) }}
                   </span>
                 </td>
@@ -722,162 +574,51 @@
         </div>
       </div>
 
-      <div *ngIf="activeTab === 'add-property' && !loading">
-  <div class="content-header">
-    <h4>إضافة عقار جديد</h4>
-    <p>أضف عقاراً جديداً تحت إدارة المنصة</p>
-  </div>
-
-  <div class="add-property-form">
-
-    <div *ngIf="addSuccess" class="form-alert success">
-      <i class="bi bi-check-circle-fill"></i>
-      {{ addSuccess }}
-    </div>
-
-    <div *ngIf="addError" class="form-alert error">
-      <i class="bi bi-exclamation-circle-fill"></i>
-      {{ addError }}
-    </div>
-
-    <div class="form-section">
-      <h6>المعلومات الأساسية</h6>
-      <div class="row g-3">
-        <div class="col-md-8">
-          <label>اسم العقار <span class="required">*</span></label>
-          <input type="text" class="form-control"
-            placeholder="مثال: مزرعة النخيل الخضراء"
-            [(ngModel)]="newProperty.title">
+      <!-- إدارة الحسابات / الملاك المعلقين -->
+      <div *ngIf="activeTab === 'approve-owners' && !loading">
+        <div class="content-header">
+          <h4>موافقة على الملاك</h4>
+          <p>{{ pendingOwners.length }} مالك ينتظر الموافقة</p>
         </div>
-        <div class="col-md-4">
-          <label>نوع العقار <span class="required">*</span></label>
-          <select class="form-select" [(ngModel)]="newProperty.type">
-            <option value="">اختر النوع</option>
-            <option value="Farm">مزرعة</option>
-            <option value="Apartment">شقة</option>
-          </select>
-        </div>
-        <div class="col-12">
-          <label>الوصف</label>
-          <textarea class="form-control" rows="3"
-            placeholder="اكتب وصفاً تفصيلياً للعقار..."
-            [(ngModel)]="newProperty.description"></textarea>
-        </div>
-      </div>
-    </div>
 
-    <div class="form-section">
-      <h6>الموقع والسعر</h6>
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label>الموقع <span class="required">*</span></label>
-          <input type="text" class="form-control"
-            placeholder="مثال: الرياض - حي النرجس"
-            [(ngModel)]="newProperty.location">
-        </div>
-        <div class="col-md-3">
-          <label>السعر / ليلة <span class="required">*</span></label>
-          <div class="input-group">
-            <input type="number" class="form-control"
-              placeholder="0"
-              [(ngModel)]="newProperty.pricePerNight">
-            <span class="input-group-text">ليرة </span>
+        <div *ngIf="pendingOwners.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="bi bi-person-check-fill"></i>
+          </div>
+          <h5>لا يوجد ملاك ينتظرون الموافقة</h5>
+          <p>جميع الملاك المسجلين تمت مراجعتهم</p>
+          <div class="empty-badge">
+            <i class="bi bi-shield-check"></i>
+            كل شي تمام!
           </div>
         </div>
-        <div class="col-md-3">
-          <label>أقصى عدد ضيوف <span class="required">*</span></label>
-          <input type="number" class="form-control"
-            [min]="1" [(ngModel)]="newProperty.maxGuests">
-        </div>
-        <div class="col-md-6">
-          <label>خط العرض (Latitude)</label>
-          <input type="number" class="form-control"
-            placeholder="مثال: 24.7136"
-            [(ngModel)]="newProperty.latitude">
-        </div>
-        <div class="col-md-6">
-          <label>خط الطول (Longitude)</label>
-          <input type="number" class="form-control"
-            placeholder="مثال: 46.6753"
-            [(ngModel)]="newProperty.longitude">
-        </div>
-      </div>
-    </div>
 
-    <div class="form-actions">
-      <button class="btn-submit" (click)="addProperty()"
-        [disabled]="addLoading">
-        <i class="bi" [ngClass]="addLoading ? 'bi-hourglass-split' : 'bi-plus-circle'"></i>
-        {{ addLoading ? 'جاري الإضافة...' : 'إضافة العقار' }}
-      </button>
-      <button class="btn-reset" (click)="newProperty = {
-        title: '', description: '', type: '',
-        pricePerNight: null, location: '',
-        latitude: null, longitude: null, maxGuests: 1
-      }">
-        <i class="bi bi-arrow-counterclockwise"></i>
-        إعادة تعيين
-      </button>
-    </div>
-
-  </div>
-</div>
-
-<div *ngIf="activeTab === 'approve-owners' && !loading">
-  <div class="content-header">
-    <h4>موافقة على الملاك</h4>
-    <p>{{ pendingOwners.length }} مالك ينتظر الموافقة</p>
-  </div>
-
-  <div *ngIf="pendingOwners.length === 0" class="empty-state">
-    <div class="empty-icon">
-      <i class="bi bi-person-check-fill"></i>
-    </div>
-    <h5>لا يوجد ملاك ينتظرون الموافقة</h5>
-    <p>جميع الملاك المسجلين تمت مراجعتهم</p>
-    <div class="empty-badge">
-      <i class="bi bi-shield-check"></i>
-      كل شي تمام!
-    </div>
-  </div>
-
-  <div class="pending-grid" *ngIf="pendingOwners.length > 0">
-    <div class="pending-card" *ngFor="let o of pendingOwners">
-      <div class="pending-card-header">
-        <div class="user-avatar lg">{{ o.fullName?.charAt(0) }}</div>
-        <div class="pending-info">
-          <h5>{{ o.fullName }}</h5>
-          <span class="role-badge role-owner">مالك</span>
+        <div class="pending-grid" *ngIf="pendingOwners.length > 0">
+          <div class="pending-card" *ngFor="let o of pendingOwners">
+            <div class="pending-card-header">
+              <div class="user-avatar lg">{{ o.fullName?.charAt(0) }}</div>
+              <div class="pending-info">
+                <h5>{{ o.fullName }}</h5>
+                <span class="role-badge role-owner">مالك</span>
+              </div>
+            </div>
+            <div class="pending-details">
+              <div class="pd-item"><i class="bi bi-envelope"></i><span>{{ o.email }}</span></div>
+              <div class="pd-item"><i class="bi bi-phone"></i><span>{{ o.phone }}</span></div>
+              <div class="pd-item"><i class="bi bi-calendar"></i><span>{{ o.createdAt | date:'yyyy/MM/dd' }}</span></div>
+            </div>
+            <div class="pending-actions">
+              <button class="btn-approve-lg" (click)="approveOwner(o.id)">
+                <i class="bi bi-check-circle"></i> موافقة
+              </button>
+              <button class="btn-reject" (click)="rejectOwner(o.id)">
+                <i class="bi bi-x-circle"></i> رفض
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="pending-details">
-        <div class="pd-item">
-          <i class="bi bi-envelope"></i>
-          <span>{{ o.email }}</span>
-        </div>
-        <div class="pd-item">
-          <i class="bi bi-phone"></i>
-          <span>{{ o.phone }}</span>
-        </div>
-        <div class="pd-item">
-          <i class="bi bi-calendar"></i>
-          <span>{{ o.createdAt | date:'yyyy/MM/dd' }}</span>
-        </div>
-      </div>
-
-      <div class="pending-actions">
-        <button class="btn-approve-lg" (click)="approveOwner(o.id)">
-          <i class="bi bi-check-circle"></i> موافقة
-        </button>
-        <button class="btn-reject" (click)="rejectOwner(o.id)">
-          <i class="bi bi-x-circle"></i> رفض
-        </button>
-      </div>
     </div>
   </div>
-</div>
-    </div>
-  </div>
-  
 </div>

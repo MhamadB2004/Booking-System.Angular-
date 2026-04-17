@@ -252,3 +252,108 @@
 @media (max-width: 768px) {
   .profile-layout { grid-template-columns: 1fr; }
 }
+
+/* ===========================
+   إضافات CSS للبروفايل
+   أضف هذا الكود في نهاية profile.css
+=========================== */
+
+/* ===========================
+   شارة "زبون موثوق"
+=========================== */
+.trusted-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #FFF8E8, #FFFDF2);
+  border: 1.5px solid #F59E0B;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 12px 0 8px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+  animation: badgePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+  50% { box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35); }
+}
+
+.trusted-badge i {
+  font-size: 22px;
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+.trusted-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+}
+
+.trusted-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #92400E;
+}
+
+.trusted-desc {
+  font-size: 11px;
+  color: #B45309;
+  font-weight: 500;
+}
+
+/* ===========================
+   بطاقة الإحصائيات السريعة
+=========================== */
+.quick-stats-card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.qs-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--heading-color);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.qs-title i {
+  color: var(--accent-color);
+  font-size: 15px;
+}
+
+.qs-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #fafafa;
+}
+
+.qs-item:last-child { border-bottom: none; }
+
+.qs-label {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+.qs-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--heading-color);
+}
+
+.qs-value.completed { color: #3B6D11; }
+.qs-value.trusted { color: #D97706; }
+.qs-value.pending { color: #854F0B; font-size: 11px; font-weight: 600; }
+.qs-value.revenue { color: var(--accent-color); }

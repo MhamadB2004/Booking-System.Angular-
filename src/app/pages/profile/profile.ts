@@ -1,50 +1,55 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, RouterLink],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
 export class ProfileComponent implements OnInit {
+  url = 'https://localhost:7167/api';
   user: any = null;
   loading = true;
   activeTab = 'info';
 
   // تعديل البيانات
-  profileForm = {
-    fullName: '',
-    email: '',
-    phone: ''
-  };
+  profileForm = { fullName: '', email: '', phone: '' };
   profileSuccess = '';
   profileError = '';
   profileLoading = false;
 
   // تغيير كلمة المرور
-  passwordForm = {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  };
+  passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
   passwordSuccess = '';
   passwordError = '';
   passwordLoading = false;
 
+  // ✅ إحصائيات البروفايل
+  profileStats: any = null;
+
+  // ✅ حالة الثقة (أكثر من 3 حجوزات مكتملة)
+  isTrustedCustomer = false;
+
   constructor(
     private auth: AuthService,
     private router: Router,
+    private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.loadProfile();
+  }
+
+  getHeaders() {
+    return new HttpHeaders({ Authorization: `Bearer ${this.auth.getToken()}` });
   }
 
   loadProfile() {
@@ -59,6 +64,9 @@ export class ProfileComponent implements OnInit {
         };
         this.loading = false;
         this.cdr.detectChanges();
+
+        // ✅ تحميل الإحصائيات بناءً على الدور
+        this.loadProfileStats();
       },
       error: () => {
         this.loading = false;
@@ -67,13 +75,74 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  // ✅ تحميل الإحصائيات الخاصة بالبروفايل
+  loadProfileStats() {
+    const role = this.user?.role;
+
+    if (role === 'Customer') {
+      // جلب حجوزات الزبون لحساب المكتملة
+      this.http.get<any[]>(`${this.url}/bookings/my`, {
+        headers: this.getHeaders()
+      }).subscribe({
+        next: (bookings) => {
+          const completed = bookings.filter(b => b.status === 'Completed').length;
+          this.profileStats = {
+            totalBookings: bookings.length,
+            completedBookings: completed
+          };
+          // ✅ الزبون موثوق إذا أكمل 3+ حجوزات
+          this.isTrustedCustomer = completed >= 3;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.profileStats = { totalBookings: 0, completedBookings: 0 };
+          this.isTrustedCustomer = false;
+          this.cdr.detectChanges();
+        }
+      });
+    } else if (role === 'Owner') {
+      // جلب إحصائيات المالك
+      this.http.get<any>(`${this.url}/owner/stats`, {
+        headers: this.getHeaders()
+      }).subscribe({
+        next: (stats) => {
+          this.profileStats = {
+            totalRevenue: stats.totalRevenue || 0,
+            activeProperties: stats.activeProperties || 0,
+            averageRating: stats.averageRating || 0
+          };
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.profileStats = { totalRevenue: 0, activeProperties: 0, averageRating: 0 };
+          this.cdr.detectChanges();
+        }
+      });
+    } else if (role === 'Admin') {
+      // جلب إحصائيات الأدمن
+      this.http.get<any>(`${this.url}/admin/stats`, {
+        headers: this.getHeaders()
+      }).subscribe({
+        next: (stats) => {
+          this.profileStats = {
+            totalUsers: (stats.users?.totalCustomers || 0) + (stats.users?.totalOwners || 0),
+            approvedProperties: stats.properties?.approved || 0
+          };
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.profileStats = { totalUsers: 0, approvedProperties: 0 };
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
   updateProfile() {
     this.profileError = '';
     this.profileSuccess = '';
 
-    if (!this.profileForm.fullName || 
-        !this.profileForm.email || 
-        !this.profileForm.phone) {
+    if (!this.profileForm.fullName || !this.profileForm.email || !this.profileForm.phone) {
       this.profileError = 'الرجاء تعبئة جميع الحقول';
       return;
     }
@@ -84,7 +153,6 @@ export class ProfileComponent implements OnInit {
         this.profileSuccess = 'تم تحديث البيانات بنجاح!';
         this.profileLoading = false;
 
-        // تحديث بيانات الـ localStorage
         const currentUser = this.auth.getUser();
         this.auth.saveToken(this.auth.getToken()!, {
           ...currentUser,
@@ -106,9 +174,7 @@ export class ProfileComponent implements OnInit {
     this.passwordError = '';
     this.passwordSuccess = '';
 
-    if (!this.passwordForm.currentPassword || 
-        !this.passwordForm.newPassword || 
-        !this.passwordForm.confirmPassword) {
+    if (!this.passwordForm.currentPassword || !this.passwordForm.newPassword || !this.passwordForm.confirmPassword) {
       this.passwordError = 'الرجاء تعبئة جميع الحقول';
       return;
     }
@@ -131,11 +197,7 @@ export class ProfileComponent implements OnInit {
       next: () => {
         this.passwordSuccess = 'تم تغيير كلمة المرور بنجاح!';
         this.passwordLoading = false;
-        this.passwordForm = {
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        };
+        this.passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -147,7 +209,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getRoleLabel() {
-    switch(this.user?.role) {
+    switch (this.user?.role) {
       case 'Customer': return 'زبون';
       case 'Owner': return 'مالك';
       case 'Admin': return 'أدمن';
@@ -156,7 +218,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getRoleIcon() {
-    switch(this.user?.role) {
+    switch (this.user?.role) {
       case 'Customer': return 'bi-person';
       case 'Owner': return 'bi-house';
       case 'Admin': return 'bi-shield-check';
