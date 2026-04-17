@@ -38,6 +38,55 @@
           </span>
         </div>
 
+        <!-- ===========================
+             Timeline مرئي لدورة حياة الحجز
+        =========================== -->
+        <div class="booking-timeline" *ngIf="b.status !== 'Cancelled'">
+
+          <!-- الخطوة 1: تم الحجز -->
+          <div class="timeline-step" [ngClass]="getStepClass(b, 'Pending')">
+            <div class="step-icon"><i class="bi bi-calendar-plus"></i></div>
+            <div class="step-label">تم الحجز</div>
+          </div>
+
+          <div class="timeline-line" [ngClass]="{'active': isLineDone(b, 'Confirmed')}"></div>
+
+          <!-- الخطوة 2: موافقة المالك -->
+          <div class="timeline-step" [ngClass]="getStepClass(b, 'Confirmed')">
+            <div class="step-icon"><i class="bi bi-check-circle"></i></div>
+            <div class="step-label">موافقة المالك</div>
+          </div>
+
+          <div class="timeline-line" [ngClass]="{'active': isLineDone(b, 'Paid')}"></div>
+
+          <!-- الخطوة 3: الدفع -->
+          <div class="timeline-step" [ngClass]="getStepClass(b, 'Paid')">
+            <div class="step-icon"><i class="bi bi-credit-card"></i></div>
+            <div class="step-label">الدفع</div>
+          </div>
+
+          <div class="timeline-line" [ngClass]="{'active': isLineDone(b, 'Completed')}"></div>
+
+          <!-- الخطوة 4: مكتمل -->
+          <div class="timeline-step" [ngClass]="getStepClass(b, 'Completed')">
+            <div class="step-icon"><i class="bi bi-house-check"></i></div>
+            <div class="step-label">مكتمل</div>
+          </div>
+
+        </div>
+
+        <!-- شارة الإلغاء -->
+        <div class="cancelled-banner" *ngIf="b.status === 'Cancelled'">
+          <i class="bi bi-x-circle-fill"></i>
+          <span>تم إلغاء هذا الحجز</span>
+        </div>
+
+        <!-- بطاقة انتظار الكاش -->
+        <div class="pending-cash-banner" *ngIf="b.paymentStatus === 'PendingCash'">
+          <i class="bi bi-clock-history"></i>
+          <span>طلب الدفع الكاش بانتظار تأكيد المالك (مهلة 24 ساعة)</span>
+        </div>
+
         <div class="booking-details">
           <div class="detail-item">
             <i class="bi bi-calendar-check"></i>
@@ -76,15 +125,23 @@
           </div>
 
           <div class="booking-actions">
+            <!-- زر الدفع — يظهر فقط إذا مؤكد ولم يدفع بعد -->
             <button class="btn-pay"
-              *ngIf="b.status === 'Confirmed'"
+              *ngIf="b.status === 'Confirmed' && !b.paymentStatus"
               (click)="goToPayment(b.id)">
               <i class="bi bi-credit-card"></i>
               ادفع الآن
             </button>
 
+            <!-- إشارة الدفع المكتمل -->
+            <span class="paid-badge" *ngIf="b.paymentStatus === 'Paid'">
+              <i class="bi bi-check-circle-fill"></i>
+              تم الدفع
+            </span>
+
+            <!-- زر الإلغاء -->
             <button class="btn-cancel"
-              *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
+              *ngIf="b.status === 'Pending' || (b.status === 'Confirmed' && b.paymentStatus !== 'PendingCash')"
               (click)="openCancelModal(b.id)"
               [disabled]="cancellingId === b.id">
               <i class="bi bi-x-circle"></i>

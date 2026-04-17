@@ -65,7 +65,7 @@ export class MyBookingsComponent implements OnInit {
 
     const checkIn = new Date(booking.checkIn);
     const hoursLeft = (checkIn.getTime() - Date.now()) / (1000 * 60 * 60);
-    const hasPaid = booking.status === 'Confirmed';
+    const hasPaid = booking.paymentStatus === 'Paid';
 
     if (!hasPaid) {
       // الحالة 2 — لم يدفع — إلغاء طبيعي بدون خصم
@@ -134,10 +134,13 @@ export class MyBookingsComponent implements OnInit {
     this.paymentService.pay({ bookingId, method: 'Card' }).subscribe({
       next: (res: any) => {
         const booking = this.bookings.find(b => b.id === bookingId);
-        if (booking) booking.status = 'Completed';
+        if (booking) {
+          booking.paymentStatus = 'Paid';
+          booking.paymentMethod = 'Card';
+        }
         this.payingId = null;
         this.toast.show(
-          `تم الدفع بنجاح! رقم العملية: ${res.transactionRef}`,
+          `تم الدفع بنجاح! تحقق من إشعاراتك لكود الدخول 🔑`,
           'success'
         );
         this.cdr.detectChanges();
@@ -155,6 +158,45 @@ export class MyBookingsComponent implements OnInit {
 
   goToPayment(bookingId: number) {
     this.router.navigate(['/payment', bookingId]);
+  }
+
+  // ===========================
+  // Timeline helpers
+  // ===========================
+
+  // ترتيب خطوات دورة الحياة
+  private stepOrder = ['Pending', 'Confirmed', 'Paid', 'Completed'];
+
+  // تحويل حالة الحجز إلى خطوة في التايم لاين
+  private getStepFromStatus(status: string, paymentStatus?: string): string {
+    if (status === 'Completed') return 'Completed';
+    if (status === 'Confirmed' && paymentStatus === 'Paid') return 'Paid';
+    if (status === 'Confirmed') return 'Confirmed';
+    return 'Pending';
+  }
+
+  // إرجاع class CSS للخطوة
+  getStepClass(booking: any, step: string): string {
+    if (booking.status === 'Cancelled') {
+      return step === 'Pending' ? 'cancelled' : '';
+    }
+
+    const currentStep = this.getStepFromStatus(booking.status, booking.paymentStatus);
+    const currentIdx = this.stepOrder.indexOf(currentStep);
+    const stepIdx = this.stepOrder.indexOf(step);
+
+    if (stepIdx < currentIdx) return 'done';
+    if (stepIdx === currentIdx) return 'current';
+    return '';
+  }
+
+  // هل الخط بين خطوتين مفعّل
+  isLineDone(booking: any, afterStep: string): boolean {
+    if (booking.status === 'Cancelled') return false;
+    const currentStep = this.getStepFromStatus(booking.status, booking.paymentStatus);
+    const currentIdx = this.stepOrder.indexOf(currentStep);
+    const afterIdx = this.stepOrder.indexOf(afterStep);
+    return afterIdx <= currentIdx;
   }
 
   getStatusClass(status: string): string {

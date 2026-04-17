@@ -82,8 +82,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
 }
 
@@ -116,6 +116,134 @@
 .status-confirmed { background: #EAF3DE; color: #27500A; }
 .status-cancelled { background: #FCEBEB; color: #A32D2D; }
 .status-completed { background: #E6F1FB; color: #0C447C; }
+
+/* ===========================
+   Timeline مرئي
+=========================== */
+.booking-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.timeline-step .step-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--default-color), transparent 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.timeline-step .step-label {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--default-color), transparent 40%);
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* خطوة مكتملة */
+.timeline-step.done .step-icon {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.timeline-step.done .step-label {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* الخطوة الحالية */
+.timeline-step.current .step-icon {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-color), transparent 85%);
+}
+
+.timeline-step.current .step-label {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+/* خطوة ملغاة */
+.timeline-step.cancelled .step-icon {
+  background: #FCEBEB;
+  border-color: #A32D2D;
+  color: #A32D2D;
+}
+
+/* الخط الفاصل */
+.timeline-line {
+  flex: 1;
+  height: 2px;
+  background: color-mix(in srgb, var(--default-color), transparent 85%);
+  margin: 0 4px;
+  margin-bottom: 22px;
+  transition: background 0.3s;
+}
+
+.timeline-line.active {
+  background: var(--accent-color);
+}
+
+/* شارة الإلغاء */
+.cancelled-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FCEBEB;
+  color: #A32D2D;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* شارة انتظار الكاش */
+.pending-cash-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FAEEDA;
+  color: #854F0B;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* شارة تم الدفع */
+.paid-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #EAF3DE;
+  color: #3B6D11;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: 600;
+}
 
 .booking-details {
   display: grid;
@@ -173,6 +301,7 @@
 .booking-actions {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .btn-pay {
@@ -345,6 +474,9 @@
 
 .btn-modal-close:hover { background: #e9ecef; }
 
+/* ===========================
+   Responsive
+=========================== */
 @media (max-width: 768px) {
   .booking-details {
     grid-template-columns: repeat(2, 1fr);
@@ -365,4 +497,15 @@
     width: 100%;
     justify-content: center;
   }
+
+  .timeline-step .step-label { font-size: 9px; }
+  .timeline-step .step-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-step .step-label { display: none; }
 }
