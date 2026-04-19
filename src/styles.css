@@ -42,3 +42,66 @@ a {
 a:hover {
   color: var(--nav-hover-color);
 }
+
+/* ===========================
+   ✅ Star Rating Component
+   أضف هذا في styles.css أو في ملف CSS المناسب
+=========================== */
+
+/* ===========================
+   نجوم عرض العقارات (Half-Star)
+=========================== */
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  direction: ltr; /* النجوم من اليسار لليمين دائماً */
+}
+
+.star-rating i {
+  font-size: 14px;
+  transition: transform 0.15s ease;
+}
+
+.star-rating i.bi-star-fill {
+  color: #FFC107;
+}
+
+.star-rating i.bi-star-half {
+  color: #FFC107;
+}
+
+.star-rating i.bi-star {
+  color: #DEE2E6;
+}
+
+.star-rating .rating-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #854F0B;
+  margin-right: 6px;
+  margin-left: 2px;
+}
+
+.star-rating .rating-count {
+  font-size: 11px;
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+}
+
+/* حجم صغير للبطاقات */
+.star-rating.sm i { font-size: 11px; }
+.star-rating.sm .rating-value { font-size: 11px; }
+
+/* حجم كبير لصفحة التفاصيل */
+.star-rating.lg i { font-size: 20px; }
+.star-rating.lg .rating-value { font-size: 16px; }
+
+/* ===========================
+   استخدام في بطاقة العقار:
+   
+   <div class="star-rating sm">
+     <i class="bi bi-star-fill" *ngFor="let s of getStarArray(p.averageRating); let i = index" 
+        [class]="'bi ' + getStarClass(s)"></i>
+     <span class="rating-value">{{ p.averageRating }}</span>
+   </div>
+=========================== */

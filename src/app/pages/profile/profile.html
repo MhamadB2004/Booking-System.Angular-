@@ -24,8 +24,17 @@
             {{ getRoleLabel() }}
           </span>
 
-          <!-- ✅ شارة "زبون موثوق" — تظهر إذا اكتمل 3+ حجوزات -->
-          <div class="trusted-badge" *ngIf="user.role === 'Customer' && isTrustedCustomer">
+          <!-- ✅ شارة "زبون مميّز" — 5+ حجوزات مكتملة -->
+          <div class="premium-badge" *ngIf="user.role === 'Customer' && isPremiumCustomer">
+            <i class="bi bi-trophy-fill"></i>
+            <div class="badge-text">
+              <span class="badge-title">⭐ زبون مميّز</span>
+              <span class="badge-desc">أكملت أكثر من 5 حجوزات!</span>
+            </div>
+          </div>
+
+          <!-- ✅ شارة "زبون موثوق" — 3+ حجوزات (وليس مميزاً بعد) -->
+          <div class="trusted-badge" *ngIf="user.role === 'Customer' && isTrustedCustomer && !isPremiumCustomer">
             <i class="bi bi-patch-check-fill"></i>
             <div class="trusted-text">
               <span class="trusted-title">زبون موثوق</span>
@@ -49,24 +58,33 @@
           </div>
         </div>
 
-        <!-- ✅ إحصائيات سريعة حسب الدور -->
+        <!-- ✅ إحصائيات موسّعة حسب الدور -->
         <div class="quick-stats-card" *ngIf="profileStats">
           <div class="qs-title">
             <i class="bi bi-bar-chart-line"></i>
             إحصائياتي
           </div>
 
-          <!-- للزبون -->
+          <!-- === للزبون === -->
           <ng-container *ngIf="user.role === 'Customer'">
+            <div class="qs-item">
+              <span class="qs-label">إجمالي الحجوزات</span>
+              <span class="qs-value">{{ profileStats.totalBookings }}</span>
+            </div>
             <div class="qs-item">
               <span class="qs-label">حجوزات مكتملة</span>
               <span class="qs-value completed">{{ profileStats.completedBookings }}</span>
             </div>
+            <!-- ✅ إجمالي المدفوعات -->
             <div class="qs-item">
-              <span class="qs-label">حجوزات إجمالية</span>
-              <span class="qs-value">{{ profileStats.totalBookings }}</span>
+              <span class="qs-label">إجمالي المدفوعات</span>
+              <span class="qs-value revenue">{{ profileStats.totalSpent | number }} ليرة</span>
             </div>
-            <div class="qs-item" *ngIf="isTrustedCustomer">
+            <div class="qs-item" *ngIf="isPremiumCustomer">
+              <span class="qs-label">مستوى العضوية</span>
+              <span class="qs-value premium">⭐ مميّز</span>
+            </div>
+            <div class="qs-item" *ngIf="isTrustedCustomer && !isPremiumCustomer">
               <span class="qs-label">حالة الثقة</span>
               <span class="qs-value trusted">✅ موثوق</span>
             </div>
@@ -76,23 +94,42 @@
             </div>
           </ng-container>
 
-          <!-- للمالك -->
+          <!-- === للمالك === -->
           <ng-container *ngIf="user.role === 'Owner'">
+            <!-- ✅ إجمالي الأرباح -->
             <div class="qs-item">
-              <span class="qs-label">إجمالي الإيرادات</span>
-              <span class="qs-value revenue">{{ profileStats.totalRevenue }} ليرة</span>
+              <span class="qs-label">إجمالي الأرباح</span>
+              <span class="qs-value revenue">{{ profileStats.totalRevenue | number }} ليرة</span>
             </div>
             <div class="qs-item">
               <span class="qs-label">عقارات نشطة</span>
-              <span class="qs-value">{{ profileStats.activeProperties }}</span>
+              <span class="qs-value">{{ profileStats.activeProperties }} / {{ profileStats.totalProperties }}</span>
             </div>
             <div class="qs-item">
+              <span class="qs-label">حجوزات مؤكدة</span>
+              <span class="qs-value completed">{{ profileStats.confirmedBookings }}</span>
+            </div>
+            <!-- ✅ عرض التقييم بالنجوم -->
+            <div class="qs-item" *ngIf="profileStats.averageRating > 0">
               <span class="qs-label">متوسط التقييم</span>
-              <span class="qs-value">{{ profileStats.averageRating || 'جديد' }}</span>
+              <span class="qs-value">
+                <span class="star-rating-inline">
+                  <ng-container *ngFor="let s of getStarArray(profileStats.averageRating)">
+                    <i class="bi bi-star-fill" *ngIf="s === 'full'"></i>
+                    <i class="bi bi-star-half" *ngIf="s === 'half'"></i>
+                    <i class="bi bi-star"      *ngIf="s === 'empty'"></i>
+                  </ng-container>
+                  <span class="rating-num">{{ profileStats.averageRating }}</span>
+                </span>
+              </span>
+            </div>
+            <div class="qs-item" *ngIf="!profileStats.averageRating">
+              <span class="qs-label">التقييم</span>
+              <span class="qs-value" style="font-size:11px;color:#854F0B">جديد — لا تقييمات بعد</span>
             </div>
           </ng-container>
 
-          <!-- للأدمن -->
+          <!-- === للأدمن === -->
           <ng-container *ngIf="user.role === 'Admin'">
             <div class="qs-item">
               <span class="qs-label">إجمالي المستخدمين</span>
@@ -100,15 +137,23 @@
             </div>
             <div class="qs-item">
               <span class="qs-label">العقارات المعتمدة</span>
-              <span class="qs-value">{{ profileStats.approvedProperties }}</span>
+              <span class="qs-value completed">{{ profileStats.approvedProperties }}</span>
+            </div>
+            <div class="qs-item">
+              <span class="qs-label">إجمالي الحجوزات</span>
+              <span class="qs-value">{{ profileStats.totalBookings }}</span>
+            </div>
+            <div class="qs-item">
+              <span class="qs-label">إجمالي الإيرادات</span>
+              <span class="qs-value revenue">{{ profileStats.totalRevenue | number }} ليرة</span>
             </div>
           </ng-container>
         </div>
 
-        <!-- ✅ روابط سريعة ذكية حسب دور المستخدم -->
+        <!-- ✅ روابط سريعة ذكية حسب الدور — توجيه صحيح -->
         <div class="quick-links">
 
-          <!-- روابط الزبون -->
+          <!-- روابط الزبون (Customer) -->
           <ng-container *ngIf="user.role === 'Customer'">
             <a routerLink="/my-bookings" class="quick-link">
               <i class="bi bi-calendar-check"></i>
@@ -127,26 +172,31 @@
             </a>
           </ng-container>
 
-          <!-- روابط المالك -->
+          <!-- روابط المالك (Owner) -->
           <ng-container *ngIf="user.role === 'Owner'">
-            <a routerLink="/owner" class="quick-link" [queryParams]="{tab: 'properties'}">
+            <a routerLink="/owner" class="quick-link">
               <i class="bi bi-house"></i>
+              <span>لوحتي</span>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <a routerLink="/owner" class="quick-link">
+              <i class="bi bi-buildings"></i>
               <span>عقاراتي</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/owner" class="quick-link" [queryParams]="{tab: 'pending-bookings'}">
+            <a routerLink="/owner" class="quick-link">
               <i class="bi bi-clock-history"></i>
               <span>الحجوزات الواردة</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/owner" class="quick-link" [queryParams]="{tab: 'notifications'}">
+            <a routerLink="/owner" class="quick-link">
               <i class="bi bi-bell"></i>
               <span>الإشعارات</span>
               <i class="bi bi-chevron-left"></i>
             </a>
           </ng-container>
 
-          <!-- روابط الأدمن -->
+          <!-- روابط الأدمن (Admin) -->
           <ng-container *ngIf="user.role === 'Admin'">
             <a routerLink="/admin" class="quick-link">
               <i class="bi bi-shield-check"></i>
@@ -171,7 +221,6 @@
       <!-- يمين — التبويبات -->
       <div class="profile-content">
 
-        <!-- Tabs -->
         <div class="profile-tabs">
           <button [class.active]="activeTab === 'info'" (click)="activeTab = 'info'">
             <i class="bi bi-person"></i>
@@ -279,7 +328,6 @@
                 [(ngModel)]="passwordForm.confirmPassword"
                 placeholder="أعد كتابة كلمة المرور">
             </div>
-            <!-- مؤشر التطابق -->
             <small class="match-indicator"
               *ngIf="passwordForm.newPassword && passwordForm.confirmPassword">
               <span *ngIf="passwordForm.newPassword === passwordForm.confirmPassword" class="match">

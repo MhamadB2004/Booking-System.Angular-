@@ -1,3 +1,5 @@
+/* === (نفس الـ CSS الأصلي) === */
+
 .properties-page {
   padding-top: 100px;
   min-height: 100vh;
@@ -63,17 +65,12 @@
   color: color-mix(in srgb, var(--default-color), transparent 40%);
 }
 
-.no-results i {
-  font-size: 64px;
-  display: block;
-  margin-bottom: 16px;
-}
+.no-results i { font-size: 64px; display: block; margin-bottom: 16px; }
+.no-results h4 { margin-bottom: 8px; color: var(--heading-color); }
 
-.no-results h4 {
-  margin-bottom: 8px;
-  color: var(--heading-color);
-}
-
+/* ===========================
+   بطاقات العقارات
+=========================== */
 .property-card {
   background: var(--surface-color);
   border-radius: 16px;
@@ -100,9 +97,7 @@
   transition: transform 0.3s;
 }
 
-.property-card:hover .property-img img {
-  transform: scale(1.05);
-}
+.property-card:hover .property-img img { transform: scale(1.05); }
 
 .property-type {
   position: absolute;
@@ -116,26 +111,11 @@
   font-weight: 600;
 }
 
-.property-body {
-  padding: 20px;
-}
+.property-body { padding: 20px; }
+.property-body h5 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--heading-color); }
 
-.property-body h5 {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: var(--heading-color);
-}
-
-.location {
-  font-size: 13px;
-  color: color-mix(in srgb, var(--default-color), transparent 30%);
-  margin-bottom: 12px;
-}
-
-.location i {
-  color: var(--accent-color);
-}
+.location { font-size: 13px; color: color-mix(in srgb, var(--default-color), transparent 30%); margin-bottom: 12px; }
+.location i { color: var(--accent-color); }
 
 .property-meta {
   display: flex;
@@ -147,26 +127,12 @@
   border-bottom: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
 }
 
-.rating i {
-  color: #ffc107;
-}
+.rating i { color: #ffc107; }
 
-.property-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.property-footer { display: flex; justify-content: space-between; align-items: center; }
 
-.price .amount {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--accent-color);
-}
-
-.price .period {
-  font-size: 13px;
-  color: color-mix(in srgb, var(--default-color), transparent 40%);
-}
+.price .amount { font-size: 20px; font-weight: 700; color: var(--accent-color); }
+.price .period { font-size: 13px; color: color-mix(in srgb, var(--default-color), transparent 40%); }
 
 .btn-details {
   background: color-mix(in srgb, var(--accent-color), transparent 90%);
@@ -180,51 +146,50 @@
   transition: all 0.3s;
 }
 
-.btn-details:hover {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-}
+.btn-details:hover { background: var(--accent-color); color: var(--contrast-color); }
 
-.pagination-wrap {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 40px;
-  padding-bottom: 40px;
-}
-
-.page-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: 1.5px solid color-mix(in srgb, var(--default-color), transparent 80%);
-  background: var(--surface-color);
-  color: var(--default-color);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
+/* ===========================
+   ✅ Star Rating — Half-Star
+=========================== */
+.star-rating {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 2px;
+  direction: ltr;
 }
 
-.page-btn:hover:not(:disabled) {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
+.star-rating i { font-size: 14px; }
+.star-rating i.bi-star-fill { color: #FFC107; }
+.star-rating i.bi-star-half { color: #FFC107; }
+.star-rating i.bi-star       { color: #DEE2E6; }
+
+.star-rating.sm i { font-size: 11px; }
+
+.star-rating .rating-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #854F0B;
+  margin-right: 4px;
 }
 
-.page-btn.active {
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-  color: var(--contrast-color);
+/* شارة "جديد" للعقارات بدون تقييم */
+.new-listing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #EAF3DE;
+  color: #3B6D11;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.page-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+.new-listing-badge i { font-size: 11px; color: #3B6D11; }
 
+/* ===========================
+   Featured Properties Cards
+=========================== */
 .featured-properties .stack-card {
   background: var(--surface-color);
   border-radius: 16px;
@@ -278,23 +243,13 @@
   background: color-mix(in srgb, var(--accent-color), green 20%);
 }
 
-.featured-properties .stack-card .stack-body {
-  padding: 18px;
-}
+.featured-properties .stack-card .stack-body { padding: 18px; }
 
 .featured-properties .stack-card .stack-body h5 {
   font-weight: 800;
   font-size: 18px;
   margin-bottom: 6px;
-}
-
-.featured-properties .stack-card .stack-body h5 a {
   color: var(--heading-color);
-  transition: 0.3s;
-}
-
-.featured-properties .stack-card .stack-body h5 a:hover {
-  color: var(--accent-color);
 }
 
 .featured-properties .stack-card .stack-body .stack-loc {
@@ -306,9 +261,7 @@
   margin-bottom: 10px;
 }
 
-.featured-properties .stack-card .stack-body .stack-loc i {
-  color: var(--accent-color);
-}
+.featured-properties .stack-card .stack-body .stack-loc i { color: var(--accent-color); }
 
 .featured-properties .stack-card .stack-body .stack-specs {
   display: flex;
@@ -318,6 +271,7 @@
   margin: 0 0 14px 0;
   padding: 0;
   list-style: none;
+  align-items: center;
 }
 
 .featured-properties .stack-card .stack-body .stack-specs li {
@@ -326,10 +280,7 @@
   gap: 6px;
 }
 
-.featured-properties .stack-card .stack-body .stack-specs li i {
-  color: var(--accent-color);
-  font-size: 12px;
-}
+.featured-properties .stack-card .stack-body .stack-specs li i { color: var(--accent-color); font-size: 12px; }
 
 .featured-properties .stack-card .stack-body .stack-foot {
   display: flex;
@@ -358,3 +309,45 @@
   border-color: var(--accent-color);
   background: color-mix(in srgb, var(--accent-color), transparent 92%);
 }
+
+/* ===========================
+   Pagination
+=========================== */
+.pagination-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+  padding-bottom: 40px;
+}
+
+.page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1.5px solid color-mix(in srgb, var(--default-color), transparent 80%);
+  background: var(--surface-color);
+  color: var(--default-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.page-btn.active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--contrast-color);
+}
+
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+

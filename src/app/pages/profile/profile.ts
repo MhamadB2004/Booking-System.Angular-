@@ -31,11 +31,14 @@ export class ProfileComponent implements OnInit {
   passwordError = '';
   passwordLoading = false;
 
-  // ✅ إحصائيات البروفايل
+  // ✅ إحصائيات البروفايل الموسّعة
   profileStats: any = null;
 
-  // ✅ حالة الثقة (أكثر من 3 حجوزات مكتملة)
+  // ✅ شارة الزبون الموثوق (3+ حجوزات)
   isTrustedCustomer = false;
+
+  // ✅ شارة الزبون المميّز (5+ حجوزات مكتملة)
+  isPremiumCustomer = false;
 
   constructor(
     private auth: AuthService,
@@ -64,8 +67,6 @@ export class ProfileComponent implements OnInit {
         };
         this.loading = false;
         this.cdr.detectChanges();
-
-        // ✅ تحميل الإحصائيات بناءً على الدور
         this.loadProfileStats();
       },
       error: () => {
@@ -75,33 +76,77 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // ✅ تحميل الإحصائيات الخاصة بالبروفايل
+  // ===========================
+  // ✅ مسارات التنقل حسب الدور
+  // ===========================
+  navigateTo(destination: string) {
+    const role = this.user?.role;
+
+    const routes: Record<string, Record<string, string>> = {
+      Customer: {
+        bookings: '/my-bookings',
+        notifications: '/notifications',
+        browse: '/properties'
+      },
+      Owner: {
+        dashboard: '/owner',
+        properties: '/owner',
+        notifications: '/owner',
+        pending: '/owner'
+      },
+      Admin: {
+        dashboard: '/admin',
+        users: '/admin',
+        properties: '/admin'
+      }
+    };
+
+    const roleRoutes = routes[role] || {};
+    const path = roleRoutes[destination];
+
+    if (path) {
+      this.router.navigate([path]);
+    }
+  }
+
+  // ===========================
+  // ✅ تحميل الإحصائيات
+  // ===========================
   loadProfileStats() {
     const role = this.user?.role;
 
     if (role === 'Customer') {
-      // جلب حجوزات الزبون لحساب المكتملة
       this.http.get<any[]>(`${this.url}/bookings/my`, {
         headers: this.getHeaders()
       }).subscribe({
         next: (bookings) => {
           const completed = bookings.filter(b => b.status === 'Completed').length;
+          const totalSpent = bookings
+            .filter(b => b.status === 'Completed' || b.status === 'Confirmed')
+            .reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+
           this.profileStats = {
             totalBookings: bookings.length,
-            completedBookings: completed
+            completedBookings: completed,
+            totalSpent: totalSpent
           };
-          // ✅ الزبون موثوق إذا أكمل 3+ حجوزات
+
+          // ✅ موثوق: 3+ حجوزات مكتملة
           this.isTrustedCustomer = completed >= 3;
+          // ✅ مميّز: 5+ حجوزات مكتملة
+          this.isPremiumCustomer = completed >= 5;
+
           this.cdr.detectChanges();
         },
         error: () => {
-          this.profileStats = { totalBookings: 0, completedBookings: 0 };
+          this.profileStats = { totalBookings: 0, completedBookings: 0, totalSpent: 0 };
           this.isTrustedCustomer = false;
+          this.isPremiumCustomer = false;
           this.cdr.detectChanges();
         }
       });
+
     } else if (role === 'Owner') {
-      // جلب إحصائيات المالك
       this.http.get<any>(`${this.url}/owner/stats`, {
         headers: this.getHeaders()
       }).subscribe({
@@ -109,29 +154,39 @@ export class ProfileComponent implements OnInit {
           this.profileStats = {
             totalRevenue: stats.totalRevenue || 0,
             activeProperties: stats.activeProperties || 0,
+            totalProperties: stats.totalProperties || 0,
+            confirmedBookings: stats.confirmedBookings || 0,
             averageRating: stats.averageRating || 0
           };
           this.cdr.detectChanges();
         },
         error: () => {
-          this.profileStats = { totalRevenue: 0, activeProperties: 0, averageRating: 0 };
+          this.profileStats = {
+            totalRevenue: 0, activeProperties: 0,
+            totalProperties: 0, confirmedBookings: 0, averageRating: 0
+          };
           this.cdr.detectChanges();
         }
       });
+
     } else if (role === 'Admin') {
-      // جلب إحصائيات الأدمن
       this.http.get<any>(`${this.url}/admin/stats`, {
         headers: this.getHeaders()
       }).subscribe({
         next: (stats) => {
           this.profileStats = {
             totalUsers: (stats.users?.totalCustomers || 0) + (stats.users?.totalOwners || 0),
-            approvedProperties: stats.properties?.approved || 0
+            approvedProperties: stats.properties?.approved || 0,
+            totalRevenue: stats.revenue?.total || 0,
+            totalBookings: stats.bookings?.total || 0
           };
           this.cdr.detectChanges();
         },
         error: () => {
-          this.profileStats = { totalUsers: 0, approvedProperties: 0 };
+          this.profileStats = {
+            totalUsers: 0, approvedProperties: 0,
+            totalRevenue: 0, totalBookings: 0
+          };
           this.cdr.detectChanges();
         }
       });
@@ -206,6 +261,27 @@ export class ProfileComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  // ===========================
+  // ✅ عرض النجوم (Half-Star Logic)
+  // ===========================
+
+  /** يُرجع مصفوفة لرسم النجوم: 'full' | 'half' | 'empty' */
+  getStarArray(rating: number): string[] {
+    const stars: string[] = [];
+    const rounded = Math.round(rating * 2) / 2; // تقريب لأقرب 0.5
+
+    for (let i = 1; i <= 5; i++) {
+      if (i <= Math.floor(rounded)) {
+        stars.push('full');
+      } else if (i === Math.ceil(rounded) && rounded % 1 !== 0) {
+        stars.push('half');
+      } else {
+        stars.push('empty');
+      }
+    }
+    return stars;
   }
 
   getRoleLabel() {

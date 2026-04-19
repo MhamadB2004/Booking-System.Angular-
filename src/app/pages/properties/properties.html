@@ -42,73 +42,88 @@
       <div class="spinner-border text-accent" role="status"></div>
     </div>
 
-    <!-- خطأ -->
+    <!-- لا نتائج -->
     <div *ngIf="!loading && properties.length === 0" class="no-results">
       <i class="bi bi-house-x"></i>
       <h4>{{ error }}</h4>
       <p>Try adjusting your search filters</p>
     </div>
 
-    <!-- العقارات -->
-        <!-- العقارات -->
-<div class="featured-properties">
-  <div class="row gy-4 mt-4" *ngIf="!loading && properties.length > 0">
-    <div class="col-lg-4" *ngFor="let p of properties">
-      <article class="stack-card" (click)="goToDetails(p.id)" style="cursor:pointer">
-        <figure class="stack-media">
-          <img [src]="getImageUrl(p.images?.[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800'"
-            [alt]="p.title" class="img-fluid" loading="lazy">
-          <figcaption>
-            <span class="chip" [ngClass]="p.type === 'Farm' ? 'exclusive' : 'new'">
-              {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
-            </span>
-          </figcaption>
-        </figure>
-        <div class="stack-body">
-          <h5>{{ p.title }}</h5>
-          <div class="stack-loc">
-            <i class="bi bi-geo-alt"></i> {{ p.location }}
-          </div>
-          <ul class="stack-specs">
-            <li>
-              <i class="bi bi-people"></i> {{ p.maxGuests }} ضيوف
-            </li>
-            <li>
-              <i class="bi bi-star-fill"></i>
-              {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
-            </li>
-          </ul>
-          <div class="stack-foot">
-            <span class="stack-price">{{ p.pricePerNight }} ليرة</span>
-            <span class="stack-link">
-              <i class="bi bi-arrow-left-circle"></i> التفاصيل
-            </span>
-          </div>
+    <!-- ✅ بطاقات العقارات مع نجوم Half-Star -->
+    <div class="featured-properties">
+      <div class="row gy-4 mt-4" *ngIf="!loading && properties.length > 0">
+        <div class="col-lg-4" *ngFor="let p of properties">
+          <article class="stack-card" (click)="goToDetails(p.id)" style="cursor:pointer">
+            <figure class="stack-media">
+              <img
+                [src]="getImageUrl(p.images?.[0]) || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800'"
+                [alt]="p.title"
+                class="img-fluid"
+                loading="lazy">
+              <figcaption>
+                <span class="chip" [ngClass]="p.type === 'Farm' ? 'exclusive' : 'new'">
+                  {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
+                </span>
+              </figcaption>
+            </figure>
+            <div class="stack-body">
+              <h5>{{ p.title }}</h5>
+              <div class="stack-loc">
+                <i class="bi bi-geo-alt"></i> {{ p.location }}
+              </div>
+
+              <ul class="stack-specs">
+                <li>
+                  <i class="bi bi-people"></i> {{ p.maxGuests }} ضيوف
+                </li>
+                <li>
+                  <!-- ✅ عرض النجوم بمنطق Half-Star -->
+                  <span class="star-rating sm" *ngIf="p.averageRating > 0">
+                    <ng-container *ngFor="let s of getStarArray(p.averageRating)">
+                      <i [class]="getStarClass(s)"></i>
+                    </ng-container>
+                    <span class="rating-value">{{ formatRating(p.averageRating) }}</span>
+                  </span>
+                  <!-- عقار جديد بدون تقييم -->
+                  <span *ngIf="!p.averageRating || p.averageRating <= 0"
+                    class="new-listing-badge">
+                    <i class="bi bi-stars"></i> جديد
+                  </span>
+                </li>
+              </ul>
+
+              <div class="stack-foot">
+                <span class="stack-price">{{ p.pricePerNight }} ليرة</span>
+                <span class="stack-link">
+                  <i class="bi bi-arrow-left-circle"></i> التفاصيل
+                </span>
+              </div>
+            </div>
+          </article>
         </div>
-      </article>
+      </div>
     </div>
-  </div>
-</div>
+
     <!-- Pagination -->
     <div class="pagination-wrap" *ngIf="totalPages > 1">
-    <button class="page-btn"
+      <button class="page-btn"
         [disabled]="currentPage === 1"
         (click)="goToPage(currentPage - 1)">
         <i class="bi bi-chevron-right"></i>
-    </button>
+      </button>
 
-    <button class="page-btn"
+      <button class="page-btn"
         *ngFor="let p of [].constructor(totalPages); let i = index"
         [class.active]="currentPage === i + 1"
         (click)="goToPage(i + 1)">
         {{ i + 1 }}
-    </button>
+      </button>
 
-    <button class="page-btn"
+      <button class="page-btn"
         [disabled]="currentPage === totalPages"
         (click)="goToPage(currentPage + 1)">
         <i class="bi bi-chevron-left"></i>
-    </button>
+      </button>
     </div>
 
   </div>
