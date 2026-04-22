@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
@@ -19,30 +19,24 @@ export class ProfileComponent implements OnInit {
   loading = true;
   activeTab = 'info';
 
-  // تعديل البيانات
   profileForm = { fullName: '', email: '', phone: '' };
   profileSuccess = '';
   profileError = '';
   profileLoading = false;
 
-  // تغيير كلمة المرور
   passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
   passwordSuccess = '';
   passwordError = '';
   passwordLoading = false;
 
-  // ✅ إحصائيات البروفايل الموسّعة
   profileStats: any = null;
-
-  // ✅ شارة الزبون الموثوق (3+ حجوزات)
   isTrustedCustomer = false;
-
-  // ✅ شارة الزبون المميّز (5+ حجوزات مكتملة)
   isPremiumCustomer = false;
 
   constructor(
     private auth: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
@@ -76,42 +70,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // ===========================
-  // ✅ مسارات التنقل حسب الدور
-  // ===========================
-  navigateTo(destination: string) {
-    const role = this.user?.role;
-
-    const routes: Record<string, Record<string, string>> = {
-      Customer: {
-        bookings: '/my-bookings',
-        notifications: '/notifications',
-        browse: '/properties'
-      },
-      Owner: {
-        dashboard: '/owner',
-        properties: '/owner',
-        notifications: '/owner',
-        pending: '/owner'
-      },
-      Admin: {
-        dashboard: '/admin',
-        users: '/admin',
-        properties: '/admin'
-      }
-    };
-
-    const roleRoutes = routes[role] || {};
-    const path = roleRoutes[destination];
-
-    if (path) {
-      this.router.navigate([path]);
-    }
-  }
-
-  // ===========================
-  // ✅ تحميل الإحصائيات
-  // ===========================
   loadProfileStats() {
     const role = this.user?.role;
 
@@ -128,14 +86,10 @@ export class ProfileComponent implements OnInit {
           this.profileStats = {
             totalBookings: bookings.length,
             completedBookings: completed,
-            totalSpent: totalSpent
+            totalSpent
           };
-
-          // ✅ موثوق: 3+ حجوزات مكتملة
           this.isTrustedCustomer = completed >= 3;
-          // ✅ مميّز: 5+ حجوزات مكتملة
           this.isPremiumCustomer = completed >= 5;
-
           this.cdr.detectChanges();
         },
         error: () => {
@@ -207,14 +161,12 @@ export class ProfileComponent implements OnInit {
       next: () => {
         this.profileSuccess = 'تم تحديث البيانات بنجاح!';
         this.profileLoading = false;
-
         const currentUser = this.auth.getUser();
         this.auth.saveToken(this.auth.getToken()!, {
           ...currentUser,
           fullName: this.profileForm.fullName,
           email: this.profileForm.email
         });
-
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -263,23 +215,14 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  // ===========================
-  // ✅ عرض النجوم (Half-Star Logic)
-  // ===========================
-
-  /** يُرجع مصفوفة لرسم النجوم: 'full' | 'half' | 'empty' */
+  /** Half-Star Logic */
   getStarArray(rating: number): string[] {
     const stars: string[] = [];
-    const rounded = Math.round(rating * 2) / 2; // تقريب لأقرب 0.5
-
+    const rounded = Math.round(rating * 2) / 2;
     for (let i = 1; i <= 5; i++) {
-      if (i <= Math.floor(rounded)) {
-        stars.push('full');
-      } else if (i === Math.ceil(rounded) && rounded % 1 !== 0) {
-        stars.push('half');
-      } else {
-        stars.push('empty');
-      }
+      if (i <= Math.floor(rounded)) stars.push('full');
+      else if (i === Math.ceil(rounded) && rounded % 1 !== 0) stars.push('half');
+      else stars.push('empty');
     }
     return stars;
   }

@@ -8,8 +8,7 @@
         <h4>الإشعارات</h4>
         <p>{{ unreadCount }} إشعار غير مقروء</p>
       </div>
-      <button class="btn-mark-all" *ngIf="unreadCount > 0"
-        (click)="markAllRead()">
+      <button class="btn-mark-all" *ngIf="unreadCount > 0" (click)="markAllRead()">
         <i class="bi bi-check-all"></i> تحديد الكل كمقروء
       </button>
     </div>
@@ -29,15 +28,21 @@
     <div class="notif-list" *ngIf="!loading && notifications.length > 0">
       <div class="notif-item"
         *ngFor="let n of notifications"
-        [ngClass]="n.isRead ? 'read' : 'unread'"
+        [ngClass]="[n.isRead ? 'read' : 'unread', isReviewNotif(n) ? 'review-notif' : '']"
         (click)="showDetail(n)">
-        <div class="notif-icon">
-          <i class="bi bi-bell-fill"></i>
+        <div class="notif-icon" [ngClass]="isReviewNotif(n) ? 'review-icon' : ''">
+          <i class="bi" [ngClass]="isReviewNotif(n) ? 'bi-star-fill' : 'bi-bell-fill'"></i>
         </div>
         <div class="notif-body">
           <h6>{{ n.title }}</h6>
-          <p>{{ n.message }}</p>
-          <small>{{ n.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</small>
+          <p>{{ getDisplayMessage(n) }}</p>
+          <div class="notif-meta-row">
+            <small>{{ n.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</small>
+            <!-- ✅ CTA لإشعار التقييم -->
+            <span class="review-cta" *ngIf="isReviewNotif(n)">
+              <i class="bi bi-star-fill"></i> اضغط للتقييم
+            </span>
+          </div>
         </div>
         <div class="notif-actions">
           <div class="unread-dot" *ngIf="!n.isRead"></div>
@@ -48,26 +53,103 @@
         </div>
       </div>
     </div>
-      <!-- Modal تفاصيل الإشعار -->
-      <div class="notif-modal" *ngIf="selectedNotif" (click)="closeDetail()">
-        <div class="notif-modal-card" (click)="$event.stopPropagation()">
-          <div class="modal-header">
-            <div class="notif-icon-lg">
-              <i class="bi bi-bell-fill"></i>
-            </div>
-            <button class="modal-close" (click)="closeDetail()">
-              <i class="bi bi-x-lg"></i>
-            </button>
+
+    <!-- Modal تفاصيل الإشعار العادي -->
+    <div class="notif-modal" *ngIf="selectedNotif && !showReviewModal" (click)="closeDetail()">
+      <div class="notif-modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div class="notif-icon-lg">
+            <i class="bi bi-bell-fill"></i>
           </div>
-          <div class="modal-body">
-            <h5>{{ selectedNotif.title }}</h5>
-            <p>{{ selectedNotif.message }}</p>
-            <div class="notif-meta">
-              <i class="bi bi-clock"></i>
-              <span>{{ selectedNotif.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</span>
-            </div>
+          <button class="modal-close" (click)="closeDetail()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5>{{ selectedNotif.title }}</h5>
+          <p>{{ selectedNotif.message }}</p>
+          <div class="notif-meta">
+            <i class="bi bi-clock"></i>
+            <span>{{ selectedNotif.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</span>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ✅ Modal فورم التقييم -->
+    <div class="review-modal-overlay" *ngIf="showReviewModal" (click)="closeReviewModal()">
+      <div class="review-modal-card" (click)="$event.stopPropagation()">
+
+        <div class="review-modal-header">
+          <div class="review-modal-icon">
+            <i class="bi bi-star-fill"></i>
+          </div>
+          <div>
+            <h5>قيّم تجربتك</h5>
+            <p>{{ reviewPropertyName }}</p>
+          </div>
+          <button class="modal-close" (click)="closeReviewModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <div class="review-modal-body">
+
+          <!-- رسائل -->
+          <div *ngIf="reviewSuccess" class="review-alert success">
+            <i class="bi bi-check-circle-fill"></i>
+            {{ reviewSuccess }}
+          </div>
+          <div *ngIf="reviewError" class="review-alert error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {{ reviewError }}
+          </div>
+
+          <!-- اختيار النجوم -->
+          <div class="stars-section" *ngIf="!reviewSuccess">
+            <p class="stars-label">كم تعطي هذا العقار من 5؟</p>
+            <div class="stars-picker">
+              <button class="star-btn" *ngFor="let i of [1,2,3,4,5]"
+                (click)="setRating(i)"
+                (mouseenter)="reviewHoverRating = i"
+                (mouseleave)="reviewHoverRating = 0">
+                <i class="bi bi-star-fill"
+                  [class.active]="i <= (reviewHoverRating || reviewRating)"></i>
+              </button>
+            </div>
+            <p class="stars-hint">
+              {{ getRatingLabel(reviewHoverRating || reviewRating) }}
+            </p>
+          </div>
+
+          <!-- حقل التعليق -->
+          <div class="comment-section" *ngIf="!reviewSuccess">
+            <label>تعليقك (اختياري)</label>
+            <textarea
+              class="review-textarea"
+              rows="4"
+              [(ngModel)]="reviewComment"
+              placeholder="شارك تجربتك مع الآخرين..."
+              maxlength="500">
+            </textarea>
+            <span class="char-count">{{ reviewComment.length }} / 500</span>
+          </div>
+
+          <!-- زر الإرسال -->
+          <button class="btn-submit-review" *ngIf="!reviewSuccess"
+            (click)="submitReview()"
+            [disabled]="reviewLoading || !reviewRating">
+            <span *ngIf="!reviewLoading">
+              <i class="bi bi-star-fill"></i> إرسال التقييم
+            </span>
+            <span *ngIf="reviewLoading">
+              <div class="spinner-border spinner-border-sm me-2"></div> جاري الإرسال...
+            </span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>

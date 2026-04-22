@@ -120,6 +120,9 @@
 
 .point i { color: var(--accent-color); font-size: 18px; }
 
+/* ===========================
+   Stats Section — إحصائيات حقيقية
+=========================== */
 .stats-section {
   background: var(--heading-color);
   padding: 60px 0;
@@ -132,11 +135,20 @@
   text-align: center;
 }
 
-.stat-item h3 {
+/* ===========================
+   عداد متحرك
+=========================== */
+.counter-val {
   font-size: 42px;
   font-weight: 800;
   color: var(--accent-color);
   margin-bottom: 8px;
+  line-height: 1;
+  display: block;
+}
+
+.counter-val span {
+  font-size: 28px;
 }
 
 .stat-item p {
@@ -390,10 +402,17 @@
 }
 
 @media (max-width: 768px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .features-grid { grid-template-columns: 1fr; }
   .steps-grid { flex-direction: column; }
   .step-arrow { transform: rotate(90deg); }
   .team-grid { grid-template-columns: 1fr; }
   .cta-btns { flex-direction: column; align-items: center; }
+  .counter-val { font-size: 32px; }
+  .about-hero h1 { font-size: 28px; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .counter-val { font-size: 26px; }
 }

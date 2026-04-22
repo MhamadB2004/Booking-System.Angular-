@@ -24,7 +24,7 @@
             {{ getRoleLabel() }}
           </span>
 
-          <!-- ✅ شارة "زبون مميّز" — 5+ حجوزات مكتملة -->
+          <!-- شارة "زبون مميّز" — 5+ حجوزات مكتملة -->
           <div class="premium-badge" *ngIf="user.role === 'Customer' && isPremiumCustomer">
             <i class="bi bi-trophy-fill"></i>
             <div class="badge-text">
@@ -33,7 +33,7 @@
             </div>
           </div>
 
-          <!-- ✅ شارة "زبون موثوق" — 3+ حجوزات (وليس مميزاً بعد) -->
+          <!-- شارة "زبون موثوق" — 3+ حجوزات -->
           <div class="trusted-badge" *ngIf="user.role === 'Customer' && isTrustedCustomer && !isPremiumCustomer">
             <i class="bi bi-patch-check-fill"></i>
             <div class="trusted-text">
@@ -58,14 +58,14 @@
           </div>
         </div>
 
-        <!-- ✅ إحصائيات موسّعة حسب الدور -->
+        <!-- إحصائيات موسّعة حسب الدور -->
         <div class="quick-stats-card" *ngIf="profileStats">
           <div class="qs-title">
             <i class="bi bi-bar-chart-line"></i>
             إحصائياتي
           </div>
 
-          <!-- === للزبون === -->
+          <!-- للزبون -->
           <ng-container *ngIf="user.role === 'Customer'">
             <div class="qs-item">
               <span class="qs-label">إجمالي الحجوزات</span>
@@ -75,7 +75,6 @@
               <span class="qs-label">حجوزات مكتملة</span>
               <span class="qs-value completed">{{ profileStats.completedBookings }}</span>
             </div>
-            <!-- ✅ إجمالي المدفوعات -->
             <div class="qs-item">
               <span class="qs-label">إجمالي المدفوعات</span>
               <span class="qs-value revenue">{{ profileStats.totalSpent | number }} ليرة</span>
@@ -94,9 +93,8 @@
             </div>
           </ng-container>
 
-          <!-- === للمالك === -->
+          <!-- للمالك -->
           <ng-container *ngIf="user.role === 'Owner'">
-            <!-- ✅ إجمالي الأرباح -->
             <div class="qs-item">
               <span class="qs-label">إجمالي الأرباح</span>
               <span class="qs-value revenue">{{ profileStats.totalRevenue | number }} ليرة</span>
@@ -109,7 +107,6 @@
               <span class="qs-label">حجوزات مؤكدة</span>
               <span class="qs-value completed">{{ profileStats.confirmedBookings }}</span>
             </div>
-            <!-- ✅ عرض التقييم بالنجوم -->
             <div class="qs-item" *ngIf="profileStats.averageRating > 0">
               <span class="qs-label">متوسط التقييم</span>
               <span class="qs-value">
@@ -129,7 +126,7 @@
             </div>
           </ng-container>
 
-          <!-- === للأدمن === -->
+          <!-- للأدمن -->
           <ng-container *ngIf="user.role === 'Admin'">
             <div class="qs-item">
               <span class="qs-label">إجمالي المستخدمين</span>
@@ -150,10 +147,10 @@
           </ng-container>
         </div>
 
-        <!-- ✅ روابط سريعة ذكية حسب الدور — توجيه صحيح -->
+        <!-- ✅ روابط سريعة صحيحة حسب الدور -->
         <div class="quick-links">
 
-          <!-- روابط الزبون (Customer) -->
+          <!-- روابط الزبون -->
           <ng-container *ngIf="user.role === 'Customer'">
             <a routerLink="/my-bookings" class="quick-link">
               <i class="bi bi-calendar-check"></i>
@@ -172,43 +169,48 @@
             </a>
           </ng-container>
 
-          <!-- روابط المالك (Owner) -->
+          <!-- روابط المالك -->
           <ng-container *ngIf="user.role === 'Owner'">
             <a routerLink="/owner" class="quick-link">
               <i class="bi bi-house"></i>
               <span>لوحتي</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/owner" class="quick-link">
+            <!-- ✅ إصلاح: يوجه لصفحة owner مع تحديد tab العقارات -->
+            <a routerLink="/owner" [queryParams]="{tab: 'properties'}" class="quick-link">
               <i class="bi bi-buildings"></i>
               <span>عقاراتي</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/owner" class="quick-link">
+            <!-- ✅ إصلاح: يوجه لصفحة owner مع تحديد tab الحجوزات الواردة -->
+            <a routerLink="/owner" [queryParams]="{tab: 'pending-bookings'}" class="quick-link">
               <i class="bi bi-clock-history"></i>
               <span>الحجوزات الواردة</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/owner" class="quick-link">
+            <!-- ✅ إصلاح: يوجه لصفحة owner مع تحديد tab الإشعارات -->
+            <a routerLink="/owner" [queryParams]="{tab: 'notifications'}" class="quick-link">
               <i class="bi bi-bell"></i>
               <span>الإشعارات</span>
               <i class="bi bi-chevron-left"></i>
             </a>
           </ng-container>
 
-          <!-- روابط الأدمن (Admin) -->
+          <!-- روابط الأدمن -->
           <ng-container *ngIf="user.role === 'Admin'">
             <a routerLink="/admin" class="quick-link">
               <i class="bi bi-shield-check"></i>
               <span>لوحة الإدارة</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/admin" class="quick-link">
+            <!-- ✅ إصلاح: يوجه للأدمن مع تحديد tab المستخدمين -->
+            <a routerLink="/admin" [queryParams]="{tab: 'users'}" class="quick-link">
               <i class="bi bi-people"></i>
               <span>إدارة المستخدمين</span>
               <i class="bi bi-chevron-left"></i>
             </a>
-            <a routerLink="/admin" class="quick-link">
+            <!-- ✅ إصلاح: يوجه للأدمن مع تحديد tab العقارات -->
+            <a routerLink="/admin" [queryParams]="{tab: 'properties'}" class="quick-link">
               <i class="bi bi-house-gear"></i>
               <span>إدارة العقارات</span>
               <i class="bi bi-chevron-left"></i>

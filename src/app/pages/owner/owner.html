@@ -16,61 +16,35 @@
       </div>
 
       <nav class="sidebar-nav">
-        <button [class.active]="activeTab === 'properties'"
-          (click)="setTab('properties')">
-          <i class="bi bi-house"></i>
-          <span>عقاراتي</span>
+        <button [class.active]="activeTab === 'properties'" (click)="setTab('properties')">
+          <i class="bi bi-house"></i><span>عقاراتي</span>
         </button>
-        <button [class.active]="activeTab === 'add-property'"
-          (click)="setTab('add-property')">
-          <i class="bi bi-plus-circle"></i>
-          <span>إضافة عقار</span>
+        <button [class.active]="activeTab === 'add-property'" (click)="setTab('add-property')">
+          <i class="bi bi-plus-circle"></i><span>إضافة عقار</span>
         </button>
-        <button [class.active]="activeTab === 'edit-property'"
-          (click)="setTab('edit-property')"
-          *ngIf="editProperty">
-          <i class="bi bi-pencil"></i>
-          <span>تعديل عقار</span>
+        <button [class.active]="activeTab === 'edit-property'" (click)="setTab('edit-property')" *ngIf="editProperty">
+          <i class="bi bi-pencil"></i><span>تعديل عقار</span>
         </button>
-        <button [class.active]="activeTab === 'pending-bookings'"
-          (click)="setTab('pending-bookings')">
-          <i class="bi bi-clock-history"></i>
-          <span>طلبات الحجز</span>
-          <span class="pending-count" *ngIf="pendingBookings.length > 0">
-            {{ pendingBookings.length }}
-          </span>
+        <button [class.active]="activeTab === 'pending-bookings'" (click)="setTab('pending-bookings')">
+          <i class="bi bi-clock-history"></i><span>طلبات الحجز</span>
+          <span class="pending-count" *ngIf="pendingBookings.length > 0">{{ pendingBookings.length }}</span>
         </button>
-        <!-- ✅ تبويب جديد: طلبات الكاش -->
-        <button [class.active]="activeTab === 'cash-requests'"
-          (click)="setTab('cash-requests')">
-          <i class="bi bi-cash-coin"></i>
-          <span>طلبات الكاش</span>
-          <span class="pending-count" *ngIf="pendingCashBookings.length > 0">
-            {{ pendingCashBookings.length }}
-          </span>
+        <button [class.active]="activeTab === 'cash-requests'" (click)="setTab('cash-requests')">
+          <i class="bi bi-cash-coin"></i><span>طلبات الكاش</span>
+          <span class="pending-count" *ngIf="pendingCashBookings.length > 0">{{ pendingCashBookings.length }}</span>
         </button>
-        <button [class.active]="activeTab === 'bookings'"
-          (click)="setTab('bookings')">
-          <i class="bi bi-calendar-check"></i>
-          <span>كل الحجوزات</span>
+        <button [class.active]="activeTab === 'bookings'" (click)="setTab('bookings')">
+          <i class="bi bi-calendar-check"></i><span>كل الحجوزات</span>
         </button>
-        <button [class.active]="activeTab === 'notifications'"
-          (click)="setTab('notifications')">
-          <i class="bi bi-bell"></i>
-          <span>الإشعارات</span>
-          <span class="pending-count" *ngIf="unreadCount > 0">
-            {{ unreadCount }}
-          </span>
+        <button [class.active]="activeTab === 'notifications'" (click)="setTab('notifications')">
+          <i class="bi bi-bell"></i><span>الإشعارات</span>
+          <span class="pending-count" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
         </button>
-        <button [class.active]="activeTab === 'reviews'"
-          (click)="setTab('reviews')">
-          <i class="bi bi-star"></i>
-          <span>التقييمات</span>
+        <button [class.active]="activeTab === 'reviews'" (click)="setTab('reviews')">
+          <i class="bi bi-star"></i><span>التقييمات</span>
         </button>
-        <button [class.active]="activeTab === 'calendar'"
-          (click)="setTab('calendar')">
-          <i class="bi bi-calendar3"></i>
-          <span>تقويم الحجوزات</span>
+        <button [class.active]="activeTab === 'calendar'" (click)="setTab('calendar')">
+          <i class="bi bi-calendar3"></i><span>تقويم الحجوزات</span>
         </button>
       </nav>
     </div>
@@ -94,7 +68,7 @@
         </div>
         <div class="quick-stat">
           <div class="qs-icon purple"><i class="bi bi-cash-stack"></i></div>
-          <div><h6>{{ stats.totalRevenue }} ليرة</h6><small>إجمالي الإيرادات</small></div>
+          <div><h6>{{ stats.totalRevenue }} ليرة</h6><small>الإيرادات</small></div>
         </div>
         <div class="quick-stat">
           <div class="qs-icon teal"><i class="bi bi-star-fill"></i></div>
@@ -120,9 +94,7 @@
             <div class="col-md-8">
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control"
-                  placeholder="ابحث باسم العقار أو الموقع..."
-                  [(ngModel)]="propertyFilter">
+                <input type="text" class="form-control" placeholder="ابحث باسم العقار أو الموقع..." [(ngModel)]="propertyFilter">
               </div>
             </div>
             <div class="col-md-4">
@@ -146,8 +118,7 @@
 
         <div class="properties-grid" *ngIf="filteredProperties.length > 0">
           <div class="property-card" *ngFor="let p of filteredProperties">
-            <div class="property-card-header"
-              [ngClass]="p.type?.toLowerCase() === 'farm' ? 'farm' : 'apt'">
+            <div class="property-card-header" [ngClass]="p.type?.toLowerCase() === 'farm' ? 'farm' : 'apt'">
               <i class="bi" [ngClass]="p.type?.toLowerCase() === 'farm' ? 'bi-tree' : 'bi-building'"></i>
               <div class="property-badges">
                 <span class="type-chip" [ngClass]="p.type?.toLowerCase() === 'farm' ? 'farm' : 'apt'">
@@ -162,15 +133,24 @@
               <h5>{{ p.title }}</h5>
               <p class="location"><i class="bi bi-geo-alt"></i> {{ p.location }}</p>
               <div class="property-stats">
-                <div class="stat"><i class="bi bi-cash"></i><span>{{ p.pricePerNight }} ليرة /ليلة</span></div>
+                <div class="stat"><i class="bi bi-cash"></i><span>{{ p.pricePerNight }} ليرة/ليلة</span></div>
                 <div class="stat"><i class="bi bi-people"></i><span>{{ p.maxGuests }} ضيوف</span></div>
-                <div class="stat"><i class="bi bi-star-fill"></i><span>{{ p.averageRating > 0 ? p.averageRating : 'جديد' }}</span></div>
+                <!-- ✅ نجوم التقييم الذهبية -->
+                <div class="stat" *ngIf="p.averageRating > 0">
+                  <span class="property-star-rating">
+                    <ng-container *ngFor="let s of getStarArray(p.averageRating)">
+                      <i [class]="getStarClass(s)"></i>
+                    </ng-container>
+                    <span class="star-val">{{ p.averageRating }}</span>
+                  </span>
+                </div>
+                <div class="stat" *ngIf="!p.averageRating || p.averageRating <= 0">
+                  <span class="new-listing-badge"><i class="bi bi-stars"></i> جديد</span>
+                </div>
               </div>
             </div>
             <div class="property-card-footer">
-              <button class="btn-toggle"
-                [ngClass]="p.isAvailable ? 'active' : 'inactive'"
-                (click)="toggleProperty(p.id, p.isAvailable)">
+              <button class="btn-toggle" [ngClass]="p.isAvailable ? 'active' : 'inactive'" (click)="toggleProperty(p.id, p.isAvailable)">
                 <i class="bi" [ngClass]="p.isAvailable ? 'bi-pause-circle' : 'bi-play-circle'"></i>
                 {{ p.isAvailable ? 'إيقاف' : 'تفعيل' }}
               </button>
@@ -201,12 +181,8 @@
                   <div class="image-item" *ngFor="let img of selectedPropertyForImages?.images; let i = index">
                     <img [src]="getImageUrl(img)" [alt]="'صورة ' + (i+1)">
                     <div class="image-actions">
-                      <button class="btn-set-main" title="تعيين كصورة رئيسية" (click)="setMainImage(img, i)">
-                        <i class="bi bi-star"></i>
-                      </button>
-                      <button class="btn-delete-img" title="حذف" (click)="deleteImage(img, i)">
-                        <i class="bi bi-trash3"></i>
-                      </button>
+                      <button class="btn-set-main" (click)="setMainImage(img, i)"><i class="bi bi-star"></i></button>
+                      <button class="btn-delete-img" (click)="deleteImage(img, i)"><i class="bi bi-trash3"></i></button>
                     </div>
                   </div>
                 </div>
@@ -225,8 +201,7 @@
                     <button class="btn-remove-preview" (click)="removeFile(i)"><i class="bi bi-x"></i></button>
                   </div>
                 </div>
-                <button class="btn-submit mt-3" *ngIf="selectedFiles.length > 0"
-                  (click)="uploadImages()" [disabled]="uploading">
+                <button class="btn-submit mt-3" *ngIf="selectedFiles.length > 0" (click)="uploadImages()" [disabled]="uploading">
                   <i class="bi" [ngClass]="uploading ? 'bi-hourglass-split' : 'bi-upload'"></i>
                   {{ uploading ? 'جاري الرفع...' : 'رفع ' + selectedFiles.length + ' صورة' }}
                 </button>
@@ -383,13 +358,11 @@
           <h4>طلبات الحجز</h4>
           <p>{{ pendingBookings.length }} طلب ينتظر موافقتك</p>
         </div>
-
         <div *ngIf="pendingBookings.length === 0" class="empty-state">
           <div class="empty-icon"><i class="bi bi-calendar-check"></i></div>
           <h5>لا توجد طلبات معلقة</h5>
           <p>كل طلبات الحجز تمت مراجعتها</p>
         </div>
-
         <div class="bookings-grid" *ngIf="pendingBookings.length > 0">
           <div class="booking-card" *ngFor="let b of pendingBookings">
             <div class="booking-card-header">
@@ -401,70 +374,40 @@
               </div>
             </div>
             <div class="booking-details">
-              <div class="bd-item">
-                <i class="bi bi-calendar-check"></i>
-                <div><small>الوصول</small><span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span></div>
-              </div>
-              <div class="bd-item">
-                <i class="bi bi-calendar-x"></i>
-                <div><small>المغادرة</small><span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span></div>
-              </div>
-              <div class="bd-item">
-                <i class="bi bi-moon"></i>
-                <div><small>الليالي</small><span>{{ b.nights }}</span></div>
-              </div>
-              <div class="bd-item">
-                <i class="bi bi-people"></i>
-                <div><small>الضيوف</small><span>{{ b.guestsCount }}</span></div>
-              </div>
+              <div class="bd-item"><i class="bi bi-calendar-check"></i><div><small>الوصول</small><span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span></div></div>
+              <div class="bd-item"><i class="bi bi-calendar-x"></i><div><small>المغادرة</small><span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span></div></div>
+              <div class="bd-item"><i class="bi bi-moon"></i><div><small>الليالي</small><span>{{ b.nights }}</span></div></div>
+              <div class="bd-item"><i class="bi bi-people"></i><div><small>الضيوف</small><span>{{ b.guestsCount }}</span></div></div>
             </div>
-
-            <!-- ✅ عرض ملاحظات الزبون -->
             <div class="notes-box" *ngIf="b.notes">
-              <div class="notes-label">
-                <i class="bi bi-chat-left-text"></i>
-                <span>ملاحظات الزبون</span>
-              </div>
+              <div class="notes-label"><i class="bi bi-chat-left-text"></i><span>ملاحظات الزبون</span></div>
               <p class="notes-text">{{ b.notes }}</p>
             </div>
-
             <div class="booking-card-footer">
               <strong class="total">{{ b.totalPrice }} ليرة</strong>
               <div class="booking-actions">
-                <button class="btn-confirm" (click)="confirmBooking(b.id)">
-                  <i class="bi bi-check-circle"></i> قبول
-                </button>
-                <button class="btn-cancel" (click)="cancelBooking(b.id)">
-                  <i class="bi bi-x-circle"></i> رفض
-                </button>
+                <button class="btn-confirm" (click)="confirmBooking(b.id)"><i class="bi bi-check-circle"></i> قبول</button>
+                <button class="btn-cancel" (click)="cancelBooking(b.id)"><i class="bi bi-x-circle"></i> رفض</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ==================== ✅ طلبات الكاش ==================== -->
+      <!-- ==================== طلبات الكاش ==================== -->
       <div *ngIf="activeTab === 'cash-requests' && !loading">
         <div class="content-header">
           <h4>طلبات الدفع الكاش</h4>
           <p>{{ pendingCashBookings.length }} طلب ينتظر تأكيدك — مهلة 24 ساعة</p>
         </div>
-
         <div *ngIf="pendingCashBookings.length === 0" class="empty-state">
           <div class="empty-icon"><i class="bi bi-cash-coin"></i></div>
           <h5>لا توجد طلبات كاش معلقة</h5>
           <p>كل طلبات الدفع الكاش تمت معالجتها</p>
         </div>
-
         <div class="bookings-grid" *ngIf="pendingCashBookings.length > 0">
           <div class="booking-card cash-card" *ngFor="let b of pendingCashBookings">
-
-            <!-- شارة الكاش -->
-            <div class="cash-banner">
-              <i class="bi bi-cash-coin"></i>
-              <span>طلب دفع كاش — يحتاج تأكيدك خلال 24 ساعة</span>
-            </div>
-
+            <div class="cash-banner"><i class="bi bi-cash-coin"></i><span>طلب دفع كاش — يحتاج تأكيدك خلال 24 ساعة</span></div>
             <div class="booking-card-header">
               <div class="booking-icon cash-icon"><i class="bi bi-cash"></i></div>
               <div>
@@ -472,52 +415,28 @@
                 <p class="customer-name"><i class="bi bi-person"></i> {{ b.customerName }}</p>
               </div>
             </div>
-
             <div class="booking-details">
-              <div class="bd-item">
-                <i class="bi bi-calendar-check"></i>
-                <div><small>الوصول</small><span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span></div>
-              </div>
-              <div class="bd-item">
-                <i class="bi bi-calendar-x"></i>
-                <div><small>المغادرة</small><span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span></div>
-              </div>
-              <div class="bd-item">
-                <i class="bi bi-moon"></i>
-                <div><small>الليالي</small><span>{{ b.nights }}</span></div>
-              </div>
-              <div class="bd-item">
-                <i class="bi bi-people"></i>
-                <div><small>الضيوف</small><span>{{ b.guestsCount }}</span></div>
-              </div>
+              <div class="bd-item"><i class="bi bi-calendar-check"></i><div><small>الوصول</small><span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span></div></div>
+              <div class="bd-item"><i class="bi bi-calendar-x"></i><div><small>المغادرة</small><span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span></div></div>
+              <div class="bd-item"><i class="bi bi-moon"></i><div><small>الليالي</small><span>{{ b.nights }}</span></div></div>
+              <div class="bd-item"><i class="bi bi-people"></i><div><small>الضيوف</small><span>{{ b.guestsCount }}</span></div></div>
             </div>
-
-            <!-- ✅ ملاحظات الزبون -->
             <div class="notes-box" *ngIf="b.notes">
-              <div class="notes-label">
-                <i class="bi bi-chat-left-text"></i>
-                <span>ملاحظات الزبون</span>
-              </div>
+              <div class="notes-label"><i class="bi bi-chat-left-text"></i><span>ملاحظات الزبون</span></div>
               <p class="notes-text">{{ b.notes }}</p>
             </div>
-
             <div class="booking-card-footer">
               <strong class="total">{{ b.totalPrice }} ليرة</strong>
-              <!-- ✅ زر تأكيد استلام الكاش -->
               <div class="booking-actions">
-                <button class="btn-confirm-cash" (click)="confirmCash(b.id)">
-                  <i class="bi bi-cash-coin"></i> تأكيد استلام الكاش
-                </button>
-                <button class="btn-cancel" (click)="cancelBooking(b.id)">
-                  <i class="bi bi-x-circle"></i> رفض
-                </button>
+                <button class="btn-confirm-cash" (click)="confirmCash(b.id)"><i class="bi bi-cash-coin"></i> تأكيد استلام الكاش</button>
+                <button class="btn-cancel" (click)="cancelBooking(b.id)"><i class="bi bi-x-circle"></i> رفض</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ==================== كل الحجوزات ==================== -->
+      <!-- ==================== كل الحجوزات (RESPONSIVE) ==================== -->
       <div *ngIf="activeTab === 'bookings' && !loading">
         <div class="content-header">
           <h4>إدارة الحجوزات</h4>
@@ -529,9 +448,7 @@
             <div class="col-md-8">
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control"
-                  placeholder="ابحث باسم العقار..."
-                  [(ngModel)]="bookingFilter">
+                <input type="text" class="form-control" placeholder="ابحث باسم العقار..." [(ngModel)]="bookingFilter">
               </div>
             </div>
             <div class="col-md-4">
@@ -552,22 +469,14 @@
           <p>لم يتم حجز أي عقار بعد</p>
         </div>
 
-        <div class="owner-table" *ngIf="filteredBookings.length > 0">
+        <!-- Desktop Table -->
+        <div class="owner-table d-none d-md-block" *ngIf="filteredBookings.length > 0">
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>الزبون</th>
-                <th>العقار</th>
-                <th>الوصول</th>
-                <th>المغادرة</th>
-                <th>الليالي</th>
-                <th>الضيوف</th>
-                <th>الإجمالي</th>
-                <th>الدفع</th>
-                <th>الملاحظات</th>
-                <th>الحالة</th>
-                <th>إجراءات</th>
+                <th>#</th><th>الزبون</th><th>العقار</th><th>الوصول</th>
+                <th>المغادرة</th><th>الليالي</th><th>الضيوف</th><th>الإجمالي</th>
+                <th>الدفع</th><th>الملاحظات</th><th>الحالة</th><th>إجراءات</th>
               </tr>
             </thead>
             <tbody>
@@ -586,14 +495,12 @@
                 <td>{{ b.guestsCount }}</td>
                 <td><strong>{{ b.totalPrice }}</strong> ليرة</td>
                 <td>
-                  <span *ngIf="b.paymentMethod" class="payment-chip"
-                    [ngClass]="b.paymentMethod === 'Card' ? 'card' : 'cash'">
+                  <span *ngIf="b.paymentMethod" class="payment-chip" [ngClass]="b.paymentMethod === 'Card' ? 'card' : 'cash'">
                     <i class="bi" [ngClass]="b.paymentMethod === 'Card' ? 'bi-credit-card' : 'bi-cash'"></i>
                     {{ b.paymentMethod === 'Card' ? 'بطاقة' : 'نقدي' }}
                   </span>
                   <span *ngIf="!b.paymentMethod" class="payment-chip unpaid">لم يدفع</span>
                 </td>
-                <!-- ✅ عمود ملاحظات الزبون -->
                 <td>
                   <span *ngIf="b.notes" class="notes-preview" [title]="b.notes">
                     <i class="bi bi-chat-left-text text-accent"></i>
@@ -608,23 +515,42 @@
                 </td>
                 <td>
                   <div class="action-btns">
-                    <button class="btn-confirm-sm" *ngIf="b.status === 'Pending'" (click)="confirmBooking(b.id)">
-                      <i class="bi bi-check"></i>
-                    </button>
-                    <!-- ✅ زر تأكيد الكاش في الجدول -->
-                    <button class="btn-cash-sm" *ngIf="b.paymentStatus === 'PendingCash'" (click)="confirmCash(b.id)" title="تأكيد استلام الكاش">
-                      <i class="bi bi-cash-coin"></i>
-                    </button>
-                    <button class="btn-cancel-sm"
-                      *ngIf="b.status === 'Pending' || b.status === 'Confirmed'"
-                      (click)="cancelBooking(b.id)">
-                      <i class="bi bi-x"></i>
-                    </button>
+                    <button class="btn-confirm-sm" *ngIf="b.status === 'Pending'" (click)="confirmBooking(b.id)"><i class="bi bi-check"></i></button>
+                    <button class="btn-cash-sm" *ngIf="b.paymentStatus === 'PendingCash'" (click)="confirmCash(b.id)" title="تأكيد الكاش"><i class="bi bi-cash-coin"></i></button>
+                    <button class="btn-cancel-sm" *ngIf="b.status === 'Pending' || b.status === 'Confirmed'" (click)="cancelBooking(b.id)"><i class="bi bi-x"></i></button>
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- ✅ Mobile Cards — responsive للهاتف -->
+        <div class="mobile-bookings d-md-none" *ngIf="filteredBookings.length > 0">
+          <div class="mobile-booking-card" *ngFor="let b of filteredBookings">
+            <div class="mbc-header">
+              <div class="mbc-property">{{ b.propertyTitle }}</div>
+              <span class="status-badge" [ngClass]="getStatusClass(b.status)">{{ getStatusLabel(b.status) }}</span>
+            </div>
+            <div class="mbc-customer">
+              <div class="user-avatar-sm">{{ b.customerName?.charAt(0) }}</div>
+              <span>{{ b.customerName }}</span>
+            </div>
+            <div class="mbc-details">
+              <div class="mbc-item"><i class="bi bi-calendar-check"></i><span>{{ b.checkIn | date:'yyyy/MM/dd' }}</span></div>
+              <div class="mbc-item"><i class="bi bi-calendar-x"></i><span>{{ b.checkOut | date:'yyyy/MM/dd' }}</span></div>
+              <div class="mbc-item"><i class="bi bi-moon"></i><span>{{ b.nights }} ليالي</span></div>
+              <div class="mbc-item"><i class="bi bi-people"></i><span>{{ b.guestsCount }} ضيوف</span></div>
+            </div>
+            <div class="mbc-footer">
+              <strong class="mbc-price">{{ b.totalPrice }} ليرة</strong>
+              <div class="action-btns">
+                <button class="btn-confirm-sm" *ngIf="b.status === 'Pending'" (click)="confirmBooking(b.id)"><i class="bi bi-check"></i></button>
+                <button class="btn-cash-sm" *ngIf="b.paymentStatus === 'PendingCash'" (click)="confirmCash(b.id)" title="تأكيد الكاش"><i class="bi bi-cash-coin"></i></button>
+                <button class="btn-cancel-sm" *ngIf="b.status === 'Pending' || b.status === 'Confirmed'" (click)="cancelBooking(b.id)"><i class="bi bi-x"></i></button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -632,22 +558,17 @@
       <div *ngIf="activeTab === 'notifications' && !loading">
         <div class="content-header">
           <div class="header-row">
-            <div>
-              <h4>الإشعارات</h4>
-              <p>{{ unreadCount }} إشعار غير مقروء</p>
-            </div>
+            <div><h4>الإشعارات</h4><p>{{ unreadCount }} إشعار غير مقروء</p></div>
             <button class="btn-mark-all" *ngIf="unreadCount > 0" (click)="markAllRead()">
               <i class="bi bi-check-all"></i> تحديد الكل كمقروء
             </button>
           </div>
         </div>
-
         <div *ngIf="notifications.length === 0" class="empty-state">
           <div class="empty-icon"><i class="bi bi-bell-slash"></i></div>
           <h5>لا توجد إشعارات</h5>
           <p>ستظهر هنا إشعارات الحجوزات والتقييمات</p>
         </div>
-
         <div class="notifications-list" *ngIf="notifications.length > 0">
           <div class="notif-item" *ngFor="let n of notifications"
             [ngClass]="n.isRead ? 'read' : 'unread'"
@@ -661,8 +582,6 @@
             <div class="notif-dot" *ngIf="!n.isRead"></div>
           </div>
         </div>
-
-        <!-- ✅ Modal تفاصيل الإشعار -->
         <div class="notif-modal-overlay" *ngIf="selectedNotif" (click)="closeNotifDetail()">
           <div class="notif-modal-card" (click)="$event.stopPropagation()">
             <div class="notif-modal-header">
@@ -728,16 +647,14 @@
             <button class="cal-nav" (click)="nextMonth()"><i class="bi bi-chevron-left"></i></button>
           </div>
           <div class="calendar-days-header">
-            <span>أح</span><span>إث</span><span>ثل</span>
-            <span>أر</span><span>خم</span><span>جم</span><span>سب</span>
+            <span>أح</span><span>إث</span><span>ثل</span><span>أر</span><span>خم</span><span>جم</span><span>سب</span>
           </div>
           <div class="calendar-grid">
             <div class="cal-day" *ngFor="let cell of calendar"
               [ngClass]="{ 'empty': !cell.day, 'today': cell.day && isToday(cell.day), 'booked': cell.bookings?.length > 0, 'free': cell.day && cell.bookings?.length === 0 }">
               <span class="day-num" *ngIf="cell.day">{{ cell.day }}</span>
               <div class="day-dots" *ngIf="cell.bookings?.length > 0">
-                <span class="dot" *ngFor="let b of cell.bookings.slice(0,3)"
-                  [ngClass]="b.status === 'Confirmed' ? 'confirmed' : 'pending'"></span>
+                <span class="dot" *ngFor="let b of cell.bookings.slice(0,3)" [ngClass]="b.status === 'Confirmed' ? 'confirmed' : 'pending'"></span>
               </div>
             </div>
           </div>

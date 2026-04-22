@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
@@ -23,13 +23,11 @@ export class OwnerComponent implements OnInit {
   bookings: any[] = [];
   loading = false;
 
-  // فلاتر
   propertyFilter = '';
   propertyTypeFilter = '';
   bookingFilter = '';
   bookingStatusFilter = '';
 
-  // إضافة عقار
   newProperty: any = {
     title: '', description: '', type: '',
     pricePerNight: null, location: '',
@@ -38,13 +36,11 @@ export class OwnerComponent implements OnInit {
 
   addLoading = false;
 
-  // تعديل عقار
   editProperty: any = null;
   editSuccess = '';
   editError = '';
   editLoading = false;
 
-  // الإحصائيات السريعة
   stats = {
     confirmedBookings: 0,
     totalProperties: 0,
@@ -54,21 +50,16 @@ export class OwnerComponent implements OnInit {
     averageRating: 0
   };
 
-  // الإشعارات
   notifications: any[] = [];
   unreadCount = 0;
-  // ✅ Modal تفاصيل الإشعار
   selectedNotif: any = null;
 
-  // التقييمات
   reviews: any[] = [];
 
-  // تقويم الحجوزات
   calendar: any[] = [];
   selectedMonth: Date = new Date();
   calendarBookings: any[] = [];
 
-  // للصور
   showImageModal = false;
   selectedPropertyForImages: any = null;
   selectedFiles: File[] = [];
@@ -80,6 +71,7 @@ export class OwnerComponent implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient,
     private propertyService: PropertyService,
     private cdr: ChangeDetectorRef,
@@ -93,6 +85,14 @@ export class OwnerComponent implements OnInit {
     }
     this.loadProperties();
     this.loadStats();
+
+    // ✅ قراءة queryParam tab لتوجيه صحيح من صفحة البروفايل
+    this.route.queryParams.subscribe(params => {
+      const tab = params['tab'];
+      if (tab) {
+        this.setTab(tab);
+      }
+    });
   }
 
   getHeaders() {
@@ -104,7 +104,7 @@ export class OwnerComponent implements OnInit {
     this.activeTab = tab;
     this.editSuccess = '';
     this.editError = '';
-    this.editProperty = null;
+    if (tab !== 'edit-property') this.editProperty = null;
     if (tab === 'properties') this.loadProperties();
     else if (tab === 'bookings' || tab === 'pending-bookings' || tab === 'cash-requests') this.loadBookings();
     else if (tab === 'notifications') this.loadNotifications();
@@ -116,6 +116,31 @@ export class OwnerComponent implements OnInit {
       } else {
         this.loadCalendar();
       }
+    }
+  }
+
+  // ===========================
+  // ✅ Star Rating Helper
+  // ===========================
+  getStarArray(rating: number): string[] {
+    if (!rating || rating <= 0) return Array(5).fill('empty');
+    const clamped = Math.max(0, Math.min(5, rating));
+    const rounded = Math.round(clamped * 2) / 2;
+    const stars: string[] = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= Math.floor(rounded)) stars.push('full');
+      else if (i === Math.ceil(rounded) && rounded % 1 !== 0) stars.push('half');
+      else stars.push('empty');
+    }
+    return stars;
+  }
+
+  getStarClass(type: string): string {
+    switch (type) {
+      case 'full': return 'bi bi-star-fill';
+      case 'half': return 'bi bi-star-half';
+      case 'empty': return 'bi bi-star';
+      default: return 'bi bi-star';
     }
   }
 
@@ -270,10 +295,8 @@ export class OwnerComponent implements OnInit {
 
   get filteredBookings() {
     return this.bookings.filter(b => {
-      const matchText =
-        b.propertyTitle?.toLowerCase().includes(this.bookingFilter.toLowerCase());
-      const matchStatus = !this.bookingStatusFilter ||
-        b.status === this.bookingStatusFilter;
+      const matchText = b.propertyTitle?.toLowerCase().includes(this.bookingFilter.toLowerCase());
+      const matchStatus = !this.bookingStatusFilter || b.status === this.bookingStatusFilter;
       return matchText && matchStatus;
     });
   }
@@ -282,7 +305,6 @@ export class OwnerComponent implements OnInit {
     return this.bookings.filter(b => b.status === 'Pending');
   }
 
-  // ✅ الحجوزات التي تنتظر تأكيد الكاش
   get pendingCashBookings() {
     return this.bookings.filter(b =>
       b.paymentStatus === 'PendingCash' && b.status === 'Confirmed'
@@ -304,7 +326,6 @@ export class OwnerComponent implements OnInit {
     });
   }
 
-  // ✅ تأكيد استلام الكاش — يرسل كود الدخول للزبون
   confirmCash(bookingId: number) {
     if (!confirm('هل تأكدت من استلام الدفعة النقدية من الزبون؟')) return;
     this.http.patch(`${this.url}/bookings/${bookingId}/confirm-cash`, {}, {
@@ -312,9 +333,7 @@ export class OwnerComponent implements OnInit {
     }).subscribe({
       next: (res: any) => {
         const b = this.bookings.find(b => b.id === bookingId);
-        if (b) {
-          b.paymentStatus = 'Paid';
-        }
+        if (b) b.paymentStatus = 'Paid';
         this.toast.show(
           `✅ تم تأكيد الكاش! كود الدخول أُرسل للزبون: ${res.entryCode}`,
           'success'
@@ -371,9 +390,13 @@ export class OwnerComponent implements OnInit {
       next: () => {
         const p = this.properties.find(p => p.id === id);
         if (p) p.isAvailable = !currentStatus;
+        this.toast.show(
+          currentStatus ? 'تم إيقاف العقار' : 'تم تفعيل العقار',
+          'info'
+        );
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ')
+      error: () => this.toast.show('حدث خطأ', 'error')
     });
   }
 
@@ -421,14 +444,12 @@ export class OwnerComponent implements OnInit {
     });
   }
 
-  // ✅ فتح Modal تفاصيل الإشعار
   showNotifDetail(n: any) {
     if (!n.isRead) this.markAsRead(n.id);
     this.selectedNotif = n;
     this.cdr.detectChanges();
   }
 
-  // ✅ إغلاق Modal الإشعار
   closeNotifDetail() {
     this.selectedNotif = null;
     this.cdr.detectChanges();

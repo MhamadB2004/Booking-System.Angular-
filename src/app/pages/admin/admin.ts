@@ -1,10 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-admin',
@@ -14,7 +15,6 @@ import { HeaderComponent } from '../../components/header/header';
   styleUrl: './admin.css'
 })
 export class AdminComponent implements OnInit {
-  // ✅ تبويب "add-property" حُذف — الصلاحية خاصة بالمالك فقط
   activeTab = 'stats';
   url = 'https://localhost:7167/api';
 
@@ -32,7 +32,6 @@ export class AdminComponent implements OnInit {
   showUserModal = false;
   showPropertyModal = false;
 
-  // فلاتر
   userFilter = '';
   ownerFilter = '';
   propertyFilter = '';
@@ -43,8 +42,10 @@ export class AdminComponent implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -52,7 +53,16 @@ export class AdminComponent implements OnInit {
       this.router.navigate(['/home']);
       return;
     }
-    this.loadStats();
+
+    // ✅ قراءة queryParam tab لتوجيه صحيح من صفحة البروفايل
+    this.route.queryParams.subscribe(params => {
+      const tab = params['tab'];
+      if (tab) {
+        this.setTab(tab);
+      } else {
+        this.loadStats();
+      }
+    });
   }
 
   getHeaders() {
@@ -70,7 +80,6 @@ export class AdminComponent implements OnInit {
     else if (tab === 'pending') this.loadPending();
     else if (tab === 'bookings') this.loadBookings();
     else if (tab === 'approve-owners') this.loadPendingOwners();
-    // ✅ لا يوجد case لـ 'add-property' — تمت إزالته بالكامل
   }
 
   loadStats() {
@@ -83,7 +92,10 @@ export class AdminComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => {
+        this.loading = false;
+        this.toast.show('حدث خطأ في تحميل الإحصائيات', 'error');
+      }
     });
   }
 
@@ -97,7 +109,10 @@ export class AdminComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => {
+        this.loading = false;
+        this.toast.show('حدث خطأ في تحميل المستخدمين', 'error');
+      }
     });
   }
 
@@ -111,7 +126,10 @@ export class AdminComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => {
+        this.loading = false;
+        this.toast.show('حدث خطأ في تحميل العقارات', 'error');
+      }
     });
   }
 
@@ -143,7 +161,10 @@ export class AdminComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => {
+        this.loading = false;
+        this.toast.show('حدث خطأ في تحميل الحجوزات', 'error');
+      }
     });
   }
 
@@ -159,9 +180,10 @@ export class AdminComponent implements OnInit {
         this.owners = this.owners.map(o =>
           o.id === userId ? { ...o, isApproved: true } : o
         );
+        this.toast.show('تمت الموافقة على المالك ✅', 'success');
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ أثناء الموافقة')
+      error: () => this.toast.show('حدث خطأ أثناء الموافقة', 'error')
     });
   }
 
@@ -172,9 +194,10 @@ export class AdminComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.pendingProperties = this.pendingProperties.filter(p => p.id !== propertyId);
+        this.toast.show('تمت الموافقة على العقار ✅', 'success');
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ أثناء الموافقة')
+      error: () => this.toast.show('حدث خطأ أثناء الموافقة', 'error')
     });
   }
 
@@ -185,8 +208,10 @@ export class AdminComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.users = this.users.filter(u => u.id !== userId);
+        this.toast.show('تم حذف المستخدم بنجاح', 'success');
         this.cdr.detectChanges();
-      }
+      },
+      error: () => this.toast.show('حدث خطأ أثناء الحذف', 'error')
     });
   }
 
@@ -197,8 +222,11 @@ export class AdminComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.properties = this.properties.filter(p => p.id !== propertyId);
+        this.pendingProperties = this.pendingProperties.filter(p => p.id !== propertyId);
+        this.toast.show('تم حذف العقار بنجاح', 'success');
         this.cdr.detectChanges();
-      }
+      },
+      error: () => this.toast.show('حدث خطأ أثناء الحذف', 'error')
     });
   }
 
@@ -238,7 +266,10 @@ export class AdminComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => {
+        this.loading = false;
+        this.toast.show('حدث خطأ في تحميل الملاك', 'error');
+      }
     });
   }
 
@@ -297,7 +328,10 @@ export class AdminComponent implements OnInit {
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => {
+        this.loading = false;
+        this.toast.show('حدث خطأ في تحميل الملاك المعلقين', 'error');
+      }
     });
   }
 
@@ -311,9 +345,10 @@ export class AdminComponent implements OnInit {
         this.pendingOwners = this.pendingOwners.filter(o => o.id !== userId);
         this.users = this.users.filter(u => u.id !== userId);
         this.owners = this.owners.filter(o => o.id !== userId);
+        this.toast.show('تم رفض المالك وحذفه', 'warning');
         this.cdr.detectChanges();
       },
-      error: () => alert('حدث خطأ أثناء الرفض')
+      error: () => this.toast.show('حدث خطأ أثناء الرفض', 'error')
     });
   }
 }
