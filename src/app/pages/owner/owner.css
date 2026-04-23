@@ -1169,6 +1169,82 @@
 
 .customer-name i { color: var(--accent-color); }
 
+/* ===========================
+   Mobile Booking Cards — تبويب كل الحجوزات
+=========================== */
+.mobile-bookings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-booking-card {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.mbc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  gap: 8px;
+}
+
+.mbc-property {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--heading-color);
+  flex: 1;
+}
+
+.mbc-customer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--default-color), transparent 30%);
+}
+
+.mbc-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.mbc-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--default-color);
+}
+
+.mbc-item i { color: var(--accent-color); font-size: 13px; }
+
+.mbc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.mbc-price {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--accent-color);
+}
+
 /* للصور  */
 
 .image-modal-overlay {

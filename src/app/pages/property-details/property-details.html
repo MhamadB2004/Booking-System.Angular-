@@ -160,8 +160,8 @@
               <div class="rating-summary" *ngIf="totalReviews > 0">
                 <div class="rating-big">{{ averageRating }}</div>
                 <div class="rating-stars-big">
-                  <i class="bi bi-star-fill" *ngFor="let s of getStars(averageRating)"></i>
-                  <i class="bi bi-star" *ngFor="let s of getEmptyStars(averageRating)"></i>
+                  <i class="bi bi-star-fill" *ngFor="let s of averageStars"></i>
+                  <i class="bi bi-star" *ngFor="let s of averageEmptyStars"></i>
                   <span>من 5</span>
                 </div>
                 <div class="rating-label">متوسط التقييم</div>
@@ -182,8 +182,8 @@
                     <div class="reviewer-info">
                       <strong class="reviewer-name">{{ r.userName }}</strong>
                       <div class="stars">
-                        <i class="bi bi-star-fill" *ngFor="let s of getStars(r.rating)"></i>
-                        <i class="bi bi-star" *ngFor="let s of getEmptyStars(r.rating)"></i>
+                        <i class="bi bi-star-fill" *ngFor="let s of r.starsArray"></i>
+                        <i class="bi bi-star" *ngFor="let s of r.emptyStarsArray"></i>
                         <span class="rating-num">{{ r.rating }}/5</span>
                       </div>
                     </div>

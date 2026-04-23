@@ -166,59 +166,108 @@
           <h4>إدارة المستخدمين</h4>
           <p>{{ users.length }} مستخدم مسجل</p>
         </div>
-        <div class="admin-table">
-          <div class="filter-bar mb-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-search"></i></span>
-              <input type="text" class="form-control"
-                placeholder="ابحث باسم المستخدم أو الإيميل..."
-                [(ngModel)]="userFilter">
+        <div class="filter-bar mb-3">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control"
+              placeholder="ابحث باسم المستخدم أو الإيميل..."
+              [(ngModel)]="userFilter">
+          </div>
+        </div>
+
+        <!-- Desktop Table -->
+        <div class="admin-table-wrapper d-none d-lg-block">
+          <div class="admin-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th><th>المستخدم</th><th>الإيميل</th><th>الهاتف</th>
+                  <th>الدور</th><th>الحالة</th><th>تاريخ التسجيل</th><th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let u of filteredUsers" style="cursor:pointer" (click)="showUserDetails(u)">
+                  <td>{{ u.id }}</td>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar">{{ u.fullName?.charAt(0) }}</div>
+                      <span>{{ u.fullName }}</span>
+                    </div>
+                  </td>
+                  <td>{{ u.email }}</td>
+                  <td>{{ u.phone }}</td>
+                  <td>
+                    <span class="role-badge" [ngClass]="'role-' + u.role.toLowerCase()">
+                      {{ getRoleLabel(u.role) }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="status-dot" [ngClass]="u.isApproved ? 'active' : 'inactive'">
+                      <i class="bi" [ngClass]="u.isApproved ? 'bi-check-circle-fill' : 'bi-clock-fill'"></i>
+                      {{ u.isApproved ? 'مفعّل' : 'معلق' }}
+                    </span>
+                  </td>
+                  <td>{{ u.createdAt | date:'yyyy/MM/dd' }}</td>
+                  <td>
+                    <div class="action-btns" (click)="$event.stopPropagation()">
+                      <button class="btn-approve" *ngIf="u.role === 'Owner' && !u.isApproved" (click)="approveOwner(u.id)">
+                        <i class="bi bi-check-lg"></i> موافقة
+                      </button>
+                      <button class="btn-delete" *ngIf="u.role !== 'Admin'" (click)="deleteUser(u.id)" title="حذف">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-cards d-lg-none">
+          <div class="mobile-card" *ngFor="let u of filteredUsers">
+            <div class="mobile-card-header">
+              <div class="user-cell">
+                <div class="user-avatar">{{ u.fullName?.charAt(0) }}</div>
+                <span class="mobile-card-title">{{ u.fullName }}</span>
+              </div>
+              <span class="role-badge" [ngClass]="'role-' + u.role.toLowerCase()">
+                {{ getRoleLabel(u.role) }}
+              </span>
+            </div>
+            <div class="mobile-card-body">
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-envelope me-1"></i>الإيميل</span>
+                <span class="mobile-card-value">{{ u.email }}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-phone me-1"></i>الهاتف</span>
+                <span class="mobile-card-value">{{ u.phone }}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label">الحالة</span>
+                <span class="status-dot" [ngClass]="u.isApproved ? 'active' : 'inactive'">
+                  <i class="bi" [ngClass]="u.isApproved ? 'bi-check-circle-fill' : 'bi-clock-fill'"></i>
+                  {{ u.isApproved ? 'مفعّل' : 'معلق' }}
+                </span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label">التسجيل</span>
+                <span class="mobile-card-value">{{ u.createdAt | date:'yyyy/MM/dd' }}</span>
+              </div>
+            </div>
+            <div class="mobile-card-footer">
+              <button class="btn-approve" *ngIf="u.role === 'Owner' && !u.isApproved" (click)="approveOwner(u.id)">
+                <i class="bi bi-check-lg"></i> موافقة
+              </button>
+              <button class="btn-delete" *ngIf="u.role !== 'Admin'" (click)="deleteUser(u.id)">
+                <i class="bi bi-trash3"></i> حذف
+              </button>
             </div>
           </div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>#</th><th>المستخدم</th><th>الإيميل</th><th>الهاتف</th>
-                <th>الدور</th><th>الحالة</th><th>تاريخ التسجيل</th><th>إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let u of filteredUsers" style="cursor:pointer" (click)="showUserDetails(u)">
-                <td>{{ u.id }}</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="user-avatar">{{ u.fullName?.charAt(0) }}</div>
-                    <span>{{ u.fullName }}</span>
-                  </div>
-                </td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.phone }}</td>
-                <td>
-                  <span class="role-badge" [ngClass]="'role-' + u.role.toLowerCase()">
-                    {{ getRoleLabel(u.role) }}
-                  </span>
-                </td>
-                <td>
-                  <span class="status-dot" [ngClass]="u.isApproved ? 'active' : 'inactive'">
-                    <i class="bi" [ngClass]="u.isApproved ? 'bi-check-circle-fill' : 'bi-clock-fill'"></i>
-                    {{ u.isApproved ? 'مفعّل' : 'معلق' }}
-                  </span>
-                </td>
-                <td>{{ u.createdAt | date:'yyyy/MM/dd' }}</td>
-                <td>
-                  <div class="action-btns" (click)="$event.stopPropagation()">
-                    <button class="btn-approve" *ngIf="u.role === 'Owner' && !u.isApproved" (click)="approveOwner(u.id)">
-                      <i class="bi bi-check-lg"></i> موافقة
-                    </button>
-                    <button class="btn-delete" *ngIf="u.role !== 'Admin'" (click)="deleteUser(u.id)" title="حذف">
-                      <i class="bi bi-trash3"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
+
         <!-- Modal تفاصيل المستخدم -->
         <div class="modal-overlay" *ngIf="showUserModal" (click)="closeModals()">
           <div class="modal-card" (click)="$event.stopPropagation()">
@@ -377,67 +426,115 @@
           <h4>إدارة العقارات</h4>
           <p>{{ properties.length }} عقار معتمد</p>
         </div>
-        <div class="admin-table">
-          <div class="filter-bar mb-3">
-            <div class="row g-2">
-              <div class="col-md-8">
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input type="text" class="form-control"
-                    placeholder="ابحث باسم العقار أو الموقع..."
-                    [(ngModel)]="propertyFilter">
-                </div>
-              </div>
-              <div class="col-md-4">
-                <select class="form-select" [(ngModel)]="propertyTypeFilter">
-                  <option value="">كل الأنواع</option>
-                  <option value="Farm">مزارع</option>
-                  <option value="Apartment">شقق</option>
-                </select>
+        <div class="filter-bar mb-3">
+          <div class="row g-2">
+            <div class="col-md-8">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control"
+                  placeholder="ابحث باسم العقار أو الموقع..."
+                  [(ngModel)]="propertyFilter">
               </div>
             </div>
+            <div class="col-md-4">
+              <select class="form-select" [(ngModel)]="propertyTypeFilter">
+                <option value="">كل الأنواع</option>
+                <option value="Farm">مزارع</option>
+                <option value="Apartment">شقق</option>
+              </select>
+            </div>
           </div>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>#</th><th>العقار</th><th>النوع</th><th>السعر/ليلة</th>
-                <th>الموقع</th><th>المالك</th><th>التقييم</th><th>إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let p of filteredProperties" style="cursor:pointer" (click)="showPropertyDetails(p)">
-                <td>{{ p.id }}</td>
-                <td>
-                  <div class="property-cell">
-                    <div class="property-icon-sm" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
-                      <i class="bi" [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
-                    </div>
-                    <span>{{ p.title }}</span>
-                  </div>
-                </td>
-                <td>
-                  <span class="type-chip" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
-                    {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
-                  </span>
-                </td>
-                <td><strong>{{ p.pricePerNight }}</strong> ليرة</td>
-                <td><i class="bi bi-geo-alt text-accent"></i> {{ p.location }}</td>
-                <td>{{ p.ownerName }}</td>
-                <td>
-                  <span class="rating-cell">
-                    <i class="bi bi-star-fill"></i>
-                    {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
-                  </span>
-                </td>
-                <td (click)="$event.stopPropagation()">
-                  <button class="btn-delete" (click)="deleteProperty(p.id)">
-                    <i class="bi bi-trash3"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
+
+        <!-- Desktop Table -->
+        <div class="admin-table-wrapper d-none d-lg-block">
+          <div class="admin-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th><th>العقار</th><th>النوع</th><th>السعر/ليلة</th>
+                  <th>الموقع</th><th>المالك</th><th>التقييم</th><th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of filteredProperties" style="cursor:pointer" (click)="showPropertyDetails(p)">
+                  <td>{{ p.id }}</td>
+                  <td>
+                    <div class="property-cell">
+                      <div class="property-icon-sm" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                        <i class="bi" [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
+                      </div>
+                      <span>{{ p.title }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="type-chip" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                      {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
+                    </span>
+                  </td>
+                  <td><strong>{{ p.pricePerNight }}</strong> ليرة</td>
+                  <td><i class="bi bi-geo-alt text-accent"></i> {{ p.location }}</td>
+                  <td>{{ p.ownerName }}</td>
+                  <td>
+                    <span class="rating-cell">
+                      <i class="bi bi-star-fill"></i>
+                      {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
+                    </span>
+                  </td>
+                  <td (click)="$event.stopPropagation()">
+                    <button class="btn-delete" (click)="deleteProperty(p.id)">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-cards d-lg-none">
+          <div class="mobile-card" *ngFor="let p of filteredProperties" (click)="showPropertyDetails(p)">
+            <div class="mobile-card-header">
+              <div class="property-cell">
+                <div class="property-icon-sm" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                  <i class="bi" [ngClass]="p.type === 'Farm' ? 'bi-tree' : 'bi-building'"></i>
+                </div>
+                <span class="mobile-card-title">{{ p.title }}</span>
+              </div>
+              <span class="type-chip" [ngClass]="p.type === 'Farm' ? 'farm' : 'apt'">
+                {{ p.type === 'Farm' ? 'مزرعة' : 'شقة' }}
+              </span>
+            </div>
+            <div class="mobile-card-body">
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-geo-alt me-1"></i>الموقع</span>
+                <span class="mobile-card-value">{{ p.location }}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-person me-1"></i>المالك</span>
+                <span class="mobile-card-value">{{ p.ownerName }}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-cash me-1"></i>السعر/ليلة</span>
+                <span class="mobile-card-value"><strong>{{ p.pricePerNight }}</strong> ليرة</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label">التقييم</span>
+                <span class="rating-cell">
+                  <i class="bi bi-star-fill"></i>
+                  {{ p.averageRating > 0 ? p.averageRating : 'جديد' }}
+                </span>
+              </div>
+            </div>
+            <div class="mobile-card-footer" (click)="$event.stopPropagation()">
+              <button class="btn-delete" (click)="deleteProperty(p.id)">
+                <i class="bi bi-trash3"></i> حذف
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Modal تفاصيل العقار -->
         <div class="modal-overlay" *ngIf="showPropertyModal" (click)="closeModals()">
           <div class="modal-card" (click)="$event.stopPropagation()">
@@ -540,37 +637,78 @@
           <h4>إدارة الحجوزات</h4>
           <p>{{ bookings.length }} حجز إجمالي</p>
         </div>
-        <div class="admin-table">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>#</th><th>الزبون</th><th>العقار</th><th>الوصول</th>
-                <th>المغادرة</th><th>الليالي</th><th>الضيوف</th><th>الإجمالي</th><th>الحالة</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let b of bookings">
-                <td>{{ b.id }}</td>
-                <td>
-                  <div class="user-cell">
-                    <div class="user-avatar sm">{{ b.customerName?.charAt(0) }}</div>
-                    <span>{{ b.customerName }}</span>
-                  </div>
-                </td>
-                <td>{{ b.propertyTitle }}</td>
-                <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
-                <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
-                <td>{{ b.nights }}</td>
-                <td>{{ b.guestsCount }}</td>
-                <td><strong>{{ b.totalPrice }}</strong> ليرة</td>
-                <td>
-                  <span class="status-badge" [ngClass]="getStatusClass(b.status)">
-                    {{ getStatusLabel(b.status) }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <!-- Desktop Table -->
+        <div class="admin-table-wrapper d-none d-lg-block">
+          <div class="admin-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th><th>الزبون</th><th>العقار</th><th>الوصول</th>
+                  <th>المغادرة</th><th>الليالي</th><th>الضيوف</th><th>الإجمالي</th><th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let b of bookings">
+                  <td>{{ b.id }}</td>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar sm">{{ b.customerName?.charAt(0) }}</div>
+                      <span>{{ b.customerName }}</span>
+                    </div>
+                  </td>
+                  <td>{{ b.propertyTitle }}</td>
+                  <td>{{ b.checkIn | date:'yyyy/MM/dd' }}</td>
+                  <td>{{ b.checkOut | date:'yyyy/MM/dd' }}</td>
+                  <td>{{ b.nights }}</td>
+                  <td>{{ b.guestsCount }}</td>
+                  <td><strong>{{ b.totalPrice }}</strong> ليرة</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="getStatusClass(b.status)">
+                      {{ getStatusLabel(b.status) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-cards d-lg-none">
+          <div class="mobile-card" *ngFor="let b of bookings">
+            <div class="mobile-card-header">
+              <div>
+                <div class="mobile-card-title">{{ b.propertyTitle }}</div>
+                <div style="font-size:12px;color:#888;margin-top:2px">
+                  <i class="bi bi-person me-1"></i>{{ b.customerName }}
+                </div>
+              </div>
+              <span class="status-badge" [ngClass]="getStatusClass(b.status)">
+                {{ getStatusLabel(b.status) }}
+              </span>
+            </div>
+            <div class="mobile-card-body">
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-calendar-check me-1"></i>الوصول</span>
+                <span class="mobile-card-value">{{ b.checkIn | date:'yyyy/MM/dd' }}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label"><i class="bi bi-calendar-x me-1"></i>المغادرة</span>
+                <span class="mobile-card-value">{{ b.checkOut | date:'yyyy/MM/dd' }}</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label">الليالي / الضيوف</span>
+                <span class="mobile-card-value">{{ b.nights }} ليالي / {{ b.guestsCount }} ضيوف</span>
+              </div>
+              <div class="mobile-card-row">
+                <span class="mobile-card-label">الإجمالي</span>
+                <span class="mobile-card-value" style="font-weight:700;color:var(--accent-color)">
+                  {{ b.totalPrice }} ليرة
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -599,6 +599,90 @@
   .admin-sidebar { width: 100%; min-height: auto; }
   .sidebar-nav { flex-direction: row; flex-wrap: wrap; padding: 8px; }
   .stats-grid { grid-template-columns: 1fr; }
+
+  /* Responsive Tables — بطاقات بدل جداول على الموبايل */
+  .admin-table { display: none; }
+
+  .mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+
+  .mobile-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .mobile-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--heading-color);
+  }
+
+  .mobile-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mobile-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .mobile-card-label {
+    color: color-mix(in srgb, var(--default-color), transparent 40%);
+  }
+
+  .mobile-card-value {
+    font-weight: 500;
+    color: var(--default-color);
+  }
+
+  .mobile-card-footer {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+  }
+
+  /* filter-bar على الموبايل */
+  .filter-bar .row { flex-direction: column; }
+  .filter-bar .col-md-8,
+  .filter-bar .col-md-4 { width: 100%; }
+
+  /* حل overflow للجداول */
+  .admin-content { padding: 16px; }
+  .content-header h4 { font-size: 18px; }
+}
+
+/* جداول قابلة للتمرير على الشاشات الصغيرة */
+@media (max-width: 991px) {
+  .admin-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+  }
+
+  .admin-table {
+    min-width: 700px;
+  }
 }
 
 .filter-bar {

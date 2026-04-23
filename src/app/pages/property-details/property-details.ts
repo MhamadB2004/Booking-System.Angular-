@@ -23,9 +23,13 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   bookingError = '';
   isLoggedIn = false;
   role = '';
+  // كل review يحتوي على stars[] و emptyStars[] مُحسوبة مسبقاً لمنع الـ flickering
   reviews: any[] = [];
   averageRating = 0;
   totalReviews = 0;
+  // نجوم المتوسط العام — مُحسوبة مرة واحدة عند تحميل البيانات
+  averageStars: number[] = [];
+  averageEmptyStars: number[] = [];
   url = 'https://localhost:7167/api';
 
   // ===========================
@@ -93,13 +97,23 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   loadReviews(propertyId: number) {
     this.http.get<any>(`${this.url}/reviews/property/${propertyId}`).subscribe({
       next: (res) => {
-        this.reviews = res.reviews || [];
         this.averageRating = res.averageRating || 0;
         this.totalReviews = res.totalReviews || 0;
+        // احسب نجوم المتوسط مرة واحدة
+        this.averageStars = Array(Math.floor(this.averageRating)).fill(0);
+        this.averageEmptyStars = Array(5 - Math.floor(this.averageRating)).fill(0);
+        // احسب نجوم كل تقييم مرة واحدة عند التحميل لمنع الـ flickering
+        this.reviews = (res.reviews || []).map((r: any) => ({
+          ...r,
+          starsArray: Array(Math.floor(r.rating)).fill(0),
+          emptyStarsArray: Array(5 - Math.floor(r.rating)).fill(0)
+        }));
         this.cdr.detectChanges();
       },
       error: () => {
         this.reviews = [];
+        this.averageStars = [];
+        this.averageEmptyStars = [];
       }
     });
   }
@@ -244,6 +258,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   // ===========================
   // Helpers
   // ===========================
+  // هذه الدوال للاستخدام المحلي فقط — التقييمات تستخدم starsArray/emptyStarsArray المحسوبة مسبقاً
   getStars(rating: number): number[] {
     return Array(Math.floor(rating)).fill(0);
   }
