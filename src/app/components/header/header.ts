@@ -20,7 +20,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   role = '';
   unreadCount = 0;
   url = 'https://localhost:7167/api';
-  menuOpen = false; // ✅ حالة المنيو للموبايل
+  menuOpen = false; 
   private sub: Subscription = new Subscription();
 
   constructor(
@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       })
     );
 
-    // ✅ أغلق المنيو عند التنقل
+    //  أغلق المنيو عند التنقل
     this.sub.add(
       this.router.events.pipe(
         filter(e => e instanceof NavigationEnd)
@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  // ✅ أغلق المنيو عند الضغط خارجه
+  //  أغلق المنيو عند الضغط خارجه
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;

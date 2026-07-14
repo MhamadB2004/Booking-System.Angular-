@@ -38,7 +38,6 @@
           <p>{{ getDisplayMessage(n) }}</p>
           <div class="notif-meta-row">
             <small>{{ n.createdAt | date:'yyyy/MM/dd — hh:mm a' }}</small>
-            <!-- ✅ CTA لإشعار التقييم -->
             <span class="review-cta" *ngIf="isReviewNotif(n)">
               <i class="bi bi-star-fill"></i> اضغط للتقييم
             </span>
@@ -76,9 +75,9 @@
       </div>
     </div>
 
-    <!-- ✅ Modal فورم التقييم -->
-    <div class="review-modal-overlay" *ngIf="showReviewModal" (click)="closeReviewModal()">
-      <div class="review-modal-card" (click)="$event.stopPropagation()">
+    <!-- Modal فورم التقييم -->
+    <div class="review-modal-overlay" *ngIf="showReviewModal" (click)="onOverlayClick()">
+      <div class="review-modal-card" (click)="onModalCardClick($event)">
 
         <div class="review-modal-header">
           <div class="review-modal-icon">
@@ -95,11 +94,13 @@
 
         <div class="review-modal-body">
 
-          <!-- رسائل -->
+          <!-- رسالة النجاح -->
           <div *ngIf="reviewSuccess" class="review-alert success">
             <i class="bi bi-check-circle-fill"></i>
             {{ reviewSuccess }}
           </div>
+
+          <!-- رسالة الخطأ -->
           <div *ngIf="reviewError" class="review-alert error">
             <i class="bi bi-exclamation-circle-fill"></i>
             {{ reviewError }}
@@ -109,10 +110,13 @@
           <div class="stars-section" *ngIf="!reviewSuccess">
             <p class="stars-label">كم تعطي هذا العقار من 5؟</p>
             <div class="stars-picker">
-              <button class="star-btn" *ngFor="let i of [1,2,3,4,5]"
+              <button
+                class="star-btn"
+                *ngFor="let i of [1,2,3,4,5]"
+                type="button"
                 (click)="setRating(i)"
-                (mouseenter)="reviewHoverRating = i"
-                (mouseleave)="reviewHoverRating = 0">
+                (mouseenter)="onStarHover(i)"
+                (mouseleave)="onStarLeave()">
                 <i class="bi bi-star-fill"
                   [class.active]="i <= (reviewHoverRating || reviewRating)"></i>
               </button>
@@ -130,20 +134,25 @@
               rows="4"
               [(ngModel)]="reviewComment"
               placeholder="شارك تجربتك مع الآخرين..."
-              maxlength="500">
+              maxlength="500"
+              (click)="$event.stopPropagation()">
             </textarea>
             <span class="char-count">{{ reviewComment.length }} / 500</span>
           </div>
 
           <!-- زر الإرسال -->
-          <button class="btn-submit-review" *ngIf="!reviewSuccess"
+          <button
+            class="btn-submit-review"
+            *ngIf="!reviewSuccess"
+            type="button"
             (click)="submitReview()"
             [disabled]="reviewLoading || !reviewRating">
             <span *ngIf="!reviewLoading">
               <i class="bi bi-star-fill"></i> إرسال التقييم
             </span>
             <span *ngIf="reviewLoading">
-              <div class="spinner-border spinner-border-sm me-2"></div> جاري الإرسال...
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جاري الإرسال...
             </span>
           </button>
 

@@ -16,7 +16,7 @@ export class ToastService {
   show(message: string, type: 'success' | 'error' | 'warning' | 'info' = 'success') {
     const id = ++this.counter;
     this.toasts.next([...this.toasts.getValue(), { id, message, type }]);
-    setTimeout(() => this.remove(id), 4000);
+    setTimeout(() => this.remove(id), 7000);
   }
 
   remove(id: number) {

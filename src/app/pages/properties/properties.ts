@@ -89,7 +89,7 @@ export class PropertiesComponent implements OnInit {
   }
 
   // ===========================
-  // ✅ Half-Star Rating Logic
+  //  Half-Star Rating Logic
   // ===========================
 
   /**

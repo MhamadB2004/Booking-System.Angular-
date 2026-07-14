@@ -44,7 +44,7 @@ a:hover {
 }
 
 /* ===========================
-   ✅ Star Rating Component
+   Star Rating Component
    أضف هذا في styles.css أو في ملف CSS المناسب
 =========================== */
 
@@ -95,13 +95,3 @@ a:hover {
 /* حجم كبير لصفحة التفاصيل */
 .star-rating.lg i { font-size: 20px; }
 .star-rating.lg .rating-value { font-size: 16px; }
-
-/* ===========================
-   استخدام في بطاقة العقار:
-   
-   <div class="star-rating sm">
-     <i class="bi bi-star-fill" *ngFor="let s of getStarArray(p.averageRating); let i = index" 
-        [class]="'bi ' + getStarClass(s)"></i>
-     <span class="rating-value">{{ p.averageRating }}</span>
-   </div>
-=========================== */

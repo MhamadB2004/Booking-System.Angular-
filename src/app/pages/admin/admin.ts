@@ -54,7 +54,7 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    // ✅ قراءة queryParam tab لتوجيه صحيح من صفحة البروفايل
+    //  قراءة queryParam tab لتوجيه صحيح من صفحة البروفايل
     this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
       if (tab) {
@@ -180,7 +180,7 @@ export class AdminComponent implements OnInit {
         this.owners = this.owners.map(o =>
           o.id === userId ? { ...o, isApproved: true } : o
         );
-        this.toast.show('تمت الموافقة على المالك ✅', 'success');
+        this.toast.show('تمت الموافقة على المالك ', 'success');
         this.cdr.detectChanges();
       },
       error: () => this.toast.show('حدث خطأ أثناء الموافقة', 'error')
@@ -194,7 +194,7 @@ export class AdminComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.pendingProperties = this.pendingProperties.filter(p => p.id !== propertyId);
-        this.toast.show('تمت الموافقة على العقار ✅', 'success');
+        this.toast.show('تمت الموافقة على العقار ', 'success');
         this.cdr.detectChanges();
       },
       error: () => this.toast.show('حدث خطأ أثناء الموافقة', 'error')

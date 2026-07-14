@@ -5,6 +5,7 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth';
 import { HeaderComponent } from '../../components/header/header';
+import { ToastService } from '../../services/toast';
 
 @Component({
   selector: 'app-profile',
@@ -38,7 +39,8 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private http: HttpClient,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -78,10 +80,10 @@ export class ProfileComponent implements OnInit {
         headers: this.getHeaders()
       }).subscribe({
         next: (bookings) => {
-          const completed = bookings.filter(b => b.status === 'Completed').length;
+          const completed = bookings.filter((b: any) => b.status === 'Completed').length;
           const totalSpent = bookings
-            .filter(b => b.status === 'Completed' || b.status === 'Confirmed')
-            .reduce((sum, b) => sum + (b.totalPrice || 0), 0);
+            .filter((b: any) => b.status === 'Completed' || b.status === 'Confirmed')
+            .reduce((sum: number, b: any) => sum + (b.totalPrice || 0), 0);
 
           this.profileStats = {
             totalBookings: bookings.length,
@@ -99,7 +101,6 @@ export class ProfileComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
-
     } else if (role === 'Owner') {
       this.http.get<any>(`${this.url}/owner/stats`, {
         headers: this.getHeaders()
@@ -122,7 +123,6 @@ export class ProfileComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
-
     } else if (role === 'Admin') {
       this.http.get<any>(`${this.url}/admin/stats`, {
         headers: this.getHeaders()
@@ -152,25 +152,35 @@ export class ProfileComponent implements OnInit {
     this.profileSuccess = '';
 
     if (!this.profileForm.fullName || !this.profileForm.email || !this.profileForm.phone) {
-      this.profileError = 'الرجاء تعبئة جميع الحقول';
+      this.toast.show('الرجاء تعبئة جميع الحقول', 'error');
       return;
     }
 
     this.profileLoading = true;
     this.auth.updateProfile(this.profileForm).subscribe({
       next: () => {
-        this.profileSuccess = 'تم تحديث البيانات بنجاح!';
-        this.profileLoading = false;
+        this.user = {
+          ...this.user,
+          fullName: this.profileForm.fullName,
+          email: this.profileForm.email,
+          phone: this.profileForm.phone
+        };
+
         const currentUser = this.auth.getUser();
         this.auth.saveToken(this.auth.getToken()!, {
           ...currentUser,
           fullName: this.profileForm.fullName,
-          email: this.profileForm.email
+          email: this.profileForm.email,
+          phone: this.profileForm.phone
         });
+
+        this.profileLoading = false;
+        this.toast.show('تم تحديث البيانات بنجاح!', 'success');
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.profileError = err.error?.message || 'حدث خطأ أثناء التحديث';
+        const msg = err.error?.message || 'حدث خطأ أثناء التحديث';
+        this.toast.show(msg, 'error');
         this.profileLoading = false;
         this.cdr.detectChanges();
       }
@@ -182,17 +192,17 @@ export class ProfileComponent implements OnInit {
     this.passwordSuccess = '';
 
     if (!this.passwordForm.currentPassword || !this.passwordForm.newPassword || !this.passwordForm.confirmPassword) {
-      this.passwordError = 'الرجاء تعبئة جميع الحقول';
+      this.toast.show('الرجاء تعبئة جميع الحقول', 'error');
       return;
     }
 
     if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
-      this.passwordError = 'كلمة المرور الجديدة غير متطابقة';
+      this.toast.show('كلمة المرور الجديدة غير متطابقة', 'error');
       return;
     }
 
     if (this.passwordForm.newPassword.length < 4) {
-      this.passwordError = 'كلمة المرور قصيرة جداً';
+      this.toast.show('كلمة المرور قصيرة جداً', 'error');
       return;
     }
 
@@ -202,20 +212,20 @@ export class ProfileComponent implements OnInit {
       newPassword: this.passwordForm.newPassword
     }).subscribe({
       next: () => {
-        this.passwordSuccess = 'تم تغيير كلمة المرور بنجاح!';
+        this.toast.show('تم تغيير كلمة المرور بنجاح!', 'success');
         this.passwordLoading = false;
         this.passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.passwordError = err.error?.message || 'حدث خطأ';
+        const msg = err.error?.message || 'كلمة المرور الحالية غير صحيحة';
+        this.toast.show(msg, 'error');
         this.passwordLoading = false;
         this.cdr.detectChanges();
       }
     });
   }
 
-  /** Half-Star Logic */
   getStarArray(rating: number): string[] {
     const stars: string[] = [];
     const rounded = Math.round(rating * 2) / 2;

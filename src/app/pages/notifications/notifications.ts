@@ -35,6 +35,9 @@ export class NotificationsComponent implements OnInit {
   reviewSuccess = '';
   reviewError = '';
 
+  // منع إغلاق الـ modal عند الضغط داخله
+  private _reviewModalOpen = false;
+
   constructor(
     private auth: AuthService,
     private http: HttpClient,
@@ -136,26 +139,21 @@ export class NotificationsComponent implements OnInit {
   // منطق التقييم
   // ===========================
 
-  // التحقق إذا كان إشعار تقييم
   isReviewNotif(n: any): boolean {
     return n?.message?.includes('|REVIEW|');
   }
 
-  // استخراج النص المعروض للمستخدم (بدون الـ metadata)
   getDisplayMessage(n: any): string {
     if (!n?.message) return '';
     return n.message.split('|REVIEW|')[0];
   }
 
-  // فتح فورم التقييم من الإشعار
   openReviewFromNotif(n: any) {
     const msg = n.message as string;
-    // استخراج bookingId وpropertyId
     const bookingMatch = msg.match(/bookingId:(\d+)/);
     const propertyMatch = msg.match(/propertyId:(\d+)/);
 
     if (!bookingMatch || !propertyMatch) {
-      // fallback — افتح كإشعار عادي
       this.selectedNotif = n;
       this.cdr.detectChanges();
       return;
@@ -163,23 +161,45 @@ export class NotificationsComponent implements OnInit {
 
     this.reviewBookingId = +bookingMatch[1];
     this.reviewPropertyId = +propertyMatch[1];
-    this.reviewPropertyName = msg.split('|REVIEW|')[0]
-      .replace('قيّم تجربتك في ', '').trim();
+
+    // استخراج اسم العقار من النص قبل |REVIEW|
+    const textPart = msg.split('|REVIEW|')[0].trim();
+    // النص يكون مثل: "نتمنى أن تكون استمتعت برحلتك في اسم العقار!"
+    const nameMatch = textPart.match(/في\s+(.+?)(?:\s*[!،.]+)?$/);
+    this.reviewPropertyName = nameMatch ? nameMatch[1].trim() : textPart;
+
     this.reviewRating = 0;
     this.reviewHoverRating = 0;
     this.reviewComment = '';
     this.reviewSuccess = '';
     this.reviewError = '';
+    this._reviewModalOpen = true;
     this.showReviewModal = true;
     this.cdr.detectChanges();
   }
 
+  // إغلاق modal عند الضغط على الـ overlay — فقط إذا لم يكن الضغط داخل الـ card
+  onOverlayClick() {
+    if (this._reviewModalOpen) {
+      this.closeReviewModal();
+    }
+  }
+
+  // منع إغلاق الـ modal عند الضغط داخله
+  onModalCardClick(event: Event) {
+    event.stopPropagation();
+  }
+
   closeReviewModal() {
     this.showReviewModal = false;
+    this._reviewModalOpen = false;
     this.reviewBookingId = null;
     this.reviewPropertyId = null;
     this.reviewRating = 0;
+    this.reviewHoverRating = 0;
     this.reviewComment = '';
+    this.reviewSuccess = '';
+    this.reviewError = '';
     this.cdr.detectChanges();
   }
 
@@ -188,9 +208,20 @@ export class NotificationsComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  onStarHover(r: number) {
+    this.reviewHoverRating = r;
+    this.cdr.detectChanges();
+  }
+
+  onStarLeave() {
+    this.reviewHoverRating = 0;
+    this.cdr.detectChanges();
+  }
+
   submitReview() {
     if (!this.reviewRating) {
       this.reviewError = 'الرجاء اختيار تقييم من 1 إلى 5 نجوم';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -211,7 +242,7 @@ export class NotificationsComponent implements OnInit {
         this.reviewSuccess = 'شكراً! تم إرسال تقييمك بنجاح ⭐';
         this.toast.show('تم إرسال تقييمك بنجاح!', 'success');
         this.cdr.detectChanges();
-        setTimeout(() => this.closeReviewModal(), 2000);
+        setTimeout(() => this.closeReviewModal(), 2500);
       },
       error: (err) => {
         this.reviewLoading = false;
@@ -221,9 +252,6 @@ export class NotificationsComponent implements OnInit {
     });
   }
 
-  getStars(count: number): number[] { return Array(count).fill(0); }
-  getEmptyStars(count: number): number[] { return Array(5 - count).fill(0); }
-
   getRatingLabel(r: number): string {
     const labels: Record<number, string> = {
       1: '😞 سيئ جداً',
@@ -232,6 +260,6 @@ export class NotificationsComponent implements OnInit {
       4: '😊 جيد',
       5: '🤩 ممتاز!'
     };
-    return labels[r] || '';
+    return labels[r] || 'اختر تقييمك';
   }
 }

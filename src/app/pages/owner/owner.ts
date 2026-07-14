@@ -86,7 +86,7 @@ export class OwnerComponent implements OnInit {
     this.loadProperties();
     this.loadStats();
 
-    // ✅ قراءة queryParam tab لتوجيه صحيح من صفحة البروفايل
+    //  قراءة queryParam tab لتوجيه صحيح من صفحة البروفايل
     this.route.queryParams.subscribe(params => {
       const tab = params['tab'];
       if (tab) {
@@ -120,7 +120,7 @@ export class OwnerComponent implements OnInit {
   }
 
   // ===========================
-  // ✅ Star Rating Helper
+  //  Star Rating Helper
   // ===========================
   getStarArray(rating: number): string[] {
     if (!rating || rating <= 0) return Array(5).fill('empty');
@@ -200,7 +200,7 @@ export class OwnerComponent implements OnInit {
       headers: this.getHeaders()
     }).subscribe({
       next: () => {
-        this.toast.show('تم إرسال طلب إضافة العقار — ينتظر موافقة الأدمن ✅', 'success');
+        this.toast.show('تم إرسال طلب إضافة العقار — ينتظر موافقة الأدمن ', 'success');
         this.addLoading = false;
         this.newProperty = {
           title: '', description: '', type: '',
@@ -319,7 +319,7 @@ export class OwnerComponent implements OnInit {
       next: () => {
         const b = this.bookings.find(b => b.id === id);
         if (b) b.status = 'Confirmed';
-        this.toast.show('تم تأكيد الحجز بنجاح ✅', 'success');
+        this.toast.show('تم تأكيد الحجز بنجاح ', 'success');
         this.cdr.detectChanges();
       },
       error: () => this.toast.show('حدث خطأ أثناء التأكيد', 'error')
@@ -335,7 +335,7 @@ export class OwnerComponent implements OnInit {
         const b = this.bookings.find(b => b.id === bookingId);
         if (b) b.paymentStatus = 'Paid';
         this.toast.show(
-          `✅ تم تأكيد الكاش! كود الدخول أُرسل للزبون: ${res.entryCode}`,
+          ` تم تأكيد الكاش! كود الدخول أُرسل للزبون: ${res.entryCode}`,
           'success'
         );
         this.cdr.detectChanges();

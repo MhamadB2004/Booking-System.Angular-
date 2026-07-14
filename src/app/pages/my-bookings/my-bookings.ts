@@ -110,11 +110,11 @@ export class MyBookingsComponent implements OnInit {
 
         if (res?.refundAmount > 0) {
           this.toast.show(
-            `✅ تم الإلغاء — سيتم استرداد ${res.refundAmount} ليرة`,
+            ` تم الإلغاء — سيتم استرداد ${res.refundAmount} ليرة`,
             'success'
           );
         } else {
-          this.toast.show('تم إلغاء الحجز بنجاح ✅', 'success');
+          this.toast.show('تم إلغاء الحجز بنجاح ', 'success');
         }
         this.cdr.detectChanges();
       },
@@ -140,7 +140,7 @@ export class MyBookingsComponent implements OnInit {
         }
         this.payingId = null;
         this.toast.show(
-          `تم الدفع بنجاح! تحقق من إشعاراتك لكود الدخول 🔑`,
+          `تم الدفع بنجاح! تحقق من إشعاراتك لكود الدخول `,
           'success'
         );
         this.cdr.detectChanges();

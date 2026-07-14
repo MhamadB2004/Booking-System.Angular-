@@ -41,20 +41,20 @@ export class RegisterComponent {
     }).subscribe({
       next: (res: any) => {
         if (res.needsApproval) {
-          // ✅ مالك — ينتظر موافقة
+          //  مالك — ينتظر موافقة
           this.toast.show(
             'تم إنشاء حسابك بنجاح! حسابك قيد المراجعة — سيتم إشعارك عند موافقة الأدمن 🎉',
             'info'
           );
         } else {
-          // ✅ زبون — مباشر للـ login
+          //  زبون — مباشر للـ login
           this.toast.show('تم إنشاء الحساب بنجاح! جاري التحويل...', 'success');
           setTimeout(() => this.router.navigate(['/login']), 2500);
         }
         this.cdr.detectChanges();
       },
       error: (err) => {
-        // ✅ إذا الإيميل مسجل مسبقاً أو أي خطأ
+        //  إذا الإيميل مسجل مسبقاً أو أي خطأ
         const msg = err.error || 'حدث خطأ أثناء التسجيل';
         this.toast.show(msg, 'error');
         this.cdr.detectChanges();
