@@ -15,7 +15,7 @@ import { ToastService } from '../../services/toast';
   styleUrl: './profile.css'
 })
 export class ProfileComponent implements OnInit {
-  url = 'https://localhost:7167/api';
+  url = '/api';
   user: any = null;
   loading = true;
   activeTab = 'info';

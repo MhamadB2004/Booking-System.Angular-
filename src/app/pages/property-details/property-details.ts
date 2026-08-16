@@ -30,7 +30,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   // نجوم المتوسط العام — مُحسوبة مرة واحدة عند تحميل البيانات
   averageStars: number[] = [];
   averageEmptyStars: number[] = [];
-  url = 'https://localhost:7167/api';
+  url = '/api';
 
   // ===========================
   // Slider State
@@ -285,6 +285,6 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   getImageUrl(url: string): string {
     if (!url) return 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200';
     if (url.startsWith('http')) return url;
-    return `https://localhost:7167${url}`;
+    return `${url}`;
   }
 }

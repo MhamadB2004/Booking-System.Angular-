@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
-private url = 'https://localhost:7167/api';
+private url = '/api';
   constructor(private http: HttpClient) {}
 
   pay(data: any) {

@@ -16,7 +16,7 @@ import { ToastService } from '../../services/toast';
   styleUrl: './notifications.css'
 })
 export class NotificationsComponent implements OnInit {
-  url = 'https://localhost:7167/api';
+  url = '/api';
   notifications: any[] = [];
   unreadCount = 0;
   loading = true;

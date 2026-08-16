@@ -14,7 +14,7 @@ import { HeaderComponent } from '../../components/header/header';
   styleUrl: './payment.css'
 })
 export class PaymentComponent implements OnInit {
-  url = 'https://localhost:7167/api';
+  url = '/api';
   booking: any = null;
   loading = true;
   paying = false;

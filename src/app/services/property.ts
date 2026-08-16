@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class PropertyService {
-private url = 'https://localhost:7167/api';
+private url = '/api';
   constructor(private http: HttpClient) {}
 
 getAll(filters?: any, page: number = 1, pageSize: number = 9) {

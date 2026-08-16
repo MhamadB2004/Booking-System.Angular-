@@ -41,21 +41,31 @@ export class RegisterComponent {
     }).subscribe({
       next: (res: any) => {
         if (res.needsApproval) {
-          //  مالك — ينتظر موافقة
           this.toast.show(
-            'تم إنشاء حسابك بنجاح! حسابك قيد المراجعة — سيتم إشعارك عند موافقة الأدمن 🎉',
+            'تم إنشاء حسابك بنجاح! تحقق من إيميلك لتأكيد بريدك الإلكتروني، وانتظر موافقة الأدمن على حسابك 🎉',
             'info'
           );
         } else {
-          //  زبون — مباشر للـ login
-          this.toast.show('تم إنشاء الحساب بنجاح! جاري التحويل...', 'success');
-          setTimeout(() => this.router.navigate(['/login']), 2500);
+          this.toast.show(
+            'تم إنشاء حسابك بنجاح! تحقق من بريدك الإلكتروني واضغط رابط التأكيد قبل تسجيل الدخول 📩',
+            'success'
+          );
         }
+        setTimeout(() => this.router.navigate(['/login']), 3500);
         this.cdr.detectChanges();
       },
       error: (err) => {
-        //  إذا الإيميل مسجل مسبقاً أو أي خطأ
-        const msg = err.error || 'حدث خطأ أثناء التسجيل';
+        let msg = 'حدث خطأ أثناء التسجيل';
+
+        if (typeof err.error === 'string') {
+          msg = err.error;
+        } else if (err.error?.errors) {
+          const allMessages = Object.values(err.error.errors).flat() as string[];
+          msg = allMessages.join(' — ');
+        } else if (err.error?.title) {
+          msg = err.error.title;
+        }
+
         this.toast.show(msg, 'error');
         this.cdr.detectChanges();
       }

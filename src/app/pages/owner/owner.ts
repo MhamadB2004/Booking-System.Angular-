@@ -17,7 +17,7 @@ import { ToastService } from '../../services/toast';
 })
 export class OwnerComponent implements OnInit {
   activeTab = 'properties';
-  url = 'https://localhost:7167/api';
+  url = '/api';
 
   properties: any[] = [];
   bookings: any[] = [];
@@ -655,6 +655,6 @@ export class OwnerComponent implements OnInit {
   getImageUrl(url: string): string {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `https://localhost:7167${url}`;
+    return `${url}`;
   }
 }

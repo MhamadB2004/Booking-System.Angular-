@@ -14,6 +14,27 @@
             {{ error }}
           </div>
 
+          <div *ngIf="showResend" class="resend-box">
+            <div class="resend-icon">
+              <i class="bi bi-envelope-exclamation"></i>
+            </div>
+            <p class="resend-text">ما وصلتك رسالة التأكيد؟</p>
+
+            <button
+              class="resend-btn"
+              (click)="resendVerification()"
+              [disabled]="resendLoading || resendCooldown > 0">
+              <span *ngIf="resendLoading" class="spinner"></span>
+              <span *ngIf="!resendLoading && resendCooldown === 0">إعادة إرسال رابط التأكيد</span>
+              <span *ngIf="!resendLoading && resendCooldown > 0">أعد المحاولة بعد {{ resendCooldown }} ثانية</span>
+              <span *ngIf="resendLoading">جاري الإرسال...</span>
+            </button>
+
+            <p *ngIf="resendMessage" class="resend-success">
+              <i class="bi bi-check-circle-fill me-1"></i>{{ resendMessage }}
+            </p>
+          </div>
+
           <div class="login-body">
             <div class="form-floating mb-3">
               <input
@@ -27,7 +48,7 @@
               </label>
             </div>
 
-            <div class="form-floating mb-4">
+            <div class="form-floating mb-2">
               <input
                 type="password"
                 class="form-control"
@@ -37,6 +58,10 @@
               <label for="password">
                 <i class="bi bi-lock me-2"></i>Password
               </label>
+            </div>
+
+            <div class="text-end mb-4">
+              <a routerLink="/forgot-password" class="forgot-link">Forgot Password?</a>
             </div>
 
             <button class="btn-login w-100" (click)="login()">

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-private url = 'https://localhost:7167/api';
+private url = '/api';
   constructor(private http: HttpClient) {}
 
   getAll() {

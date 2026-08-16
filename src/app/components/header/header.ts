@@ -19,7 +19,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   role = '';
   unreadCount = 0;
-  url = 'https://localhost:7167/api';
+  url = '/api';
   menuOpen = false; 
   private sub: Subscription = new Subscription();
 

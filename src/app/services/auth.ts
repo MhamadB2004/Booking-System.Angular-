@@ -4,7 +4,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-private url = 'https://localhost:7167/api';
+private url = '/api';
   constructor(private http: HttpClient) {}
 
   register(data: any) {
@@ -67,5 +67,16 @@ changePassword(data: any) {
       Authorization: `Bearer ${this.getToken()}`
     })
   });
+}
+
+forgotPassword(email: string) {
+  return this.http.post(`${this.url}/auth/forgot-password`, { email });
+}
+
+resetPassword(token: string, newPassword: string) {
+  return this.http.post(`${this.url}/auth/reset-password`, { token, newPassword });
+}
+resendVerification(email: string) {
+  return this.http.post(`${this.url}/auth/resend-verification`, { email });
 }
 }

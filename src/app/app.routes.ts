@@ -12,11 +12,14 @@ import { PaymentComponent } from './pages/payment/payment';
 import { NotificationsComponent } from './pages/notifications/notifications';
 import { AboutComponent } from './pages/about/about';
 import { ProfileComponent } from './pages/profile/profile';
-
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' }, 
   { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'about', component: AboutComponent },
 

@@ -16,7 +16,7 @@ import { ToastService } from '../../services/toast';
 })
 export class AdminComponent implements OnInit {
   activeTab = 'stats';
-  url = 'https://localhost:7167/api';
+  url = '/api';
 
   stats: any = null;
   users: any[] = [];
